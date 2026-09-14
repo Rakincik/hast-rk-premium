@@ -18,7 +18,8 @@ import {
   Clock,
   Info,
   CreditCard,
-  CalendarCheck
+  CalendarCheck,
+  FileSpreadsheet
 } from "lucide-react";
 import { 
   ProjectType, 
@@ -124,6 +125,8 @@ function WizardContent() {
       `• Yapı Türü: ${MATERIAL_FACTORS[buildingMaterial]?.label}\n` +
       `• Konum / Bölge: ${LOCATION_FACTORS[locationArea]?.label}\n` +
       `• Yetkili Kurul: ${quoteResult.conservationBoard.name}\n` +
+      `• Bakanlık Sınıfı: ${quoteResult.ministryClass.code} (${formatCurrencyTL(quoteResult.ministryClass.unitCostPerM2)}/m² [1.5×])\n` +
+      `• Yapı Yaklaşık Maliyeti (PYM): ${formatCurrencyTL(quoteResult.totalEstimatedCost)}\n` +
       `• Tercih Edilen Paket: ${PACKAGE_TIERS[selectedPackage].name}\n` +
       `• Paket Proje Bedeli: ${formatCurrencyTL(quoteResult.packageFees[selectedPackage])}\n\n` +
       `Projemizin detaylarını görüşmek ve yerinde keşif randevusu oluşturmak istiyorum.`
@@ -143,14 +146,14 @@ function WizardContent() {
       {/* Header */}
       <div className={styles.header}>
         <div className={styles.badge}>
-          <Landmark size={15} /> TMMOB Mimarlar Odası 2026 Standartları
+          <Landmark size={15} /> ÇŞİDB 2026 Yapı Birim Maliyetleri (Resmî Gazete: 33157) & TMMOB Normları
         </div>
         <h1 className={styles.title}>
           Akıllı Mimari & Restorasyon <br/>
           <span className={styles.titleGold}>Teklif Sihirbazı</span>
         </h1>
         <p className={styles.subtitle}>
-          Projenizin yapı sınıfı, tescil derecesi ve koruma alanı normlarına göre resmi TMMOB asgari taban bedelini ve kapsamlı proje paketlerini anında hesaplayın.
+          Çevre, Şehircilik ve İklim Değişikliği Bakanlığı 2026 Yapı Yaklaşık Birim Maliyetleri (Resmî Gazete Sayı: 33157) ve TMMOB yasal asgari taban bedelleriyle projenizi anında hesaplayın.
         </p>
       </div>
 
@@ -283,6 +286,28 @@ function WizardContent() {
                     <span>500 m²</span>
                     <span>1.000 m²</span>
                     <span>2.000+ m²</span>
+                  </div>
+                </div>
+
+                {/* Çevre, Şehircilik ve İklim Değişikliği Bakanlığı 2026 Resmi Yapı Sınıfı ve PYM Kartı */}
+                <div className={styles.ministryClassCard}>
+                  <div className={styles.ministryClassHeader}>
+                    <div className={styles.ministryBadge}>
+                      <Landmark size={14} /> {quoteResult.ministryClass.officialGazette}
+                    </div>
+                    <div className={styles.ministryUnitCostBadge}>
+                      1.5× Uygulama Birim Fiyatı: <strong>{formatCurrencyTL(quoteResult.ministryClass.unitCostPerM2)} / m²</strong>
+                    </div>
+                  </div>
+                  <div className={styles.ministryClassName}>
+                    {quoteResult.ministryClass.name} ({quoteResult.ministryClass.code})
+                  </div>
+                  <div className={styles.ministryClassDesc}>
+                    {quoteResult.ministryClass.definition} (Resmi Liste: {formatCurrencyTL(quoteResult.ministryClass.baseUnitCostPerM2)}/m² • 1.5× Uygulama Esaslı)
+                  </div>
+                  <div className={styles.ministryPymRow}>
+                    <span>Reel Yapı Yaklaşık Maliyeti (PYM):</span>
+                    <strong>{formatCurrencyTL(quoteResult.totalEstimatedCost)}</strong>
                   </div>
                 </div>
 
@@ -459,8 +484,26 @@ function WizardContent() {
               >
                 <h2 className={styles.stepTitle}>Ön Teklif & Maliyet Analiz Raporu</h2>
                 <p className={styles.stepDesc}>
-                  Seçtiğiniz kriterler doğrultusunda TMMOB 2026 asgari standartlarına göre hazırlanan 3 kademeli teklif paketleri:
+                  Seçtiğiniz kriterler doğrultusunda ÇŞİDB 2026 birim maliyetleri ve TMMOB standartlarına göre hazırlanan resmi analiz ve 3 kademeli teklif paketleri:
                 </p>
+
+                {/* Resmi ÇŞİDB PYM ve Referans Şeridi */}
+                <div className={styles.officialPymBanner}>
+                  <div className={styles.officialPymLeft}>
+                    <FileSpreadsheet size={22} color="var(--accent-gold)" />
+                    <div>
+                      <div className={styles.officialPymTitle}>
+                        Yapı Yaklaşık Maliyeti (PYM): <strong>{formatCurrencyTL(quoteResult.totalEstimatedCost)}</strong>
+                      </div>
+                      <div className={styles.officialPymSub}>
+                        {quoteResult.ministryClass.name} • 1.5× Birim Fiyat: {formatCurrencyTL(quoteResult.ministryClass.unitCostPerM2)}/m² ({quoteResult.ministryClass.officialGazette})
+                      </div>
+                    </div>
+                  </div>
+                  <div className={styles.officialPymTag}>
+                    TMMOB Taban: {formatCurrencyTL(quoteResult.tmmobBaseFee)}
+                  </div>
+                </div>
 
                 {/* 3 Kademeli Paket Seçim Kartları */}
                 <div className={styles.packageGrid}>
@@ -765,6 +808,18 @@ function WizardContent() {
             <div className={styles.summaryRow}>
               <span className={styles.summaryLabel}>Seçili Hizmet:</span>
               <span className={styles.summaryValue}>{selectedServices.length} Hizmet</span>
+            </div>
+
+            <div className={styles.summaryRow}>
+              <span className={styles.summaryLabel}>Bakanlık Sınıfı:</span>
+              <span className={styles.summaryValue}>{quoteResult.ministryClass.code} ({formatCurrencyTL(quoteResult.ministryClass.unitCostPerM2)}/m²)</span>
+            </div>
+
+            <div className={styles.summaryRow}>
+              <span className={styles.summaryLabel}>Yapı Maliyeti (PYM):</span>
+              <span className={styles.summaryValue} style={{ color: "var(--accent-gold)", fontWeight: 600 }}>
+                {formatCurrencyTL(quoteResult.totalEstimatedCost)}
+              </span>
             </div>
           </div>
 

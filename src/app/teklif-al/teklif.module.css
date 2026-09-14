@@ -343,6 +343,128 @@
   line-height: 1.35;
 }
 
+/* Çevre ve Şehircilik Bakanlığı 2026 Yapı Sınıfı Bilgi Kartı */
+.ministryClassCard {
+  background: linear-gradient(145deg, #18181b 0%, #221f1a 100%);
+  border: 1px solid rgba(197, 168, 128, 0.45);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+  margin-top: 1.25rem;
+}
+
+.ministryClassHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ministryBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent-gold);
+  font-weight: 700;
+}
+
+.ministryUnitCostBadge {
+  font-size: 0.85rem;
+  background: rgba(197, 168, 128, 0.15);
+  color: #ecd7b7;
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid rgba(197, 168, 128, 0.35);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.ministryUnitCostBadge strong {
+  color: var(--accent-gold);
+}
+
+.ministryClassName {
+  font-size: 1.12rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: var(--font-serif);
+}
+
+.ministryClassDesc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.ministryPymRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.88rem;
+  color: #d4d4d8;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ministryPymRow strong {
+  color: var(--accent-gold);
+  font-size: 1.1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Resmi Bakanlık PYM Bilgi Şeridi (Adım 4) */
+.officialPymBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background: linear-gradient(145deg, #18181b 0%, #201d19 100%);
+  border: 1px solid rgba(197, 168, 128, 0.35);
+  border-radius: 12px;
+  padding: 1.1rem 1.4rem;
+  margin-bottom: 2rem;
+}
+
+.officialPymLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.officialPymTitle {
+  font-size: 0.95rem;
+  color: #ffffff;
+}
+
+.officialPymTitle strong {
+  color: var(--accent-gold);
+  font-size: 1.15rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.officialPymSub {
+  font-size: 0.775rem;
+  color: var(--text-secondary);
+  margin-top: 0.2rem;
+}
+
+.officialPymTag {
+  font-size: 0.725rem;
+  background: rgba(255, 255, 255, 0.06);
+  color: #a1a1aa;
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 /* Step 3: Service Checklist */
 .serviceList {
   display: flex;

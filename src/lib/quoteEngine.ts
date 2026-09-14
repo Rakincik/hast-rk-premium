@@ -68,9 +68,20 @@ export interface PackageDetail {
   features: string[];
 }
 
+export interface MinistryClassInfo {
+  code: string;
+  name: string;
+  baseUnitCostPerM2: number; // ÇŞİDB Resmi Liste Fiyatı
+  multiplier: number;        // 1.5x Reel Uygulama Katsayısı
+  unitCostPerM2: number;     // 1.5x Uygulama Birim Maliyeti
+  officialGazette: string;
+  definition: string;
+}
+
 export interface QuoteResult {
   totalEstimatedCost: number; // Yapı yaklaşık maliyeti
   tmmobBaseFee: number; // TMMOB Yasal Asgari Taban Bedeli
+  ministryClass: MinistryClassInfo; // Çevre ve Şehircilik Bakanlığı 2026 Tebliği
   packageFees: Record<PackageTier, number>;
   paymentPlans: Record<PackageTier, PaymentStage[]>;
   timelineSteps: TimelineStep[];
@@ -501,20 +512,70 @@ export function calculateQuote(inputs: QuoteInputs): QuoteResult {
   // Güvenlik sınırları (min 20m², max 10.000m²)
   const clampedArea = Math.max(20, Math.min(10000, areaSquareMeters || 100));
 
-  // Yapı Yaklaşık Birim Maliyeti (2026 Referansı - TL/m²)
-  let baseUnitCostPerM2 = 28000;
-  let serviceFeeRate = 0.055; // %5.5 ortalama mimari hizmet oranı
+  // Çevre, Şehircilik ve İklim Değişikliği Bakanlığı 2026 Yılı Yapı Yaklaşık Birim Maliyetleri Tebliği
+  // Resmî Gazete: 3 Şubat 2026 / Sayı: 33157 (1.5x Reel Uygulama Birim Fiyatı ile Entegre)
+  const APPLICATION_PRICE_MULTIPLIER = 1.5;
+  let ministryClass: MinistryClassInfo;
+  let serviceFeeRate = 0.055; // Mimarlık hizmet bedeli oranı
 
   if (projectType === 'restoration') {
-    baseUnitCostPerM2 = 34500; // Sınıf V Restorasyon tabanı
-    serviceFeeRate = 0.075; // Restorasyon projelerinde belgeleme ve kurul süreçleri nedeniyle oran %7.5 civarıdır
+    // V. Sınıf (C) Grubu - Madde 5: "Tarihi eser niteliğinde olup restore edilerek veya yıkılarak aslına uygun olarak yapılan yapılar"
+    // Liste: 48.750,00 TL/m² -> 1.5x Uygulama: 73.125,00 TL/m²
+    const baseCost = 48750;
+    ministryClass = {
+      code: 'V-C',
+      name: 'V. Sınıf (C) Grubu Yapılar',
+      baseUnitCostPerM2: baseCost,
+      multiplier: APPLICATION_PRICE_MULTIPLIER,
+      unitCostPerM2: Math.round(baseCost * APPLICATION_PRICE_MULTIPLIER), // 73.125,00 TL/m²
+      officialGazette: 'Resmî Gazete: 3 Şubat 2026 / Sayı: 33157',
+      definition: 'Tarihi eser niteliğinde olup restore edilerek veya yıkılarak aslına uygun olarak yapılan yapılar'
+    };
+    serviceFeeRate = 0.055; // Restorasyon tam hizmet normu
   } else if (projectType === 'strengthening') {
-    baseUnitCostPerM2 = 26000;
-    serviceFeeRate = 0.060;
+    // IV. Sınıf (A) Grubu - Güçlendirme & Taşıyıcı Onarım
+    // Liste: 26.450,00 TL/m² -> 1.5x Uygulama: 39.675,00 TL/m²
+    const baseCost = 26450;
+    ministryClass = {
+      code: 'IV-A',
+      name: 'IV. Sınıf (A) Grubu Yapılar',
+      baseUnitCostPerM2: baseCost,
+      multiplier: APPLICATION_PRICE_MULTIPLIER,
+      unitCostPerM2: Math.round(baseCost * APPLICATION_PRICE_MULTIPLIER), // 39.675,00 TL/m²
+      officialGazette: 'Resmî Gazete: 3 Şubat 2026 / Sayı: 33157',
+      definition: 'Taşıyıcı sistem rölövesi, sehim analizi ve statik güçlendirme projeleri'
+    };
+    serviceFeeRate = 0.050;
   } else {
     // new_architecture
-    baseUnitCostPerM2 = 24000;
-    serviceFeeRate = 0.048;
+    if (clampedArea >= 300) {
+      // IV. Sınıf (B) Grubu - Madde 10: "Müstakil ve/veya ikiz konutlar (500 m² ve üzeri yapılar, lüks villalar)"
+      // Liste: 33.900,00 TL/m² -> 1.5x Uygulama: 50.850,00 TL/m²
+      const baseCost = 33900;
+      ministryClass = {
+        code: 'IV-B',
+        name: 'IV. Sınıf (B) Grubu Yapılar',
+        baseUnitCostPerM2: baseCost,
+        multiplier: APPLICATION_PRICE_MULTIPLIER,
+        unitCostPerM2: Math.round(baseCost * APPLICATION_PRICE_MULTIPLIER), // 50.850,00 TL/m²
+        officialGazette: 'Resmî Gazete: 3 Şubat 2026 / Sayı: 33157',
+        definition: 'Müstakil lüks konutlar, villalar ve özellikli mimari yapılar'
+      };
+    } else {
+      // III. Sınıf (C) Grubu - Madde 10: "Müstakil ve/veya ikiz konutlar (200-500 m²)"
+      // Liste: 23.400,00 TL/m² -> 1.5x Uygulama: 35.100,00 TL/m²
+      const baseCost = 23400;
+      ministryClass = {
+        code: 'III-C',
+        name: 'III. Sınıf (C) Grubu Yapılar',
+        baseUnitCostPerM2: baseCost,
+        multiplier: APPLICATION_PRICE_MULTIPLIER,
+        unitCostPerM2: Math.round(baseCost * APPLICATION_PRICE_MULTIPLIER), // 35.100,00 TL/m²
+        officialGazette: 'Resmî Gazete: 3 Şubat 2026 / Sayı: 33157',
+        definition: 'Müstakil konutlar, bağ/yayla evleri ve standart villa projeleri'
+      };
+    }
+    serviceFeeRate = 0.045;
   }
 
   // Alan büyüdükçe orantılı ölçek indirimi (TMMOB logaritmik ölçekleme mantığı)
@@ -528,8 +589,8 @@ export function calculateQuote(inputs: QuoteInputs): QuoteResult {
   const herFactor = HERITAGE_FACTORS[heritageStatus]?.factor || 1.0;
   const locFactor = LOCATION_FACTORS[locationArea]?.factor || 1.0;
 
-  // Yapı Yaklaşık Maliyeti (PYM)
-  const totalEstimatedCost = clampedArea * baseUnitCostPerM2 * matFactor;
+  // Yapı Yaklaşık Maliyeti (PYM) = Alan × Bakanlık Birim Fiyatı × Malzeme Çarpanı
+  const totalEstimatedCost = clampedArea * ministryClass.unitCostPerM2 * matFactor;
 
   // TMMOB Asgari Tam Hizmet Taban Bedeli
   const fullTmmobBase = totalEstimatedCost * serviceFeeRate * herFactor * locFactor;
@@ -601,6 +662,7 @@ export function calculateQuote(inputs: QuoteInputs): QuoteResult {
   return {
     totalEstimatedCost: Math.round(totalEstimatedCost),
     tmmobBaseFee,
+    ministryClass,
     packageFees,
     paymentPlans,
     timelineSteps,

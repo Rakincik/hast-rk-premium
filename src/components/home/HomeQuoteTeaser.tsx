@@ -67,11 +67,13 @@ export default function HomeQuoteTeaser() {
 
   // Pre-filled WhatsApp link with calculated preview details
   const whatsappMsg = encodeURIComponent(
-    `Merhaba Hastürk Mimarlık, anasayfa hesaplama aracınız üzerinden bilgi almak istiyorum.\n\n` +
-    `Proje Türü: ${typeLabels[projectType].title}\n` +
-    `Yapı Alanı: ${area} m²\n` +
-    `Malzeme: ${materialLabels[material]}\n` +
-    `Tahmini Proje Bedeli: ~${formatCurrencyTL(quoteResult.packageFees.comprehensive)}\n\n` +
+    `Merhaba Hastürk Mimarlık, anasayfa hesaplama motorunuz üzerinden bilgi almak istiyorum.\n\n` +
+    `• Proje Türü: ${typeLabels[projectType].title}\n` +
+    `• Yapı Alanı: ${area} m²\n` +
+    `• Malzeme: ${materialLabels[material]}\n` +
+    `• Bakanlık Sınıfı: ${quoteResult.ministryClass.name} (${quoteResult.ministryClass.code} - ${formatCurrencyTL(quoteResult.ministryClass.unitCostPerM2)}/m²)\n` +
+    `• Yapı Yaklaşık Maliyeti (PYM): ${formatCurrencyTL(quoteResult.totalEstimatedCost)}\n` +
+    `• Tahmini Proje Bedeli: ~${formatCurrencyTL(quoteResult.packageFees.comprehensive)}\n\n` +
     `Detaylı keşif ve teklif için görüşebilir miyiz?`
   );
 
@@ -85,13 +87,13 @@ export default function HomeQuoteTeaser() {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8 }}
         >
-          <span className={styles.tagline}>Şeffaf & Yasal Metodoloji</span>
+          <span className={styles.tagline}>Resmî Gazete: 33157 Tebliği & TMMOB Normları</span>
           <h2 className={styles.title}>
-            TMMOB 2026 Asgari Bedel & <br />
-            <span className="text-gold">Akıllı Proje Hesaplayıcı</span>
+            ÇŞİDB 2026 Birim Maliyetleri & <br />
+            <span className="text-gold">Akıllı Mimari Teklif Motoru</span>
           </h2>
           <p className={styles.subtitle}>
-            Tarihi tescilli yapınız veya yeni mimari projeniz için resmi mevzuata ve Hastürk mühendislik standartlarına uygun yaklaşık proje maliyetini saniyeler içinde simüle edin.
+            Çevre, Şehircilik ve İklim Değişikliği Bakanlığı 2026 Yapı Yaklaşık Birim Maliyetleri ve TMMOB yasal taban formülleriyle yapınızın proje bedelini anında simüle edin.
           </p>
         </motion.div>
 
@@ -174,20 +176,19 @@ export default function HomeQuoteTeaser() {
                 {formatCurrencyTL(quoteResult.packageFees.comprehensive)}
               </div>
               <p className={styles.mainFeeDesc}>
-                *TMMOB 2026 asgari taban bedeli ve 3D Lidar belgeleme standartları baz alınmıştır.
+                *{quoteResult.ministryClass.name} ({quoteResult.ministryClass.code} - {formatCurrencyTL(quoteResult.ministryClass.unitCostPerM2)}/m²) ve TMMOB standartları esas alınmıştır.
               </p>
             </div>
 
             <div className={styles.statsRow}>
               <div className={styles.statItem}>
-                <span className={styles.statLabel}>Yapı Yaklaşık Maliyeti</span>
+                <span className={styles.statLabel}>Bakanlık Yaklaşık Maliyeti (PYM)</span>
                 <span className={styles.statVal}>{formatCurrencyTL(quoteResult.totalEstimatedCost)}</span>
               </div>
               <div className={styles.statItem}>
-                <span className={styles.statLabel}>Tahmini Süreç</span>
-                <span className={styles.statVal}>
-                  <Clock size={16} style={{ display: "inline", verticalAlign: "middle", marginRight: "4px", color: "var(--accent-gold)" }} />
-                  {quoteResult.estimatedDurationWeeks.min}-{quoteResult.estimatedDurationWeeks.max} Hafta
+                <span className={styles.statLabel}>1.5× Uygulama Birim Fiyatı</span>
+                <span className={styles.statVal} style={{ fontSize: "0.9rem", color: "var(--accent-gold)" }}>
+                  {formatCurrencyTL(quoteResult.ministryClass.unitCostPerM2)}/m²
                 </span>
               </div>
             </div>
