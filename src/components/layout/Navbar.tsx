@@ -8,6 +8,7 @@ import styles from "./Navbar.module.css";
 import { Menu, X } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Language } from "@/lib/translations";
+import FlagIcon from "@/components/ui/FlagIcon";
 
 const navItems = [
   { key: "nav_home", href: "/" },
@@ -94,7 +95,7 @@ export default function Navbar() {
                   onClick={() => setLanguage(item.code)}
                   aria-label={`Dili ${item.nativeName} yap`}
                 >
-                  <span className={styles.langBtnFlag}>{item.flag}</span>
+                  <FlagIcon code={item.code} size={15} />
                   <span>{item.label}</span>
                 </button>
               ))}
@@ -141,7 +142,7 @@ export default function Navbar() {
                     setMobileMenuOpen(false);
                   }}
                 >
-                  <span className={styles.mobileFlagEmoji}>{item.flag}</span>
+                  <FlagIcon code={item.code} size={24} />
                   <span className={styles.mobileFlagName}>{item.nativeName}</span>
                 </button>
               ))}
