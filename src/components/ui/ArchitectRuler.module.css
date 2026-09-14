@@ -1,0 +1,74 @@
+.rulerContainer {
+  position: fixed;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 480px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 40;
+  pointer-events: none;
+  opacity: 0.38;
+  transition: opacity 0.3s ease;
+}
+
+.rulerContainer:hover {
+  opacity: 0.85;
+}
+
+.rulerLine {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  width: 18px;
+  border-left: 1px solid rgba(197, 168, 128, 0.4);
+}
+
+.tick {
+  position: relative;
+  width: 6px;
+  height: 1px;
+  background: rgba(197, 168, 128, 0.4);
+}
+
+.majorTick {
+  width: 14px;
+  background: var(--accent-gold);
+}
+
+.tickLabel {
+  position: absolute;
+  left: 18px;
+  top: -5px;
+  font-size: 0.55rem;
+  font-family: var(--font-sans), monospace;
+  color: var(--accent-gold);
+  letter-spacing: 0.5px;
+}
+
+.rulerDetails {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  display: flex;
+  gap: 16px;
+  font-size: 0.62rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.rulerText {
+  color: var(--accent-gold);
+}
+
+.rulerCoords {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 1280px) {
+  .rulerContainer {
+    display: none;
+  }
+}

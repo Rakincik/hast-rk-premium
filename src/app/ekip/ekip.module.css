@@ -1,0 +1,171 @@
+.container {
+  min-height: 100vh;
+  padding: 120px 0;
+  background-color: var(--background);
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.title {
+  font-size: clamp(3rem, 5vw, 5rem);
+  font-weight: 300;
+  letter-spacing: -1px;
+  margin-bottom: 20px;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 40px;
+  padding: 0 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.card {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  cursor: pointer;
+  background-color: #111;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.imageWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.image {
+  object-fit: cover;
+  filter: grayscale(100%) contrast(1.2);
+  transition: filter 0.5s ease, transform 0.5s ease;
+}
+
+.card:hover .image {
+  filter: grayscale(0%) contrast(1);
+  transform: scale(1.05);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0) 100%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 30px;
+  transition: background 0.5s ease;
+}
+
+.card:hover .overlay {
+  background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%);
+}
+
+.content {
+  position: relative;
+  z-index: 3;
+  transform: translateY(20px);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card:hover .content {
+  transform: translateY(0);
+}
+
+.name {
+  font-size: 1.8rem;
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: #fff;
+}
+
+.role {
+  font-size: 1rem;
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 15px;
+  opacity: 0.9;
+}
+
+.contact {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.4s ease;
+  transition-delay: 0.1s;
+}
+
+.card:hover .contact {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.email {
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.email:hover {
+  color: var(--accent-gold);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 110px 0 70px 0;
+  }
+
+  .hero {
+    margin-bottom: 45px;
+    padding: 0 16px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 0 16px;
+  }
+
+  .card {
+    aspect-ratio: 4/5;
+  }
+
+  .card .image {
+    filter: grayscale(25%) contrast(1.1);
+  }
+
+  .overlay {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.4) 60%, rgba(0, 0, 0, 0) 100%);
+  }
+
+  .content {
+    transform: translateY(0);
+  }
+
+  .contact {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

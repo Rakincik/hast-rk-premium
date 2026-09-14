@@ -1,0 +1,145 @@
+.section {
+  position: relative;
+  background: #080808;
+  overflow: hidden;
+}
+
+.header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 4.5rem;
+}
+
+.tagline {
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: inline-block;
+}
+
+.title {
+  font-size: clamp(2.3rem, 4vw, 3.6rem);
+  font-weight: 300;
+  line-height: 1.2;
+  margin-bottom: 1.2rem;
+  color: #ffffff;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 992px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.card {
+  position: relative;
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 22px;
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.4s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(197, 168, 128, 0.4);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.stars {
+  display: flex;
+  gap: 3px;
+  color: var(--accent-gold);
+}
+
+.projectBadge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 100px;
+  background: rgba(197, 168, 128, 0.1);
+  color: var(--accent-gold);
+  border: 1px solid rgba(197, 168, 128, 0.25);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.quoteText {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 2rem;
+  font-style: italic;
+  position: relative;
+}
+
+.authorMeta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #181818;
+  border: 1px solid var(--accent-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: var(--accent-gold);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.authorDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.authorName {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.authorRole {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.locationTag {
+  font-size: 0.78rem;
+  color: var(--accent-gold);
+  margin-top: 2px;
+}

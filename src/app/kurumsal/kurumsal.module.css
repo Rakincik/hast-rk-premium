@@ -1,0 +1,132 @@
+.container {
+  min-height: 100vh;
+  padding: 150px 0;
+  background-color: var(--background);
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.title {
+  font-size: clamp(3rem, 5vw, 5rem);
+  font-weight: 300;
+  letter-spacing: -1px;
+  margin-bottom: 20px;
+}
+
+.titleGold {
+  font-style: normal;
+  background: linear-gradient(45deg, var(--accent-gold), #fff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.contentWrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+@media (min-width: 992px) {
+  .contentWrapper {
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+  }
+}
+
+.imageContainer {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/5;
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.image {
+  object-fit: cover;
+  transition: transform 0.7s ease;
+}
+
+.imageContainer:hover .image {
+  transform: scale(1.05);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+  pointer-events: none;
+}
+
+.textContent {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.sectionBlock h2 {
+  font-size: 2rem;
+  color: var(--accent-gold);
+  margin-bottom: 1rem;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sectionBlock h2::before {
+  content: '';
+  display: inline-block;
+  width: 30px;
+  height: 2px;
+  background-color: var(--accent-gold);
+}
+
+.sectionBlock p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 110px 0 70px 0;
+  }
+
+  .hero {
+    margin-bottom: 45px;
+    padding: 0 16px;
+  }
+
+  .contentWrapper {
+    gap: 2.5rem;
+    padding: 0 16px;
+  }
+
+  .textContent {
+    gap: 2rem;
+  }
+
+  .sectionBlock h2 {
+    font-size: 1.6rem;
+  }
+
+  .sectionBlock p {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+}
+
