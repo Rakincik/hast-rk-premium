@@ -171,11 +171,11 @@ function WizardContent() {
     const typeTitleMap: Record<ProjectType, string> = {
       restoration: "Eski Eser Restorasyon Projesi (2863 Sayılı Kanun)",
       new_architecture: "Yeni Yapı Mimari Tasarım & Ruhsat Projesi",
-      strengthening: "Statik Güçlendirme Projesi (1.200 TL/m²)",
-      exec_restoration: "Tarihi Yapı Restorasyon Uygulaması (73.125 TL/m²)",
+      strengthening: "Statik Güçlendirme Projesi",
+      exec_restoration: "Tarihi Yapı Restorasyon Uygulaması",
       exec_new: `Yeni Yapı İnşaat Uygulaması (${hasLand === 'yes' ? 'Arsa Hazır' : 'Arsa Arayışında'})`,
-      exec_renovation: "Tadilat & Tamirat Uygulaması (17.000 TL/m²)",
-      exec_strengthening: "Statik Güçlendirme Uygulaması (26.450 TL/m²)"
+      exec_renovation: "Tadilat & Tamirat Uygulaması",
+      exec_strengthening: "Statik Güçlendirme Uygulaması"
     };
 
     const text = encodeURIComponent(
@@ -392,7 +392,7 @@ function WizardContent() {
                         <div className={styles.typeIconWrapper}><ShieldCheck size={26} /></div>
                         <h3 className={styles.typeCardTitle}>Statik Güçlendirme Projesi</h3>
                         <p className={styles.typeCardDesc}>
-                          Mevcut bina taşıyıcı sistemi analizi, deprem performans tahkiki ve onaylı güçlendirme uygulama projeleri (1.200 TL / m²).
+                          Mevcut bina taşıyıcı sistemi analizi, deprem performans tahkiki ve onaylı güçlendirme uygulama projeleri.
                         </p>
                       </div>
                     </>
@@ -406,7 +406,7 @@ function WizardContent() {
                         <div className={styles.typeIconWrapper}><Landmark size={26} /></div>
                         <h3 className={styles.typeCardTitle}>Tarihi Yapı Restorasyonu</h3>
                         <p className={styles.typeCardDesc}>
-                          2863 sayılı kanun ve Koruma Kurulu onaylı restorasyon uygulaması, özgün konservasyon ve fenni mesuliyet (73.125 TL / m²).
+                          2863 sayılı kanun ve Koruma Kurulu onaylı restorasyon uygulaması, özgün konservasyon ve fenni mesuliyet.
                         </p>
                       </div>
 
@@ -430,7 +430,7 @@ function WizardContent() {
                         <div className={styles.typeIconWrapper}><Wrench size={26} /></div>
                         <h3 className={styles.typeCardTitle}>Tadilat & Tamirat Uygulaması</h3>
                         <p className={styles.typeCardDesc}>
-                          Mevcut yapıda iç mekan yenileme, tesisat sıfırlama, çatı onarımı, ıslak hacimler ve lüks ince işçilik (17.000 TL / m²).
+                          Mevcut yapıda iç mekan yenileme, tesisat sıfırlama, çatı onarımı, ıslak hacimler ve lüks ince işçilik.
                         </p>
                       </div>
 
@@ -442,7 +442,7 @@ function WizardContent() {
                         <div className={styles.typeIconWrapper}><ShieldCheck size={26} /></div>
                         <h3 className={styles.typeCardTitle}>Statik Güçlendirme İmalatı</h3>
                         <p className={styles.typeCardDesc}>
-                          Karbon lif (CFRP), çelik mantolama, temel takviyesi ve epoksi enjeksiyon şantiye imalatları (26.450 TL / m² - ÇŞİDB Liste).
+                          Karbon lif (CFRP), çelik mantolama, temel takviyesi ve epoksi enjeksiyon şantiye imalatları.
                         </p>
                       </div>
                     </>
@@ -989,11 +989,11 @@ function WizardContent() {
               <span className={styles.summaryValue} style={{ fontSize: "0.82rem" }}>
                 {projectType === "restoration" ? "2863 Sayılı Eser Projesi" :
                  projectType === "new_architecture" ? "Yeni Mimari Tasarım" :
-                 projectType === "strengthening" ? "Güçlendirme Projesi (1.200 TL)" :
+                 projectType === "strengthening" ? "Güçlendirme Projesi" :
                  projectType === "exec_restoration" ? "Tarihi Restorasyon Uygulama" :
                  projectType === "exec_new" ? "Yeni Yapı İnşaatı" :
-                 projectType === "exec_renovation" ? "Tadilat & Tamirat (17.000 TL)" :
-                 "Güçlendirme İmalatı (26.450 TL)"}
+                 projectType === "exec_renovation" ? "Tadilat & Tamirat" :
+                 "Güçlendirme İmalatı"}
               </span>
             </div>
 
