@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import styles from "./Navbar.module.css";
 import { Menu, X } from "lucide-react";
-
 import { useLanguage } from "@/context/LanguageContext";
+import { Language } from "@/lib/translations";
 
 const navItems = [
   { key: "nav_home", href: "/" },
@@ -18,8 +18,15 @@ const navItems = [
   { key: "nav_contact", href: "/iletisim" },
 ];
 
+const languages: { code: Language; label: string; flag: string; nativeName: string }[] = [
+  { code: "tr", label: "TR", flag: "🇹🇷", nativeName: "Türkçe" },
+  { code: "en", label: "EN", flag: "🇬🇧", nativeName: "English" },
+  { code: "de", label: "DE", flag: "🇩🇪", nativeName: "Deutsch" },
+  { code: "ar", label: "AR", flag: "🇸🇦", nativeName: "العربية" },
+];
+
 export default function Navbar() {
-  const { language, toggleLanguage, t } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
   const { scrollY } = useScroll();
   const [hidden, setHidden] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -77,16 +84,21 @@ export default function Navbar() {
               </Link>
             ))}
 
-            <button
-              type="button"
-              className={styles.langBtn}
-              onClick={toggleLanguage}
-              aria-label="Dili Değiştir / Switch Language"
-            >
-              <span className={language === "tr" ? styles.langActive : styles.langInactive}>TR</span>
-              <span className={styles.langDivider}>/</span>
-              <span className={language === "en" ? styles.langActive : styles.langInactive}>EN</span>
-            </button>
+            {/* Desktop 4-Language Pill Switcher */}
+            <div className={styles.langSegmentGroup}>
+              {languages.map((item) => (
+                <button
+                  key={item.code}
+                  type="button"
+                  className={`${styles.langSegmentBtn} ${language === item.code ? styles.langSegmentBtnActive : ""}`}
+                  onClick={() => setLanguage(item.code)}
+                  aria-label={`Dili ${item.nativeName} yap`}
+                >
+                  <span className={styles.langBtnFlag}>{item.flag}</span>
+                  <span>{item.label}</span>
+                </button>
+              ))}
+            </div>
 
             <Link href="/teklif-al" className={styles.quoteBtn}>
               {t("nav_quote_btn", "Teklif Hesapla")}
@@ -111,19 +123,29 @@ export default function Navbar() {
         transition={{ duration: 0.3, ease: "easeInOut" }}
       >
         <div className={styles.mobileLinks}>
-          {/* Mobile Language Switcher */}
-          <div style={{ marginBottom: "1rem" }}>
-            <button
-              type="button"
-              className={styles.langBtn}
-              onClick={toggleLanguage}
-              style={{ padding: "8px 18px", fontSize: "0.9rem" }}
-              aria-label="Switch Language"
-            >
-              <span className={language === "tr" ? styles.langActive : styles.langInactive}>TR</span>
-              <span className={styles.langDivider}>/</span>
-              <span className={language === "en" ? styles.langActive : styles.langInactive}>EN</span>
-            </button>
+          {/* Mobile Flag-Based Language Selector */}
+          <div className={styles.mobileFlagSection}>
+            <span className={styles.mobileFlagHeading}>
+              {language === "tr" ? "Dil Seçimi" : 
+               language === "de" ? "Sprachauswahl" : 
+               language === "ar" ? "اختر اللغة" : "Select Language"}
+            </span>
+            <div className={styles.mobileFlagGrid}>
+              {languages.map((item) => (
+                <button
+                  key={item.code}
+                  type="button"
+                  className={`${styles.mobileFlagCard} ${language === item.code ? styles.mobileFlagCardActive : ""}`}
+                  onClick={() => {
+                    setLanguage(item.code);
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  <span className={styles.mobileFlagEmoji}>{item.flag}</span>
+                  <span className={styles.mobileFlagName}>{item.nativeName}</span>
+                </button>
+              ))}
+            </div>
           </div>
 
           {navItems.map((item, i) => (
@@ -131,7 +153,7 @@ export default function Navbar() {
               key={item.key}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: mobileMenuOpen ? 1 : 0, y: mobileMenuOpen ? 0 : 20 }}
-              transition={{ delay: i * 0.08 + 0.15 }}
+              transition={{ delay: i * 0.06 + 0.1 }}
             >
               <Link 
                 href={item.href} 
@@ -146,7 +168,7 @@ export default function Navbar() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: mobileMenuOpen ? 1 : 0, y: mobileMenuOpen ? 0 : 20 }}
-            transition={{ delay: navItems.length * 0.08 + 0.15 }}
+            transition={{ delay: navItems.length * 0.06 + 0.1 }}
           >
             <Link 
               href="/teklif-al" 

@@ -135,37 +135,52 @@
   transform: translateY(-1px);
 }
 
-.langBtn {
+/* Desktop 4-Language Pill Segmented Group */
+.langSegmentGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(197, 168, 128, 0.28);
+  border-radius: 9999px;
+  padding: 3px 5px;
+}
+
+.langSegmentBtn {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(197, 168, 128, 0.3);
-  padding: 5px 12px;
+  background: none;
+  border: none;
   border-radius: 9999px;
-  color: var(--text-secondary);
-  font-size: 0.75rem;
+  padding: 4px 9px;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.73rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.2s ease;
   font-family: inherit;
 }
 
-.langBtn:hover {
-  border-color: var(--accent-gold);
-  background: rgba(197, 168, 128, 0.1);
+.langBtnFlag {
+  font-size: 0.85rem;
+  line-height: 1;
 }
 
-.langActive {
-  color: var(--accent-gold);
+.langSegmentBtn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
 }
 
-.langInactive {
-  color: rgba(255, 255, 255, 0.4);
+.langSegmentBtnActive {
+  background: var(--accent-gold);
+  color: #080808;
+  font-weight: 700;
 }
 
-.langDivider {
-  color: rgba(255, 255, 255, 0.2);
+.langSegmentBtnActive:hover {
+  background: var(--accent-gold);
+  color: #080808;
 }
 
 .mobileMenuBtn {
@@ -176,7 +191,7 @@
   cursor: pointer;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   .mobileMenuBtn {
     display: none;
   }
@@ -193,18 +208,78 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 2rem 1.5rem;
+  overflow-y: auto;
 }
 
 .mobileLinks {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
   text-align: center;
+  width: 100%;
+  max-width: 360px;
+}
+
+/* Mobile Flag-Based Selector */
+.mobileFlagSection {
+  margin-bottom: 0.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(197, 168, 128, 0.15);
+}
+
+.mobileFlagHeading {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--accent-gold);
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.mobileFlagGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+}
+
+.mobileFlagCard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 0.65rem 0.8rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  color: rgba(255, 255, 255, 0.75);
+  font-family: inherit;
+}
+
+.mobileFlagCardActive {
+  background: rgba(197, 168, 128, 0.15);
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+  box-shadow: 0 0 14px rgba(197, 168, 128, 0.25);
+  font-weight: 600;
+}
+
+.mobileFlagEmoji {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.mobileFlagName {
+  font-size: 0.82rem;
+  font-weight: 500;
 }
 
 .mobileNavLink {
   font-family: var(--font-serif);
-  font-size: 2.2rem;
+  font-size: 1.8rem;
   color: #ffffff;
   transition: color 0.3s ease;
   text-decoration: none;
@@ -213,3 +288,4 @@
 .mobileNavLink:hover {
   color: var(--accent-gold);
 }
+

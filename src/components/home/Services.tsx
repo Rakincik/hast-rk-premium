@@ -3,41 +3,44 @@
 import { motion } from "framer-motion";
 import styles from "./Services.module.css";
 import { Hammer, Search, PenTool, ShieldCheck, Building2 } from "lucide-react";
-
-const servicesData = [
-  {
-    id: 1,
-    title: "Restorasyon",
-    description: "Tarihi yapıların özgün kimliklerini koruyarak geleceğe taşınmasını sağlayan kapsamlı onarım süreçleri.",
-    icon: <Building2 size={40} strokeWidth={1.5} />,
-  },
-  {
-    id: 2,
-    title: "Rölöve & Restitüsyon",
-    description: "Tarihi eserlerin mevcut durumlarının belgelenmesi ve ilk yapıldığı dönemdeki haline sadık kalınarak yeniden projelendirilmesi.",
-    icon: <Search size={40} strokeWidth={1.5} />,
-  },
-  {
-    id: 3,
-    title: "Mimari Tasarım",
-    description: "Geleneksel motifleri modern ihtiyaçlarla harmanlayan, çevreye duyarlı ve estetik mimari çözümler.",
-    icon: <PenTool size={40} strokeWidth={1.5} />,
-  },
-  {
-    id: 4,
-    title: "Güçlendirme",
-    description: "Yıpranmış yapıların strüktürel zayıflıklarını gidermek için uygulanan gelişmiş mühendislik teknikleri.",
-    icon: <ShieldCheck size={40} strokeWidth={1.5} />,
-  },
-  {
-    id: 5,
-    title: "Taahhüt İşleri",
-    description: "Projelerin anahtar teslim süreçlerinde, bütçe ve zaman planlamasına uygun, yüksek kalite standartlarında uygulama.",
-    icon: <Hammer size={40} strokeWidth={1.5} />,
-  }
-];
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Services() {
+  const { t } = useLanguage();
+
+  const servicesData = [
+    {
+      id: 1,
+      title: t("serv_1_title", "Restorasyon"),
+      description: t("serv_1_desc", "Tarihi yapıların özgün kimliklerini koruyarak geleceğe taşınmasını sağlayan kapsamlı onarım süreçleri."),
+      icon: <Building2 size={40} strokeWidth={1.5} />,
+    },
+    {
+      id: 2,
+      title: t("serv_2_title", "Rölöve & Restitüsyon"),
+      description: t("serv_2_desc", "Tarihi eserlerin mevcut durumlarının belgelenmesi ve ilk yapıldığı dönemdeki haline sadık kalınarak yeniden projelendirilmesi."),
+      icon: <Search size={40} strokeWidth={1.5} />,
+    },
+    {
+      id: 3,
+      title: t("serv_3_title", "Mimari Tasarım"),
+      description: t("serv_3_desc", "Geleneksel motifleri modern ihtiyaçlarla harmanlayan, çevreye duyarlı ve estetik mimari çözümler."),
+      icon: <PenTool size={40} strokeWidth={1.5} />,
+    },
+    {
+      id: 4,
+      title: t("serv_4_title", "Güçlendirme"),
+      description: t("serv_4_desc", "Yıpranmış yapıların strüktürel zayıflıklarını gidermek için uygulanan gelişmiş mühendislik teknikleri."),
+      icon: <ShieldCheck size={40} strokeWidth={1.5} />,
+    },
+    {
+      id: 5,
+      title: t("serv_5_title", "Taahhüt İşleri"),
+      description: t("serv_5_desc", "Projelerin anahtar teslim süreçlerinde, bütçe ve zaman planlamasına uygun, yüksek kalite standartlarında uygulama."),
+      icon: <Hammer size={40} strokeWidth={1.5} />,
+    }
+  ];
+
   return (
     <section className={`section ${styles.servicesSection}`}>
       <div className="container">
@@ -48,8 +51,8 @@ export default function Services() {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8 }}
         >
-          <h2 className={styles.title}>Hizmetlerimiz</h2>
-          <p className={styles.subtitle}>Geçmişin mirasını, modern teknolojinin gücüyle yeniden var ediyoruz.</p>
+          <h2 className={styles.title}>{t("services_title", "Hizmetlerimiz")}</h2>
+          <p className={styles.subtitle}>{t("services_subtitle", "Geçmişin mirasını, modern teknolojinin gücüyle yeniden var ediyoruz.")}</p>
         </motion.div>
 
         <div className={styles.grid}>

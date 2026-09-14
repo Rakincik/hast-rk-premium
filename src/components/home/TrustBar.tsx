@@ -3,31 +3,34 @@
 import { motion } from "framer-motion";
 import styles from "./TrustBar.module.css";
 import { Award, Compass, Scale, ScanLine } from "lucide-react";
-
-const trustItems = [
-  {
-    icon: <Award size={24} strokeWidth={1.75} />,
-    title: "TMMOB Tescilli Büro",
-    subtitle: "Mimarlar Odası Yasal Standartları & En Az Bedel Güvencesi"
-  },
-  {
-    icon: <Scale size={24} strokeWidth={1.75} />,
-    title: "Kurul & Hukuk Yetkinliği",
-    subtitle: "Kültür Varlıkları Koruma Bölge Kurulu Tam Dosya Hakimiyeti"
-  },
-  {
-    icon: <ScanLine size={24} strokeWidth={1.75} />,
-    title: "3D Lidar Tarama",
-    subtitle: "Milimetrik Lazer Nokta Bulutu ve Fotogrametrik Belgeleme"
-  },
-  {
-    icon: <Compass size={24} strokeWidth={1.75} />,
-    title: "UNESCO & Venedik Tüzüğü",
-    subtitle: "Uluslararası Tarihi Doku Koruma ve Özgünlük İlkeleri"
-  }
-];
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function TrustBar() {
+  const { t } = useLanguage();
+
+  const trustItems = [
+    {
+      icon: <Award size={24} strokeWidth={1.75} />,
+      title: t("trust_title_1", "TMMOB Tescilli Büro"),
+      subtitle: t("trust_sub_1", "Mimarlar Odası Yasal Standartları & En Az Bedel Güvencesi")
+    },
+    {
+      icon: <Scale size={24} strokeWidth={1.75} />,
+      title: t("trust_title_2", "Kurul & Hukuk Yetkinliği"),
+      subtitle: t("trust_sub_2", "Kültür Varlıkları Koruma Bölge Kurulu Tam Dosya Hakimiyeti")
+    },
+    {
+      icon: <ScanLine size={24} strokeWidth={1.75} />,
+      title: t("trust_title_3", "3D Lidar Tarama"),
+      subtitle: t("trust_sub_3", "Milimetrik Lazer Nokta Bulutu ve Fotogrametrik Belgeleme")
+    },
+    {
+      icon: <Compass size={24} strokeWidth={1.75} />,
+      title: t("trust_title_4", "UNESCO & Venedik Tüzüğü"),
+      subtitle: t("trust_sub_4", "Uluslararası Tarihi Doku Koruma ve Özgünlük İlkeleri")
+    }
+  ];
+
   return (
     <section className={styles.trustSection}>
       <div className="container">

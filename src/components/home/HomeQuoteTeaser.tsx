@@ -24,8 +24,10 @@ import {
   formatCurrencyTL, 
   getServicesForType 
 } from "@/lib/quoteEngine";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function HomeQuoteTeaser() {
+  const { t, language } = useLanguage();
   const [domain, setDomain] = useState<ServiceDomain>("project");
   const [projectType, setProjectType] = useState<ProjectType>("restoration");
   const [area, setArea] = useState<number>(300);
@@ -65,15 +67,24 @@ export default function HomeQuoteTeaser() {
     { title: string; icon: React.ReactNode }
   > = {
     restoration: {
-      title: "Eski Eser (2863)",
+      title: language === "en" ? "Historic Landmark (2863)" :
+             language === "de" ? "Denkmalgeschützt (2863)" :
+             language === "ar" ? "الآثار التاريخية (2863)" :
+             "Eski Eser (2863)",
       icon: <Landmark size={20} strokeWidth={1.5} />,
     },
     new_architecture: {
-      title: "Yeni Mimari Tasarım",
+      title: language === "en" ? "New Architecture" :
+             language === "de" ? "Neubauentwurf" :
+             language === "ar" ? "تصميم معماري جديد" :
+             "Yeni Mimari Tasarım",
       icon: <Building2 size={20} strokeWidth={1.5} />,
     },
     strengthening: {
-      title: "Statik Güçlendirme",
+      title: language === "en" ? "Structural Strengthening" :
+             language === "de" ? "Tragwerksverstärkung" :
+             language === "ar" ? "تدعيم إنشائي" :
+             "Statik Güçlendirme",
       icon: <ShieldCheck size={20} strokeWidth={1.5} />,
     },
   };
@@ -84,28 +95,52 @@ export default function HomeQuoteTeaser() {
     { title: string; icon: React.ReactNode }
   > = {
     exec_restoration: {
-      title: "Tarihi Restorasyon",
+      title: language === "en" ? "Heritage Restoration" :
+             language === "de" ? "Denkmalrestaurierung" :
+             language === "ar" ? "ترميم تراثي" :
+             "Tarihi Restorasyon",
       icon: <Landmark size={20} strokeWidth={1.5} />,
     },
     exec_new: {
-      title: "Yeni Yapı İnşaatı",
+      title: language === "en" ? "New Construction" :
+             language === "de" ? "Neubauausführung" :
+             language === "ar" ? "إنشاء مباني جديدة" :
+             "Yeni Yapı İnşaatı",
       icon: <Building2 size={20} strokeWidth={1.5} />,
     },
     exec_renovation: {
-      title: "Tadilat & Tamirat",
+      title: language === "en" ? "Renovation & Repair" :
+             language === "de" ? "Sanierung & Reparatur" :
+             language === "ar" ? "تجديد وترميم" :
+             "Tadilat & Tamirat",
       icon: <Wrench size={20} strokeWidth={1.5} />,
     },
     exec_strengthening: {
-      title: "Güçlendirme İmalatı",
+      title: language === "en" ? "Strengthening Works" :
+             language === "de" ? "Verstärkungsarbeiten" :
+             language === "ar" ? "أعمال التدعيم الإنشائي" :
+             "Güçlendirme İmalatı",
       icon: <ShieldCheck size={20} strokeWidth={1.5} />,
     },
   };
 
   const materialLabels: Record<BuildingMaterial, string> = {
-    stone_masonry: "Yığma Taş / Kagir",
-    wood: "Geleneksel Ahşap",
-    composite: "Karma (Bağdadi/Taş)",
-    concrete: "Betonarme",
+    stone_masonry: language === "en" ? "Stone Masonry / Brick" :
+                   language === "de" ? "Natursteinmauerwerk / Ziegel" :
+                   language === "ar" ? "حجر طبيعي / قرميد" :
+                   "Yığma Taş / Kagir",
+    wood: language === "en" ? "Traditional Timber" :
+          language === "de" ? "Historisches Holz" :
+          language === "ar" ? "خشب تقليدي" :
+          "Geleneksel Ahşap",
+    composite: language === "en" ? "Composite / Baghdadi" :
+               language === "de" ? "Verbundbauweise / Baghdadi" :
+               language === "ar" ? "مختلط (بغدادي وحجر)" :
+               "Karma (Bağdadi/Taş)",
+    concrete: language === "en" ? "Reinforced Concrete" :
+              language === "de" ? "Stahlbeton" :
+              language === "ar" ? "خرسانة مسلحة" :
+              "Betonarme",
   };
 
   const typeTitleMap: Record<ProjectType, string> = {
@@ -139,13 +174,13 @@ export default function HomeQuoteTeaser() {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8 }}
         >
-          <span className={styles.tagline}>Resmî Gazete: 33157 Tebliği & TMMOB Normları</span>
+          <span className={styles.tagline}>{t("calc_badge", "Resmî Gazete: 33157 Tebliği & TMMOB Normları")}</span>
           <h2 className={styles.title}>
-            ÇŞİDB 2026 Birim Maliyetleri & <br />
-            <span className="text-gold">Akıllı Mimari Teklif Motoru</span>
+            {t("calc_title_1", "ÇŞİDB 2026 Birim Maliyetleri &")} <br />
+            <span className="text-gold">{t("calc_title_2", "Akıllı Mimari Teklif Motoru")}</span>
           </h2>
           <p className={styles.subtitle}>
-            Çevre, Şehircilik ve İklim Değişikliği Bakanlığı 2026 Yapı Yaklaşık Birim Maliyetleri ve TMMOB yasal taban formülleriyle projenizi saniyeler içinde hesaplayın.
+            {t("calc_subtitle", "Çevre, Şehircilik ve İklim Değişikliği Bakanlığı 2026 Yapı Yaklaşık Birim Maliyetleri ve TMMOB yasal taban formülleriyle projenizi saniyeler içinde hesaplayın.")}
           </p>
         </motion.div>
 
@@ -162,7 +197,7 @@ export default function HomeQuoteTeaser() {
             {/* 1. Hizmet Alanı Segmented Switcher (Proje vs Uygulama) */}
             <div>
               <label className={styles.label} style={{ marginBottom: "0.6rem" }}>
-                <span>1. Hizmet Alanını Belirleyin</span>
+                <span>{t("calc_step_1", "1. Hizmet Alanını Belirleyin")}</span>
               </label>
               <div className={styles.domainSegmentedControl}>
                 <button
@@ -171,7 +206,7 @@ export default function HomeQuoteTeaser() {
                   onClick={() => handleDomainChange("project")}
                 >
                   <PenTool size={17} />
-                  <span>Mimari & Statik Proje</span>
+                  <span>{t("calc_domain_project", "Mimari & Statik Proje")}</span>
                   <span className={styles.domainSegmentTag}>TMMOB</span>
                 </button>
                 <button
@@ -180,7 +215,7 @@ export default function HomeQuoteTeaser() {
                   onClick={() => handleDomainChange("execution")}
                 >
                   <Hammer size={17} />
-                  <span>Şantiye Uygulaması</span>
+                  <span>{t("calc_domain_exec", "Şantiye Uygulaması")}</span>
                   <span className={styles.domainSegmentTag}>ÇŞİDB 2026</span>
                 </button>
               </div>
@@ -189,7 +224,7 @@ export default function HomeQuoteTeaser() {
             {/* 2. Kategori Seçimi */}
             <div className={styles.formGroup}>
               <label className={styles.label}>
-                <span>2. {domain === "project" ? "Projelendirme Kategorisi" : "Şantiye & Uygulama Alanı"}</span>
+                <span>{domain === "project" ? t("calc_step_2_proj", "2. Projelendirme Kategorisi") : t("calc_step_2_exec", "2. Şantiye & Uygulama Alanı")}</span>
               </label>
 
               {domain === "project" ? (
@@ -226,7 +261,7 @@ export default function HomeQuoteTeaser() {
             {/* 3. Area Slider */}
             <div className={styles.formGroup}>
               <div className={styles.label}>
-                <span>3. Toplam İnşaat / Kapalı Alan:</span>
+                <span>{t("calc_step_3", "3. Toplam İnşaat / Kapalı Alan:")}</span>
                 <span className={styles.sliderValue}>{area} m²</span>
               </div>
               <div className={styles.sliderContainer}>
@@ -246,7 +281,7 @@ export default function HomeQuoteTeaser() {
             {/* 4. Material */}
             <div className={styles.formGroup}>
               <label className={styles.label}>
-                <span>4. Mevcut / Hedef Yapı Strüktürü</span>
+                <span>{t("calc_step_4", "4. Mevcut / Hedef Yapı Strüktürü")}</span>
               </label>
               <div className={styles.materialSelector}>
                 {(Object.keys(materialLabels) as BuildingMaterial[]).map((mat) => (
@@ -268,31 +303,46 @@ export default function HomeQuoteTeaser() {
           <div className={styles.resultsCol}>
             <div>
               <span className={styles.resultTitle}>
-                {domain === "execution" ? "Tahmini Uygulama Bedeli" : "Tahmini Mimari & Mühendislik Bedeli"}
+                {domain === "execution" 
+                  ? t("calc_result_exec_title", "Tahmini Uygulama Bedeli") 
+                  : t("calc_result_proj_title", "Tahmini Mimari & Mühendislik Bedeli")}
               </span>
               <div className={styles.mainFee}>
                 {formatCurrencyTL(quoteResult.packageFees.comprehensive)}
               </div>
               <p className={styles.mainFeeDesc}>
                 {domain === "execution" 
-                  ? `*ÇŞİDB 2026 ${quoteResult.ministryClass.name} reel uygulama rayiçleri esas alınmıştır.`
-                  : `*TMMOB 2026 Mimarlar Odası asgari bedel normları esas alınmıştır.`}
+                  ? (language === "en" ? `*Based on Ministry of Environment 2026 ${quoteResult.ministryClass.name} construction market rates.` :
+                     language === "de" ? `*Basiert auf den aktuellen behördlichen Baukostensätzen 2026 für ${quoteResult.ministryClass.name}.` :
+                     language === "ar" ? `*وفقاً للأسعار الرسمية لوزارة البيئة والإسكان 2026 لفئة ${quoteResult.ministryClass.name}.` :
+                     `*ÇŞİDB 2026 ${quoteResult.ministryClass.name} reel uygulama rayiçleri esas alınmıştır.`)
+                  : (language === "en" ? "*Based on Chamber of Architects 2026 statutory minimum fee standards." :
+                     language === "de" ? "*Basiert auf den offiziellen Honorarrichtlinien der Architektenkammer 2026." :
+                     language === "ar" ? "*وفقاً لمعايير الحد الأدنى للأتعاب المعتمدة لدى نقابة المعماريين 2026." :
+                     `*TMMOB 2026 Mimarlar Odası asgari bedel normları esas alınmıştır.`)}
               </p>
             </div>
 
             <div className={styles.statsRow}>
               <div className={styles.statItem}>
                 <span className={styles.statLabel}>
-                  {domain === "execution" ? "Hesaplanan Yapı Maliyeti:" : "Bakanlık Yaklaşık Mal. (PYM):"}
+                  {domain === "execution" 
+                    ? t("calc_stat_exec_pym", "Hesaplanan Yapı Maliyeti:") 
+                    : t("calc_stat_pym", "Bakanlık Yaklaşık Mal. (PYM):")}
                 </span>
                 <span className={styles.statVal}>{formatCurrencyTL(quoteResult.totalEstimatedCost)}</span>
               </div>
               <div className={styles.statItem}>
-                <span className={styles.statLabel}>Mevzuat Standartı:</span>
+                <span className={styles.statLabel}>{t("calc_stat_norm", "Mevzuat Standartı:")}</span>
                 <span className={styles.statVal} style={{ fontSize: "0.85rem", color: "var(--accent-gold)" }}>
                   {quoteResult.showConservationBoard 
-                    ? "2863 Sayılı Kanun & Koruma Kurulu" 
-                    : (domain === "execution" ? "1. Sınıf Şantiye Şefliği" : "Belediye Ruhsat Normu")}
+                    ? (language === "en" ? "Law No. 2863 & Heritage Board" :
+                       language === "de" ? "Denkmalschutzgesetz Nr. 2863" :
+                       language === "ar" ? "قانون الآثار رقم 2863 ولجان التراث" :
+                       "2863 Sayılı Kanun & Koruma Kurulu")
+                    : (domain === "execution" 
+                        ? (language === "en" ? "Grade A Site Supervision" : language === "de" ? "Klasse A Bauleitung" : language === "ar" ? "إشراف موقعي من الدرجة الأولى" : "1. Sınıf Şantiye Şefliği")
+                        : (language === "en" ? "Municipal Building Permit Norm" : language === "de" ? "Kommunale Baugenehmigungsnorm" : language === "ar" ? "معايير تراخيص البناء البلدية" : "Belediye Ruhsat Normu"))}
                 </span>
               </div>
             </div>
@@ -302,30 +352,65 @@ export default function HomeQuoteTeaser() {
                 <>
                   <div className={styles.featureItem}>
                     <CheckCircle2 size={16} className={styles.checkIcon} />
-                    <span>Anahtar Teslim Şantiye Yönetimi & Fenni Mesuliyet</span>
+                    <span>
+                      {language === "en" ? "Turnkey Site Management & Certified Supervision" :
+                       language === "de" ? "Schlüsselfertige Bauleitung & Technische Aufsicht" :
+                       language === "ar" ? "إدارة موقعية تسليم مفتاح وإشراف فني معتمد" :
+                       "Anahtar Teslim Şantiye Yönetimi & Fenni Mesuliyet"}
+                    </span>
                   </div>
                   <div className={styles.featureItem}>
                     <CheckCircle2 size={16} className={styles.checkIcon} />
-                    <span>ÇŞİDB ve TSE Onaylı 1. Sınıf Malzeme Güvencesi</span>
+                    <span>
+                      {language === "en" ? "1st Class Materials with Ministry & TSE Standards" :
+                       language === "de" ? "Erstklassige Materialien nach TSE- & Behördennorm" :
+                       language === "ar" ? "مواد بناء نخب أول مطابقة للمواصفات القياسية" :
+                       "ÇŞİDB ve TSE Onaylı 1. Sınıf Malzeme Güvencesi"}
+                    </span>
                   </div>
                   <div className={styles.featureItem}>
                     <CheckCircle2 size={16} className={styles.checkIcon} />
-                    <span>Aşamalı Hakediş ve Resmi Şantiye Günlüğü Takibi</span>
+                    <span>
+                      {language === "en" ? "Phased Progress Billing & Official Site Log Tracking" :
+                       language === "de" ? "Stufenweise Abschlagszahlung & Bautagebuch" :
+                       language === "ar" ? "دفعات مرحلية موثقة وسجلات يومية للموقع" :
+                       "Aşamalı Hakediş ve Resmi Şantiye Günlüğü Takibi"}
+                    </span>
                   </div>
                 </>
               ) : (
                 <>
                   <div className={styles.featureItem}>
                     <CheckCircle2 size={16} className={styles.checkIcon} />
-                    <span>3D Lazer Lidar Tarama & Nokta Bulutu Modelleme</span>
+                    <span>
+                      {language === "en" ? "3D LiDAR Laser Scanning & Point Cloud Modeling" :
+                       language === "de" ? "3D-LiDAR-Laserscan & Punktwolkenmodellierung" :
+                       language === "ar" ? "مسح ليزري ثلاثي الأبعاد ونمذجة سحابة النقاط" :
+                       "3D Lazer Lidar Tarama & Nokta Bulutu Modelleme"}
+                    </span>
                   </div>
                   <div className={styles.featureItem}>
                     <CheckCircle2 size={16} className={styles.checkIcon} />
-                    <span>{quoteResult.showConservationBoard ? "Kültür Varlıkları Koruma Kurulu Dosya Yönetimi" : "Belediye Ruhsat & Statik Onay Projeleri"}</span>
+                    <span>
+                      {quoteResult.showConservationBoard 
+                        ? (language === "en" ? "Heritage Protection Board Dossier Management" :
+                           language === "de" ? "Denkmalschutzbehörden-Verfahrensmanagement" :
+                           language === "ar" ? "إدارة ملفات واعتمادات لجان حماية التراث" :
+                           "Kültür Varlıkları Koruma Kurulu Dosya Yönetimi")
+                        : (language === "en" ? "Municipal Licensing & Structural Approval Projects" :
+                           language === "de" ? "Baugenehmigungs- & Statik-Freigabeplanung" :
+                           language === "ar" ? "مخططات التراخيص البلدية والاعتمادات الإنشائية" :
+                           "Belediye Ruhsat & Statik Onay Projeleri")}
+                    </span>
                   </div>
                   <div className={styles.featureItem}>
                     <CheckCircle2 size={16} className={styles.checkIcon} />
-                    <span>Milimetrik Hasar Analizi ve Resmi Rölöve Raporu</span>
+                    <span>
+                      {language === "en" ? "Millimetric Damage Analysis & Measured Survey Report" :
+                       language === "de" ? "Millimetergenaue Schadensanalyse & Bauaufnahme" :
+                       language === "ar" ? "تحليل ميليمتري للأضرار وتقرير رفع معماري رسمي" :
+                       "Milimetrik Hasar Analizi ve Resmi Rölöve Raporu"}
+                    </span>
                   </div>
                 </>
               )}
@@ -334,7 +419,7 @@ export default function HomeQuoteTeaser() {
             <div className={styles.actionBtns}>
               <Link href={`/teklif-al?type=${projectType}`} className={styles.primaryCta}>
                 <Calculator size={18} />
-                <span>Detaylı Rapor & Teklif Al</span>
+                <span>{t("calc_btn_report", "Detaylı Rapor & Teklif Al")}</span>
                 <ArrowRight size={18} />
               </Link>
               
@@ -345,7 +430,7 @@ export default function HomeQuoteTeaser() {
                 className={styles.secondaryCta}
               >
                 <MessageCircle size={17} style={{ color: "#25D366" }} />
-                <span>Bu Hesaplamayı WhatsApp ile Danış</span>
+                <span>{t("calc_btn_whatsapp", "Bu Hesaplamayı WhatsApp ile Danış")}</span>
               </a>
             </div>
           </div>

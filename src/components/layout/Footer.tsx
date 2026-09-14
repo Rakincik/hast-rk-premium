@@ -4,11 +4,49 @@ import Link from "next/link";
 import styles from "./Footer.module.css";
 import { ArrowRight } from "lucide-react";
 import MagneticButton from "../ui/MagneticButton";
-
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function Footer() {
   const { t, language } = useLanguage();
+
+  const getCtaTitle = () => {
+    switch (language) {
+      case "en":
+        return <>Have an Architectural Project?<br /><span className={styles.ctaTitleGold}>Let's Build It Together.</span></>;
+      case "de":
+        return <>Haben Sie ein Denkmalprojekt?<br /><span className={styles.ctaTitleGold}>Lassen Sie es uns gemeinsam verwirklichen.</span></>;
+      case "ar":
+        return <>هل لديك مشروع معماري أو تراثي؟<br /><span className={styles.ctaTitleGold}>دعنا نبنيه معاً بإتقان.</span></>;
+      default:
+        return <>Bir Projeniz mi var?<br /><span className={styles.ctaTitleGold}>Beraber İnşa Edelim.</span></>;
+    }
+  };
+
+  const getServiceName = (type: string) => {
+    switch (type) {
+      case "restoration":
+        return language === "en" ? "Historical Restoration" :
+               language === "de" ? "Denkmalrestaurierung" :
+               language === "ar" ? "الترميم التاريخي" : "Restorasyon";
+      case "survey":
+        return language === "en" ? "Measured Survey (Rölöve)" :
+               language === "de" ? "Bauaufnahme (Rölöve)" :
+               language === "ar" ? "الرفع المعماري والتوثيق" : "Rölöve & Restitüsyon";
+      case "design":
+        return language === "en" ? "Architectural Design" :
+               language === "de" ? "Architekturentwurf" :
+               language === "ar" ? "التصميم المعماري" : "Mimari Tasarım";
+      case "strengthening":
+        return language === "en" ? "Structural Strengthening" :
+               language === "de" ? "Tragwerksverstärkung" :
+               language === "ar" ? "التدعيم الإنشائي" : "Güçlendirme";
+      case "calculator":
+      default:
+        return language === "en" ? "Official Fee Calculator" :
+               language === "de" ? "Gebührenkalkulation" :
+               language === "ar" ? "حاسبة التكاليف الرسمية" : "Asgari Bedel Hesabı";
+    }
+  };
 
   return (
     <footer className={styles.footer}>
@@ -17,15 +55,11 @@ export default function Footer() {
         {/* Massive Call to Action */}
         <div className={styles.ctaSection}>
           <h2 className={styles.ctaTitle}>
-            {language === "en" ? (
-              <>Have an Architectural Project?<br /><span className={styles.ctaTitleGold}>Let's Build It Together.</span></>
-            ) : (
-              <>Bir Projeniz mi var?<br /><span className={styles.ctaTitleGold}>Beraber İnşa Edelim.</span></>
-            )}
+            {getCtaTitle()}
           </h2>
           <MagneticButton>
             <Link href="/iletisim" className={styles.ctaBtn}>
-              {language === "en" ? "Get In Touch With Us" : "Bizimle İletişime Geçin"} <ArrowRight size={20} className={styles.arrowIcon} />
+              {t("footer_contact_cta", "Bizimle İletişime Geçin")} <ArrowRight size={20} className={styles.arrowIcon} />
             </Link>
           </MagneticButton>
         </div>
@@ -40,7 +74,7 @@ export default function Footer() {
           </div>
 
           <div className={styles.column}>
-            <h4 className={styles.colTitle}>{t("footer_quick_links", "Menü")}</h4>
+            <h4 className={styles.colTitle}>{t("footer_quick_links", "Hızlı Menü")}</h4>
             <div className={styles.links}>
               <Link href="/kurumsal" className={styles.link}>{t("nav_about", "Kurumsal")}</Link>
               <Link href="/ekip" className={styles.link}>{t("nav_team", "Ekip")}</Link>
@@ -51,18 +85,18 @@ export default function Footer() {
           </div>
 
           <div className={styles.column}>
-            <h4 className={styles.colTitle}>{t("footer_services", "Hizmetler")}</h4>
+            <h4 className={styles.colTitle}>{t("footer_services", "Hizmetlerimiz")}</h4>
             <div className={styles.links}>
-              <Link href="/hizmetler" className={styles.link}>{language === "en" ? "Historical Restoration" : "Restorasyon"}</Link>
-              <Link href="/hizmetler" className={styles.link}>{language === "en" ? "Measured Survey (Rölöve)" : "Rölöve"}</Link>
-              <Link href="/hizmetler" className={styles.link}>{language === "en" ? "Architectural Design" : "Mimari Tasarım"}</Link>
-              <Link href="/hizmetler" className={styles.link}>{language === "en" ? "Structural Strengthening" : "Güçlendirme"}</Link>
-              <Link href="/teklif-al" className={styles.link}>{language === "en" ? "TMMOB Fee Calculator" : "Asgari Bedel Hesabı"}</Link>
+              <Link href="/hizmetler" className={styles.link}>{getServiceName("restoration")}</Link>
+              <Link href="/hizmetler" className={styles.link}>{getServiceName("survey")}</Link>
+              <Link href="/hizmetler" className={styles.link}>{getServiceName("design")}</Link>
+              <Link href="/hizmetler" className={styles.link}>{getServiceName("strengthening")}</Link>
+              <Link href="/teklif-al" className={styles.link}>{getServiceName("calculator")}</Link>
             </div>
           </div>
 
           <div className={styles.column}>
-            <h4 className={styles.colTitle}>{t("footer_contact_info", "İletişim")}</h4>
+            <h4 className={styles.colTitle}>{t("footer_contact_info", "İletişim & Ofis")}</h4>
             <div className={styles.links}>
               <a href="mailto:info@hasturksm.com" className={styles.link}>info@hasturksm.com</a>
               <a href="tel:+905404278875" className={styles.link}>+90 540 427 88 75</a>

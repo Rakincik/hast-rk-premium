@@ -6,11 +6,20 @@ import { useLanguage } from "@/context/LanguageContext";
 export default function FloatingContactWidget() {
   const { language } = useLanguage();
 
-  const whatsappText = encodeURIComponent(
-    language === "en"
-      ? "Hello, we would like to get information regarding our architectural/restoration project."
-      : "Merhaba, Hastürk Sanat ve Mimarlık ekibiyle projemiz hakkında görüşmek istiyoruz."
-  );
+  const getWhatsappMessage = () => {
+    switch (language) {
+      case "en":
+        return "Hello, we would like to consult with the Hastürk Art & Architecture team regarding our project.";
+      case "de":
+        return "Guten Tag, wir möchten uns mit dem Team von Hastürk Kunst & Architektur bezüglich unseres Projekts beraten lassen.";
+      case "ar":
+        return "مرحباً، نود الاستشارة والتواصل مع فريق هاستورك للفن والعمارة بخصوص مشروعنا المعماري والتراثي.";
+      default:
+        return "Merhaba, Hastürk Sanat ve Mimarlık ekibiyle projemiz hakkında görüşmek istiyoruz.";
+    }
+  };
+
+  const whatsappText = encodeURIComponent(getWhatsappMessage());
 
   return (
     <a
@@ -18,7 +27,7 @@ export default function FloatingContactWidget() {
       target="_blank"
       rel="noopener noreferrer"
       className={styles.whatsappFloat}
-      aria-label="WhatsApp İletişim Hattı: (+90) 540 427 88 75"
+      aria-label="WhatsApp: (+90) 540 427 88 75"
     >
       <div className={styles.tooltip}>
         <span>WhatsApp:</span>

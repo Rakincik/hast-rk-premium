@@ -3,9 +3,12 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import styles from "./FounderNote.module.css";
-import { ArrowRight, Quote } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function FounderNote() {
+  const { t, language } = useLanguage();
+
   return (
     <section className={styles.section}>
       <div className="container">
@@ -29,11 +32,11 @@ export default function FounderNote() {
               <div className={styles.imageBadge}>
                 <div>
                   <span className={styles.badgeName}>Okan HASTÜRK</span>
-                  <span className={styles.badgeRole}>Y. Mimar · Kurucu</span>
+                  <span className={styles.badgeRole}>{t("founder_role", "Y. Mimar · Kurucu")}</span>
                 </div>
                 <div className={styles.badgeExp}>
                   20+
-                  <span>Yıllık Tecrübe</span>
+                  <span>{t("stat_years", "Yıllık Tecrübe")}</span>
                 </div>
               </div>
             </div>
@@ -47,35 +50,45 @@ export default function FounderNote() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <span className={styles.tagline}>Kurucu Mimarın Notu</span>
+            <span className={styles.tagline}>{t("founder_badge", "Kurucu Mimarın Notu")}</span>
 
             <h2 className={styles.quoteTitle}>
-              Tarihe dokunurken yalnızca taşları değil, <br />
-              <span className={styles.goldSpan}>bir medeniyetin hafızasını</span> onarıyoruz.
+              {t("founder_title_1", "Tarihe dokunurken yalnızca taşları değil,")} <br />
+              <span className={styles.goldSpan}>{t("founder_title_2", "bir medeniyetin hafızasını onarıyoruz.")}</span>
             </h2>
 
             <div className={styles.paragraphs}>
               <p>
-                Restorasyon bizim için sıradan bir inşaat faaliyeti değil; geçmişin büyük ustalarıyla çağdaş mühendisliğin ilkeleri arasında kurduğumuz derin bir diyalogdur. 
+                {t("founder_p1", "Restorasyon bizim için sıradan bir inşaat faaliyeti değil; geçmişin büyük ustalarıyla çağdaş mühendisliğin ilkeleri arasında kurduğumuz derin bir diyalogdur.")}
               </p>
 
               <div className={styles.highlightText}>
-                &ldquo;Kültürel mirasımıza duyduğumuz saygı, projelendirmedeki milimetrik hassasiyetimiz ve şantiyedeki usta zanaatkarlığımız başarımızın yegane temelidir.&rdquo;
+                &ldquo;{t("founder_quote", "Kültürel mirasımıza duyduğumuz saygı, projelendirmedeki milimetrik hassasiyetimiz ve şantiyedeki usta zanaatkarlığımız başarımızın yegane temelidir.")}&rdquo;
               </div>
 
               <p>
-                Boğaziçi&apos;nin asırlık ahşap yalılarından Tarihi Yarımada&apos;nın tescilli kagir konaklarına kadar her projede, eserin özgün ruhunu koruyarak geleceğe güvenle aktarmanın gururunu yaşıyoruz.
+                {t("founder_p2", "Boğaziçi'nin asırlık ahşap yalılarından Tarihi Yarımada'nın tescilli kagir konaklarına kadar her projede, eserin özgün ruhunu koruyarak geleceğe güvenle aktarmanın gururunu yaşıyoruz.")}
               </p>
             </div>
 
             <div className={styles.signatureArea}>
               <div className={styles.signatureLockup}>
                 <div className={styles.handwrittenSignature}>Okan Hastürk</div>
-                <span className={styles.architectTitle}>Y. Mimar · Hastürk Sanat ve Mimarlık</span>
+                <span className={styles.architectTitle}>
+                  {language === "en" ? "M. Arch · Hastürk Art & Architecture" :
+                   language === "de" ? "M. Arch · Hastürk Kunst & Architektur" :
+                   language === "ar" ? "معماري أول · هاستورك للفن والعمارة" :
+                   "Y. Mimar · Hastürk Sanat ve Mimarlık"}
+                </span>
               </div>
 
               <Link href="/ekip" className={styles.teamLink}>
-                <span>Uzman Kadromuz</span>
+                <span>
+                  {language === "en" ? "Our Expert Team" :
+                   language === "de" ? "Unser Expertenteam" :
+                   language === "ar" ? "فريق خبرائنا" :
+                   "Uzman Kadromuz"}
+                </span>
                 <ArrowRight size={16} />
               </Link>
             </div>

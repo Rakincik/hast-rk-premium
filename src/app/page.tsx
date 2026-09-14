@@ -112,11 +112,17 @@ export default function Home() {
             >
               {titleText.split(" ").map((word, wIdx) => (
                 <span key={`w1-${wIdx}`} className={styles.heroWord}>
-                  {word.split("").map((char, cIdx) => (
-                    <motion.span key={`c1-${cIdx}`} variants={letterVariants} className={styles.heroChar}>
-                      {char}
+                  {language === "ar" ? (
+                    <motion.span variants={letterVariants} className={styles.heroWord}>
+                      {word}
                     </motion.span>
-                  ))}
+                  ) : (
+                    word.split("").map((char, cIdx) => (
+                      <motion.span key={`c1-${cIdx}`} variants={letterVariants} className={styles.heroChar}>
+                        {char}
+                      </motion.span>
+                    ))
+                  )}
                   <span className={styles.heroSpace}>&nbsp;</span>
                 </span>
               ))}
@@ -131,11 +137,17 @@ export default function Home() {
             >
               {titleSpan.split(" ").map((word, wIdx) => (
                 <span key={`w2-${wIdx}`} className={styles.heroWord}>
-                  {word.split("").map((char, cIdx) => (
-                    <motion.span key={`c2-${cIdx}`} variants={letterVariants} className={styles.heroChar}>
-                      {char}
+                  {language === "ar" ? (
+                    <motion.span variants={letterVariants} className={styles.heroWord}>
+                      {word}
                     </motion.span>
-                  ))}
+                  ) : (
+                    word.split("").map((char, cIdx) => (
+                      <motion.span key={`c2-${cIdx}`} variants={letterVariants} className={styles.heroChar}>
+                        {char}
+                      </motion.span>
+                    ))
+                  )}
                   <span className={styles.heroSpace}>&nbsp;</span>
                 </span>
               ))}
