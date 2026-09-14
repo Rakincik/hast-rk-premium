@@ -1,10 +1,29 @@
 /**
- * TMMOB Mimarlar Odası En Az Bedel ve Hastürk Mimarlık Teklif Hesaplama Motoru
- * Referans: TMMOB Mimarlar Odası "Tek Yapı Ölçeğinde Rölöve, Restitüsyon ve Restorasyon
- * Projeleri Yaklaşık Maliyet Hazırlama Yöntemi" ve 2026 Yapı Yaklaşık Birim Maliyetleri.
+ * TMMOB Mimarlar Odası En Az Bedel, ÇŞİDB 2026 Yapı Yaklaşık Birim Maliyetleri
+ * ve Hastürk Mimarlık Teklif & Fizibilite Hesaplama Motoru
+ * 
+ * - Proje Hizmeti: Mimarlar Odası asgari bedel tarifesi ve şartnameleri odaklı
+ *   * Eski Eser: 2863 Sayılı Kültür ve Tabiat Varlıklarını Koruma Kanunu & Kurul süreçleri
+ *   * Yeni Yapı: İmar mevzuatı ve mimari ruhsat odaklı (Koruma Kurulu hariç)
+ *   * Statik Güçlendirme Projesi: 1.200 TL / m² sabit proje bedeli
+ * 
+ * - Uygulama Hizmeti: Şantiye & anahtar teslim imalat odaklı
+ *   * Tarihi Yapı Restorasyonu: V-C Sınıfı 48.750 × 1.5 = 73.125 TL / m²
+ *   * Yeni Yapı İnşaatı: IV-B 50.850 TL / m² (300m²+) veya III-C 35.100 TL / m² (<300m²)
+ *   * Tadilat & Tamirat: 17.000 TL / m² piyasa rayici
+ *   * Statik Güçlendirme Uygulaması: 26.450 TL / m² (1.5 ile ÇARPILMAZ, ÇŞİDB IV-A liste fiyatı)
  */
 
-export type ProjectType = 'restoration' | 'new_architecture' | 'strengthening';
+export type ServiceDomain = 'project' | 'execution';
+
+export type ProjectType = 
+  | 'restoration'          // Proje: Eski Eser (2863 Sayılı Kanuna Tabi)
+  | 'new_architecture'     // Proje: Yeni Mimari Tasarım & Ruhsat
+  | 'strengthening'        // Proje: Statik Güçlendirme Projesi (1.200 TL/m²)
+  | 'exec_restoration'     // Uygulama: Tarihi Yapı Restorasyon (73.125 TL/m²)
+  | 'exec_new'             // Uygulama: Yeni Yapı İnşaatı (Arsa sorgulamalı)
+  | 'exec_renovation'      // Uygulama: Tadilat & Tamirat (17.000 TL/m²)
+  | 'exec_strengthening';  // Uygulama: Statik Güçlendirme İmalatı (26.450 TL/m²)
 
 export type BuildingMaterial = 'wood' | 'stone_masonry' | 'composite' | 'concrete';
 
@@ -29,12 +48,14 @@ export interface ServiceOption {
 }
 
 export interface QuoteInputs {
+  domain?: ServiceDomain;
   projectType: ProjectType;
   areaSquareMeters: number;
   buildingMaterial: BuildingMaterial;
   heritageStatus: HeritageStatus;
   locationArea: LocationArea;
   selectedServices: string[];
+  hasLand?: 'yes' | 'looking';
 }
 
 export interface BreakdownItem {
@@ -72,20 +93,22 @@ export interface MinistryClassInfo {
   code: string;
   name: string;
   baseUnitCostPerM2: number; // ÇŞİDB Resmi Liste Fiyatı
-  multiplier: number;        // 1.5x Reel Uygulama Katsayısı
-  unitCostPerM2: number;     // 1.5x Uygulama Birim Maliyeti
+  multiplier: number;        // Reel Uygulama Katsayısı
+  unitCostPerM2: number;     // Uygulama / Proje Esas Birim Maliyeti
   officialGazette: string;
   definition: string;
 }
 
 export interface QuoteResult {
-  totalEstimatedCost: number; // Yapı yaklaşık maliyeti
-  tmmobBaseFee: number; // TMMOB Yasal Asgari Taban Bedeli
-  ministryClass: MinistryClassInfo; // Çevre ve Şehircilik Bakanlığı 2026 Tebliği
+  domain: ServiceDomain;
+  totalEstimatedCost: number; // Yapı yaklaşık maliyeti (PYM)
+  tmmobBaseFee: number; // Proje Hizmet Bedeli veya Taban Bedel
+  ministryClass: MinistryClassInfo; // Çevre ve Şehircilik Bakanlığı 2026 Tebliği / Referans
   packageFees: Record<PackageTier, number>;
   paymentPlans: Record<PackageTier, PaymentStage[]>;
   timelineSteps: TimelineStep[];
-  isGrantEligible: boolean;
+  showConservationBoard: boolean; // SADECE Eski Eser ise true
+  isGrantEligible: boolean;       // SADECE 2863 sayılı tescilli eser ise true
   conservationBoard: {
     name: string;
     weeks: string;
@@ -98,12 +121,11 @@ export interface QuoteResult {
     heritageFactor: number;
     locationFactor: number;
   };
-  // Geriye dönük uyumluluk için (ekranda 'Hastürk Öneri' ibaresi kullanılmaz)
   recommendedFee: number;
 }
 
-// 1. Paket Tanımları
-export const PACKAGE_TIERS: Record<PackageTier, PackageDetail> = {
+// 1. Proje Hizmeti İçin Paket Tanımları
+export const PROJECT_PACKAGE_TIERS: Record<PackageTier, PackageDetail> = {
   basic: {
     id: 'basic',
     name: 'Yasal Asgari Ruhsat Paketi',
@@ -145,7 +167,53 @@ export const PACKAGE_TIERS: Record<PackageTier, PackageDetail> = {
   }
 };
 
-// 2. Proje Türlerine Göre Hizmet Listeleri
+// 2. Uygulama Hizmeti İçin Paket Tanımları
+export const EXECUTION_PACKAGE_TIERS: Record<PackageTier, PackageDetail> = {
+  basic: {
+    id: 'basic',
+    name: 'Standart Uygulama & İmalat Paketi',
+    tagline: 'Mevzuata Uygun 1. Sınıf İmalat',
+    multiplier: 1.0,
+    features: [
+      'Onaylı projelere harfiyen uygun şantiye imalatı',
+      'TSE ve CE belgeli 1. kalite yerli yapı malzemeleri',
+      'Temel, kaba inşaat ve taşıyıcı imalat güvencesi',
+      'İş güvenliği ve resmi şantiye defteri yönetimi'
+    ]
+  },
+  comprehensive: {
+    id: 'comprehensive',
+    name: 'Kapsamlı Premium İmalat Paketi',
+    tagline: 'Tavsiye Edilen Yüksek Donatı Standartı',
+    multiplier: 1.20,
+    isPopular: true,
+    features: [
+      'Yüksek enerji sınıfı (A) yalıtım ve cephe detayları',
+      'Özgün malzeme konservasyonu ve hassas el işçiliği',
+      'Haftalık drone & 3D lazer şantiye ilerleme raporu',
+      'Tesisat, akıllı altyapı ve gizli detay çözümleri',
+      'Hastürk Mimarlık uzman mimar kontrollük denetimi'
+    ]
+  },
+  turnkey: {
+    id: 'turnkey',
+    name: 'A+ Lüks Anahtar Teslim Şantiye Paketi',
+    tagline: 'Eksiksiz Lüks Donatı & İskan Güvencesi',
+    multiplier: 1.45,
+    features: [
+      'İthal 1. sınıf kaplama, doğal taş ve lüks ahşap imalatları',
+      'Entegre akıllı ev otomasyonu ve iklimlendirme sistemleri',
+      'Peyzaj düzenlemesi, dış çevre aydınlatma ve çevre duvarları',
+      'Belediye yapı kullanım izin (İskan) dosya takibi',
+      '5 yıl şantiye garanti ve periyodik teknik bakım desteği'
+    ]
+  }
+};
+
+// Geriye dönük uyumluluk
+export const PACKAGE_TIERS = PROJECT_PACKAGE_TIERS;
+
+// 3. Proje Türlerine Göre Hizmet Listeleri
 export const RESTORATION_SERVICES: ServiceOption[] = [
   {
     id: 'laser_scan',
@@ -194,7 +262,7 @@ export const NEW_ARCHITECTURE_SERVICES: ServiceOption[] = [
   {
     id: 'concept',
     name: 'Konsept ve Avan Proje',
-    desc: 'Arsa analizi, fonksiyonel şema, kütle etütleri ve 3D görselleştirme sunumu.',
+    desc: 'İmar çapı analizi, fonksiyonel şema, kütle etütleri ve 3D görselleştirme sunumu.',
     weight: 0.15,
     isRecommended: true
   },
@@ -238,44 +306,197 @@ export const STRENGTHENING_SERVICES: ServiceOption[] = [
     id: 'survey_drawing',
     name: 'Yapı Mevcut Durum Rölövesi',
     desc: 'Taşıyıcı sistem rölövesi, çatlak ve hasar haritalandırması.',
-    weight: 0.30,
+    weight: 0.25,
     isRecommended: true
   },
   {
     id: 'laser_scan',
-    name: '3D Deformasyon ve Sehim Analizi',
-    desc: 'Lazer tarama ile duvar eğrilikleri, oturmalar ve sehimlerin milimetrik tespiti.',
+    name: '3D Deformasyon ve Sehim Taraması',
+    desc: 'Lazer tarama ile kolon/kiriş eğrilikleri, oturmalar ve sehimlerin milimetrik tespiti.',
     weight: 0.20,
     isRecommended: true
   },
   {
     id: 'structural_calc',
     name: 'Statik Performans ve Güçlendirme Projesi',
-    desc: 'Karot/donatı test değerlendirmesi, karbon lif/çelik/enjeksiyon güçlendirme mimari ve statik projesi.',
+    desc: 'Karot test değerlendirmesi, karbon lif (CFRP)/çelik güçlendirme mimari ve statik projesi.',
     weight: 0.40,
     isRecommended: true
   },
   {
-    id: 'conservation_board',
-    name: 'Kurul ve Belediye Onay Süreci',
-    desc: 'Güçlendirme projesinin Anıtlar Kurulu ve ilgili ilçe belediyesi onay takibi.',
+    id: 'municipal_approval',
+    name: 'Belediye & Üniversite Onay Süreci',
+    desc: 'Güçlendirme projesinin yetkili idare ve üniversite heyeti onay takibi.',
     weight: 0.15,
     isRecommended: true
   }
 ];
 
-export function getServicesForType(type: ProjectType): ServiceOption[] {
-  switch (type) {
-    case 'restoration':
-      return RESTORATION_SERVICES;
-    case 'new_architecture':
-      return NEW_ARCHITECTURE_SERVICES;
-    case 'strengthening':
-      return STRENGTHENING_SERVICES;
+// Uygulama Hizmetleri
+export const EXEC_RESTORATION_SERVICES: ServiceOption[] = [
+  {
+    id: 'exec_scaffold',
+    name: '3D Lidar Saha Kurulumu & Koruma İskelesi',
+    desc: 'Güvenlikli dış cephe iskelesi, askıya alma ve koruyucu çatı örtüsü imalatı.',
+    weight: 0.15,
+    isRecommended: true
+  },
+  {
+    id: 'exec_conservation',
+    name: 'Özgün Taş, Ahşap & Horasan Konservasyonu',
+    desc: 'Tarihi doku temizliği, enjeksiyon sağlamlaştırma ve aslına uygun malzeme tamiri.',
+    weight: 0.35,
+    isRecommended: true
+  },
+  {
+    id: 'exec_structure',
+    name: 'Taşıyıcı Karkas & Çatı Rekonstrüksiyonu',
+    desc: 'Geleneksel ahşap bindirme, bağdadi sıva ve kurşun/kenet çatı kaplama imalatı.',
+    weight: 0.30,
+    isRecommended: true
+  },
+  {
+    id: 'exec_supervision',
+    name: 'Kurul Onaylı Şantiye Yönetimi & Fenni Mesuliyet',
+    desc: 'Koruma Kurulu ara denetimleri, hakediş raporları ve restorasyon iskan teslimi.',
+    weight: 0.20,
+    isRecommended: true
+  }
+];
+
+export const EXEC_NEW_SERVICES: ServiceOption[] = [
+  {
+    id: 'exec_substructure',
+    name: 'Hafriyat, Temel & Kaba İnşaat',
+    desc: 'Radye temel, su yalıtımı, C35/40 hazır beton ve B420C çelik taşıyıcı karkas.',
+    weight: 0.35,
+    isRecommended: true
+  },
+  {
+    id: 'exec_facade',
+    name: 'Dış Cephe & Yalıtım Sistemleri',
+    desc: 'Taş yünü mantolama, doğal taş/kompozit cephe ve alüminyum doğrama cam sistemleri.',
+    weight: 0.25,
+    isRecommended: true
+  },
+  {
+    id: 'exec_mep_install',
+    name: 'Mekanik & Elektrik Akıllı Tesisat',
+    desc: 'Yerden ısıtma, VRF klima, akıllı ev altyapısı ve yangın güvenlik sistemleri.',
+    weight: 0.20,
+    isRecommended: true
+  },
+  {
+    id: 'exec_finishing',
+    name: 'İnce Yapı & Anahtar Teslim İç Mimari',
+    desc: '1. sınıf parke, seramik, lake kapı, özel mutfak/banyo imalatları ve boya.',
+    weight: 0.20,
+    isRecommended: true
+  }
+];
+
+export const EXEC_RENOVATION_SERVICES: ServiceOption[] = [
+  {
+    id: 'reno_demolition',
+    name: 'Kırım, Söküm & Moloz Nakliyatı',
+    desc: 'Mevcut kaplamaların sökülmesi, bölme duvar revizyonu ve moloz bertarafı.',
+    weight: 0.15,
+    isRecommended: true
+  },
+  {
+    id: 'reno_piping',
+    name: 'Sıhhi & Elektrik Tesisat Sıfırlama',
+    desc: 'Pex borulama, sigorta kutusu, zayıf akım kablolama ve sıhhi altyapı yenileme.',
+    weight: 0.25,
+    isRecommended: true
+  },
+  {
+    id: 'reno_flooring',
+    name: 'Zemin Kaplama, Seramik & Parke',
+    desc: 'Şap tesviyesi, porselen seramik ve lüks lamine/masif parke uygulamaları.',
+    weight: 0.20,
+    isRecommended: true
+  },
+  {
+    id: 'reno_ceiling_wall',
+    name: 'Alçıpan Tavan, Gizli Işık & İtalyan Boya',
+    desc: 'Akustik asma tavan, modern aydınlatma cepleri ve premium duvar kaplamaları.',
+    weight: 0.20,
+    isRecommended: true
+  },
+  {
+    id: 'reno_joinery',
+    name: 'Mutfak, Banyo & Özel Sabit Mobilya',
+    desc: 'Akrilik/porselen tezgah, gömme dolaplar, lake paneller ve armatür montajı.',
+    weight: 0.20,
+    isRecommended: true
+  }
+];
+
+export const EXEC_STRENGTHENING_SERVICES: ServiceOption[] = [
+  {
+    id: 'exec_str_cfrp',
+    name: 'Karbon Lif (CFRP) & Çelik Mantolama',
+    desc: 'Kolon ve kirişlerin yüksek mukavemetli karbon polimer ve çelik kafesle sarılması.',
+    weight: 0.40,
+    isRecommended: true
+  },
+  {
+    id: 'exec_str_epoxy',
+    name: 'Epoksi Enjeksiyon & Çatlak Dikimi',
+    desc: 'Taşıyıcı elemanlardaki çatlakların yüksek basınçlı epoksi reçine ile doldurulması.',
+    weight: 0.20,
+    isRecommended: true
+  },
+  {
+    id: 'exec_str_foundation',
+    name: 'Temel Genişletme & Mini Kazık',
+    desc: 'Radye temel takviyesi, zemin ankrajı ve taşıyıcı perde duvar betonarmesi.',
+    weight: 0.25,
+    isRecommended: true
+  },
+  {
+    id: 'exec_str_qa',
+    name: 'Şantiye Kalite Kontrol & Karot Doğrulama',
+    desc: 'İmalat sonrası tahribatsız testler, ultrasonik ölçümler ve onaylı mukavemet raporu.',
+    weight: 0.15,
+    isRecommended: true
+  }
+];
+
+export function getServicesForType(type: ProjectType, domain: ServiceDomain = 'project'): ServiceOption[] {
+  if (domain === 'execution') {
+    switch (type) {
+      case 'exec_restoration':
+      case 'restoration':
+        return EXEC_RESTORATION_SERVICES;
+      case 'exec_renovation':
+        return EXEC_RENOVATION_SERVICES;
+      case 'exec_strengthening':
+      case 'strengthening':
+        return EXEC_STRENGTHENING_SERVICES;
+      case 'exec_new':
+      case 'new_architecture':
+      default:
+        return EXEC_NEW_SERVICES;
+    }
+  } else {
+    switch (type) {
+      case 'restoration':
+      case 'exec_restoration':
+        return RESTORATION_SERVICES;
+      case 'strengthening':
+      case 'exec_strengthening':
+        return STRENGTHENING_SERVICES;
+      case 'new_architecture':
+      case 'exec_new':
+      default:
+        return NEW_ARCHITECTURE_SERVICES;
+    }
   }
 }
 
-// 3. Katsayı Tabloları
+// 4. Katsayı Tabloları
 export const MATERIAL_FACTORS: Record<BuildingMaterial, { label: string; factor: number; desc: string }> = {
   wood: {
     label: 'Ahşap Karkas / Geleneksel Ahşap',
@@ -368,9 +589,46 @@ export const LOCATION_FACTORS: Record<LocationArea, {
   }
 };
 
-// 4. Aşamalı Ödeme Planı Hesaplayıcı (%25, %35, %25, %15)
-export function calculatePaymentPlan(totalFee: number, projectType: ProjectType): PaymentStage[] {
-  if (projectType === 'restoration') {
+// 5. Aşamalı Ödeme Planı Hesaplayıcı (%25, %35, %25, %15)
+export function calculatePaymentPlan(
+  totalFee: number, 
+  projectType: ProjectType,
+  domain: ServiceDomain = 'project'
+): PaymentStage[] {
+  if (domain === 'execution') {
+    return [
+      {
+        step: 1,
+        percent: 25,
+        title: 'Sözleşme & Şantiye Mobilizasyonu',
+        amount: Math.round(totalFee * 0.25),
+        desc: 'Sözleşme imza aşaması, şantiye kurulumu, malzeme siparişleri ve ilk etap tedariki'
+      },
+      {
+        step: 2,
+        percent: 35,
+        title: 'Kaba Yapı / Taşıyıcı & Kırım İmalatı',
+        amount: Math.round(totalFee * 0.35),
+        desc: 'Taşıyıcı sistem, kaba inşaat, kırım/söküm veya güçlendirme imalatlarının tamamlanması'
+      },
+      {
+        step: 3,
+        percent: 25,
+        title: 'İnce İşçilik & Tesisat Donatısı',
+        amount: Math.round(totalFee * 0.25),
+        desc: 'Elektrik/mekanik tesisat sıfırlama, zemin kaplamaları, sıva, boya ve sabit doğramalar'
+      },
+      {
+        step: 4,
+        percent: 15,
+        title: 'Geçici Kabul & Anahtar Teslim',
+        amount: Math.round(totalFee * 0.15),
+        desc: 'Eksiklerin giderilmesi, şantiye temizliği, resmi kabul ve anahtar teslimi'
+      }
+    ];
+  }
+
+  if (projectType === 'restoration' || projectType === 'exec_restoration') {
     return [
       {
         step: 1,
@@ -399,6 +657,37 @@ export function calculatePaymentPlan(totalFee: number, projectType: ProjectType)
         title: 'Kurul Onayı & Ruhsat Alımı',
         amount: Math.round(totalFee * 0.15),
         desc: 'Bölge Kurulu onay kararı ve nihai uygulama ruhsatının teslimi'
+      }
+    ];
+  } else if (projectType === 'strengthening' || projectType === 'exec_strengthening') {
+    return [
+      {
+        step: 1,
+        percent: 25,
+        title: 'Sözleşme & Saha Rölövesi',
+        amount: Math.round(totalFee * 0.25),
+        desc: 'Taşıyıcı sistem tespiti, karot numune koordinasyonu ve 3D sehim analizi'
+      },
+      {
+        step: 2,
+        percent: 35,
+        title: 'Statik Hesap & Güçlendirme Modeli',
+        amount: Math.round(totalFee * 0.35),
+        desc: '3D sonlu elemanlar analizi ve güçlendirme mimari sistem çözümleri'
+      },
+      {
+        step: 3,
+        percent: 25,
+        title: 'Uygulama Paftaları & Detay Çizimleri',
+        amount: Math.round(totalFee * 0.25),
+        desc: 'Karbon lif/çelik montaj paftaları, metraj keşfi ve onay dosyasının hazırlanması'
+      },
+      {
+        step: 4,
+        percent: 15,
+        title: 'Resmi Onay & Ruhsat Dosyası',
+        amount: Math.round(totalFee * 0.15),
+        desc: 'İlgili idare veya üniversite onaylı nihai projenin teslimi'
       }
     ];
   } else {
@@ -435,13 +724,100 @@ export function calculatePaymentPlan(totalFee: number, projectType: ProjectType)
   }
 }
 
-// 5. Süreç Zaman Çizelgesi (Gantt)
+// 6. Süreç Zaman Çizelgesi (Gantt)
 export function getTimelineSteps(
   projectType: ProjectType,
-  hasBoard: boolean,
-  boardDurationWeeks: string
+  domain: ServiceDomain = 'project',
+  hasBoard: boolean = false,
+  boardDurationWeeks: string = '8 - 12 Hafta'
 ): TimelineStep[] {
-  if (projectType === 'restoration') {
+  if (domain === 'execution') {
+    if (projectType === 'exec_renovation') {
+      return [
+        {
+          step: 1,
+          weeks: '1. Hafta',
+          title: 'Kırım, Söküm & Moloz Tahliyesi',
+          desc: 'Tüm eski kaplamaların sökülmesi ve şantiyenin imalata hazır hale getirilmesi.'
+        },
+        {
+          step: 2,
+          weeks: '2 - 3. Hafta',
+          title: 'Tesisat Sıfırlama & Altyapı',
+          desc: 'Elektrik kablolama, pex borulama, klima hatları ve ses/ısı yalıtımı.'
+        },
+        {
+          step: 3,
+          weeks: '4 - 5. Hafta',
+          title: 'Zemin, Tavan & İnce İşçilik',
+          desc: 'Alçıpan tavan, şap, seramik kaplama ve duvar boyası uygulamaları.'
+        },
+        {
+          step: 4,
+          weeks: '6 - 8. Hafta',
+          title: 'Sabit Mobilya & Anahtar Teslim',
+          desc: 'Mutfak, banyo dolapları, kapılar, armatür montajı ve temizlik teslimi.'
+        }
+      ];
+    } else if (projectType === 'exec_strengthening') {
+      return [
+        {
+          step: 1,
+          weeks: '1 - 2. Hafta',
+          title: 'Yüzey Hazırlığı & Raspa',
+          desc: 'Taşıyıcı kolon/kiriş yüzeylerinin pürüzlendirilmesi ve çatlak tespiti.'
+        },
+        {
+          step: 2,
+          weeks: '3 - 6. Hafta',
+          title: 'Karbon Lif & Çelik Mantolama',
+          desc: 'CFRP polimer sargı, epoksi enjeksiyonu ve çelik kafes ankraj imalatları.'
+        },
+        {
+          step: 3,
+          weeks: '7 - 9. Hafta',
+          title: 'Temel Tahkimatı & Enjeksiyon',
+          desc: 'Temel radye genişletmesi, perde duvar imalatı ve korozyon önleyici kaplama.'
+        },
+        {
+          step: 4,
+          weeks: '10 - 12. Hafta',
+          title: 'Kalite Kontrol & Ruhsat İskan',
+          desc: 'Tahribatsız testler, resmi fenni mesuliyet onayı ve güvenli teslim.'
+        }
+      ];
+    } else {
+      return [
+        {
+          step: 1,
+          weeks: '1 - 3. Hafta',
+          title: 'Şantiye Kurulumu & Hafriyat / İskele',
+          desc: 'Şantiye mobilizasyonu, iş güvenliği önlemleri ve temel/iskele hazırlığı.'
+        },
+        {
+          step: 2,
+          weeks: '4 - 10. Hafta',
+          title: 'Kaba Yapı & Taşıyıcı İmalatlar',
+          desc: 'Temel, betonarme/ahşap karkas, duvar örme ve çatı strüktürünün tamamlanması.'
+        },
+        {
+          step: 3,
+          weeks: '11 - 18. Hafta',
+          title: 'Dış Cephe, Yalıtım & Tesisat',
+          desc: 'Doğal taş/ahşap cephe kaplamaları, su/ısı yalıtımı ve MEP tesisat çekimi.'
+        },
+        {
+          step: 4,
+          weeks: '19 - 24. Hafta',
+          title: 'İç Mimari & İskan Teslimi',
+          desc: 'Lüks iç mimari imalatları, çevre peyzajı ve iskan/kabul teslimi.'
+        }
+      ];
+    }
+  }
+
+  // PROJE HİZMETİ
+  if (projectType === 'restoration' || projectType === 'exec_restoration') {
     return [
       {
         step: 1,
@@ -463,9 +839,36 @@ export function getTimelineSteps(
       },
       {
         step: 4,
-        weeks: hasBoard ? boardDurationWeeks : '4 - 6 Hafta',
+        weeks: hasBoard ? boardDurationWeeks : '8 - 12 Hafta',
         title: 'Koruma Bölge Kurulu İnceleme & Onay',
-        desc: 'Yetkili Anıtlar Kurulu raportör incelemesi, komisyon görüşü ve onaylı restorasyon ruhsatının çıkması.'
+        desc: '2863 sayılı kanun kapsamında yetkili Anıtlar Kurulu raportör incelemesi ve onaylı proje ruhsatı.'
+      }
+    ];
+  } else if (projectType === 'strengthening' || projectType === 'exec_strengthening') {
+    return [
+      {
+        step: 1,
+        weeks: '1 - 2. Hafta',
+        title: 'Saha Rölövesi & Karot Analizi',
+        desc: 'Mevcut bina taşıyıcı sistem tespiti, donatı taraması ve beton dayanım testleri.'
+      },
+      {
+        step: 2,
+        weeks: '3 - 4. Hafta',
+        title: '3D Deprem Performans Modeli',
+        desc: 'Sonlu elemanlar yöntemiyle binanın dinamik deprem davranışı ve riskli katların tespiti.'
+      },
+      {
+        step: 3,
+        weeks: '5 - 6. Hafta',
+        title: 'Statik Güçlendirme Projesi',
+        desc: 'Karbon lif ve çelik mantolama sistem detaylarının çizilmesi ve metraj cetvelleri.'
+      },
+      {
+        step: 4,
+        weeks: '7 - 8. Hafta',
+        title: 'Belediye / Üniversite Onayı',
+        desc: 'Resmi statik güçlendirme proje onayının alınması ve ihale dosyasının teslimi.'
       }
     ];
   } else {
@@ -498,9 +901,10 @@ export function getTimelineSteps(
   }
 }
 
-// 6. Hesaplama Motoru Fonksiyonu
+// 7. Ana Teklif Hesaplama Motoru
 export function calculateQuote(inputs: QuoteInputs): QuoteResult {
   const {
+    domain = 'project',
     projectType,
     areaSquareMeters,
     buildingMaterial,
@@ -512,114 +916,209 @@ export function calculateQuote(inputs: QuoteInputs): QuoteResult {
   // Güvenlik sınırları (min 20m², max 10.000m²)
   const clampedArea = Math.max(20, Math.min(10000, areaSquareMeters || 100));
 
-  // Çevre, Şehircilik ve İklim Değişikliği Bakanlığı 2026 Yılı Yapı Yaklaşık Birim Maliyetleri Tebliği
-  // Resmî Gazete: 3 Şubat 2026 / Sayı: 33157 (1.5x Reel Uygulama Birim Fiyatı ile Entegre)
-  const APPLICATION_PRICE_MULTIPLIER = 1.5;
-  let ministryClass: MinistryClassInfo;
-  let serviceFeeRate = 0.055; // Mimarlık hizmet bedeli oranı
-
-  if (projectType === 'restoration') {
-    // V. Sınıf (C) Grubu - Madde 5: "Tarihi eser niteliğinde olup restore edilerek veya yıkılarak aslına uygun olarak yapılan yapılar"
-    // Liste: 48.750,00 TL/m² -> 1.5x Uygulama: 73.125,00 TL/m²
-    const baseCost = 48750;
-    ministryClass = {
-      code: 'V-C',
-      name: 'V. Sınıf (C) Grubu Yapılar',
-      baseUnitCostPerM2: baseCost,
-      multiplier: APPLICATION_PRICE_MULTIPLIER,
-      unitCostPerM2: Math.round(baseCost * APPLICATION_PRICE_MULTIPLIER), // 73.125,00 TL/m²
-      officialGazette: 'Resmî Gazete: 3 Şubat 2026 / Sayı: 33157',
-      definition: 'Tarihi eser niteliğinde olup restore edilerek veya yıkılarak aslına uygun olarak yapılan yapılar'
-    };
-    serviceFeeRate = 0.055; // Restorasyon tam hizmet normu
-  } else if (projectType === 'strengthening') {
-    // IV. Sınıf (A) Grubu - Güçlendirme & Taşıyıcı Onarım
-    // Liste: 26.450,00 TL/m² -> 1.5x Uygulama: 39.675,00 TL/m²
-    const baseCost = 26450;
-    ministryClass = {
-      code: 'IV-A',
-      name: 'IV. Sınıf (A) Grubu Yapılar',
-      baseUnitCostPerM2: baseCost,
-      multiplier: APPLICATION_PRICE_MULTIPLIER,
-      unitCostPerM2: Math.round(baseCost * APPLICATION_PRICE_MULTIPLIER), // 39.675,00 TL/m²
-      officialGazette: 'Resmî Gazete: 3 Şubat 2026 / Sayı: 33157',
-      definition: 'Taşıyıcı sistem rölövesi, sehim analizi ve statik güçlendirme projeleri'
-    };
-    serviceFeeRate = 0.050;
-  } else {
-    // new_architecture
-    if (clampedArea >= 300) {
-      // IV. Sınıf (B) Grubu - Madde 10: "Müstakil ve/veya ikiz konutlar (500 m² ve üzeri yapılar, lüks villalar)"
-      // Liste: 33.900,00 TL/m² -> 1.5x Uygulama: 50.850,00 TL/m²
-      const baseCost = 33900;
-      ministryClass = {
-        code: 'IV-B',
-        name: 'IV. Sınıf (B) Grubu Yapılar',
-        baseUnitCostPerM2: baseCost,
-        multiplier: APPLICATION_PRICE_MULTIPLIER,
-        unitCostPerM2: Math.round(baseCost * APPLICATION_PRICE_MULTIPLIER), // 50.850,00 TL/m²
-        officialGazette: 'Resmî Gazete: 3 Şubat 2026 / Sayı: 33157',
-        definition: 'Müstakil lüks konutlar, villalar ve özellikli mimari yapılar'
-      };
-    } else {
-      // III. Sınıf (C) Grubu - Madde 10: "Müstakil ve/veya ikiz konutlar (200-500 m²)"
-      // Liste: 23.400,00 TL/m² -> 1.5x Uygulama: 35.100,00 TL/m²
-      const baseCost = 23400;
-      ministryClass = {
-        code: 'III-C',
-        name: 'III. Sınıf (C) Grubu Yapılar',
-        baseUnitCostPerM2: baseCost,
-        multiplier: APPLICATION_PRICE_MULTIPLIER,
-        unitCostPerM2: Math.round(baseCost * APPLICATION_PRICE_MULTIPLIER), // 35.100,00 TL/m²
-        officialGazette: 'Resmî Gazete: 3 Şubat 2026 / Sayı: 33157',
-        definition: 'Müstakil konutlar, bağ/yayla evleri ve standart villa projeleri'
-      };
-    }
-    serviceFeeRate = 0.045;
-  }
-
-  // Alan büyüdükçe orantılı ölçek indirimi (TMMOB logaritmik ölçekleme mantığı)
-  if (clampedArea > 1000) {
-    serviceFeeRate *= 0.88;
-  } else if (clampedArea > 500) {
-    serviceFeeRate *= 0.94;
-  }
-
   const matFactor = MATERIAL_FACTORS[buildingMaterial]?.factor || 1.0;
   const herFactor = HERITAGE_FACTORS[heritageStatus]?.factor || 1.0;
   const locFactor = LOCATION_FACTORS[locationArea]?.factor || 1.0;
 
-  // Yapı Yaklaşık Maliyeti (PYM) = Alan × Bakanlık Birim Fiyatı × Malzeme Çarpanı
-  const totalEstimatedCost = clampedArea * ministryClass.unitCostPerM2 * matFactor;
+  let ministryClass: MinistryClassInfo;
+  let totalEstimatedCost = 0; // Yapı yaklaşık maliyeti
+  let baseCalculatedFee = 0;   // Temel proje bedeli veya uygulama maliyeti
+  let showConservationBoard = false;
+  let isGrantEligible = false;
 
-  // TMMOB Asgari Tam Hizmet Taban Bedeli
-  const fullTmmobBase = totalEstimatedCost * serviceFeeRate * herFactor * locFactor;
+  // Çevre, Şehircilik ve İklim Değişikliği Bakanlığı 2026 Tebliği (Resmî Gazete 33157)
+  const APPLICATION_PRICE_MULTIPLIER = 1.5;
 
-  // Seçilen hizmetlerin ağırlık toplamı
-  const availableServices = getServicesForType(projectType);
+  if (domain === 'execution') {
+    // === UYGULAMA / İNŞAAT HİZMETİ ===
+    if (projectType === 'exec_restoration' || projectType === 'restoration') {
+      // 1. Tarihi Yapı Restorasyon Uygulaması: 48.750 * 1.5 = 73.125 TL/m²
+      const baseCost = 48750;
+      const unitCost = Math.round(baseCost * APPLICATION_PRICE_MULTIPLIER); // 73.125 TL
+      ministryClass = {
+        code: 'V-C',
+        name: 'V. Sınıf (C) Grubu — Tarihi Eser Restorasyon',
+        baseUnitCostPerM2: baseCost,
+        multiplier: APPLICATION_PRICE_MULTIPLIER,
+        unitCostPerM2: unitCost,
+        officialGazette: 'Resmî Gazete: 3 Şubat 2026 / Sayı: 33157',
+        definition: '2863 Sayılı Kültür ve Tabiat Varlıklarını Koruma Kanununa tabi tescilli eser restorasyon uygulaması'
+      };
+      showConservationBoard = true;
+      isGrantEligible = heritageStatus === 'grade_1' || heritageStatus === 'grade_2';
+      totalEstimatedCost = clampedArea * unitCost * matFactor;
+      baseCalculatedFee = totalEstimatedCost;
+    } else if (projectType === 'exec_renovation') {
+      // 2. Tadilat & Tamirat Uygulaması: Sabit 17.000 TL / m²
+      const unitCost = 17000;
+      ministryClass = {
+        code: 'TADİLAT',
+        name: 'Kapsamlı İç Mekan Tadilat & Tamirat',
+        baseUnitCostPerM2: unitCost,
+        multiplier: 1.0,
+        unitCostPerM2: unitCost,
+        officialGazette: 'Hastürk Mimarlık 2026 Piyasa Rayici',
+        definition: 'İç mekan yenileme, tesisat, ıslak hacimler, çatı ve ince işçilik uygulaması'
+      };
+      showConservationBoard = false;
+      isGrantEligible = false;
+      totalEstimatedCost = clampedArea * unitCost;
+      baseCalculatedFee = totalEstimatedCost;
+    } else if (projectType === 'exec_strengthening') {
+      // 3. Statik Güçlendirme Uygulaması: 1.5 ile ÇARPILMAZ! ÇŞİDB IV-A: 26.450 TL / m²
+      const unitCost = 26450;
+      ministryClass = {
+        code: 'IV-A',
+        name: 'IV. Sınıf (A) Grubu — Taşıyıcı Güçlendirme İmalatı',
+        baseUnitCostPerM2: unitCost,
+        multiplier: 1.0, // 1.5 ile ÇARPILMIYOR
+        unitCostPerM2: unitCost,
+        officialGazette: 'Resmî Gazete: 3 Şubat 2026 / Sayı: 33157',
+        definition: 'Yapısal güçlendirme, karbon lif (CFRP), çelik mantolama ve temel tahkimat imalatı'
+      };
+      showConservationBoard = false;
+      isGrantEligible = false;
+      totalEstimatedCost = clampedArea * unitCost;
+      baseCalculatedFee = totalEstimatedCost;
+    } else {
+      // 4. exec_new (Yeni Yapı İnşaat Uygulaması)
+      if (clampedArea >= 300) {
+        const baseCost = 33900;
+        const unitCost = Math.round(baseCost * APPLICATION_PRICE_MULTIPLIER); // 50.850 TL
+        ministryClass = {
+          code: 'IV-B',
+          name: 'IV. Sınıf (B) Grubu — Müstakil Villa / Lüks Konut',
+          baseUnitCostPerM2: baseCost,
+          multiplier: APPLICATION_PRICE_MULTIPLIER,
+          unitCostPerM2: unitCost,
+          officialGazette: 'Resmî Gazete: 3 Şubat 2026 / Sayı: 33157',
+          definition: 'Müstakil lüks konut ve villalar için anahtar teslim inşaat uygulaması'
+        };
+        totalEstimatedCost = clampedArea * unitCost * matFactor;
+      } else {
+        const baseCost = 23400;
+        const unitCost = Math.round(baseCost * APPLICATION_PRICE_MULTIPLIER); // 35.100 TL
+        ministryClass = {
+          code: 'III-C',
+          name: 'III. Sınıf (C) Grubu — Müstakil Konut',
+          baseUnitCostPerM2: baseCost,
+          multiplier: APPLICATION_PRICE_MULTIPLIER,
+          unitCostPerM2: unitCost,
+          officialGazette: 'Resmî Gazete: 3 Şubat 2026 / Sayı: 33157',
+          definition: 'Müstakil konut ve standart villalar için anahtar teslim inşaat uygulaması'
+        };
+        totalEstimatedCost = clampedArea * unitCost * matFactor;
+      }
+      showConservationBoard = false;
+      isGrantEligible = false;
+      baseCalculatedFee = totalEstimatedCost;
+    }
+  } else {
+    // === PROJE HİZMETİ (MİMARLAR ODASI ODAKLI) ===
+    if (projectType === 'restoration' || projectType === 'exec_restoration') {
+      // 1. Eski Eser (2863 Sayılı Kanuna Tabi Yapılar)
+      const baseCost = 48750;
+      const unitCost = Math.round(baseCost * APPLICATION_PRICE_MULTIPLIER); // 73.125 TL
+      ministryClass = {
+        code: 'V-C',
+        name: 'V. Sınıf (C) Grubu — 2863 Sayılı Kanuna Tabi Eserler',
+        baseUnitCostPerM2: baseCost,
+        multiplier: APPLICATION_PRICE_MULTIPLIER,
+        unitCostPerM2: unitCost,
+        officialGazette: 'Resmî Gazete: 3 Şubat 2026 / Sayı: 33157',
+        definition: '2863 Sayılı Kültür ve Tabiat Varlıklarını Koruma Kanununa tabi tescilli yapılar'
+      };
+      showConservationBoard = true;
+      isGrantEligible = heritageStatus === 'grade_1' || heritageStatus === 'grade_2';
+
+      totalEstimatedCost = clampedArea * unitCost * matFactor;
+      let serviceFeeRate = 0.055; // TMMOB Restorasyon asgari hizmet oranı
+      if (clampedArea > 1000) serviceFeeRate *= 0.88;
+      else if (clampedArea > 500) serviceFeeRate *= 0.94;
+
+      const fullTmmobBase = totalEstimatedCost * serviceFeeRate * herFactor * locFactor;
+      baseCalculatedFee = fullTmmobBase;
+    } else if (projectType === 'strengthening' || projectType === 'exec_strengthening') {
+      // 2. Statik Güçlendirme Projesi: Metrekaresi net 1.200 TL!
+      const projectUnitCost = 1200;
+      ministryClass = {
+        code: 'GÜÇLENDİRME-PRJ',
+        name: 'Statik Güçlendirme & Deprem Performans Projesi',
+        baseUnitCostPerM2: projectUnitCost,
+        multiplier: 1.0,
+        unitCostPerM2: projectUnitCost,
+        officialGazette: 'TMMOB İMO / Mimarlar Odası 2026 Normu',
+        definition: 'Taşıyıcı sistem analizi, deprem tahkiki ve onaylı statik güçlendirme uygulama projesi (1.200 TL/m²)'
+      };
+      showConservationBoard = false;
+      isGrantEligible = false;
+
+      // Yapı inşaat yaklaşık maliyeti (26.450 TL/m²)
+      totalEstimatedCost = clampedArea * 26450;
+      // Proje bedeli doğrudan m² × 1.200 TL
+      baseCalculatedFee = clampedArea * projectUnitCost;
+    } else {
+      // 3. Yeni Yapı (Mimari Tasarım, Ruhsat & Avan Proje) - KORUMA KURULU GELMEZ!
+      let baseCost = 23400;
+      let classCode = 'III-C';
+      let className = 'III. Sınıf (C) Grubu — Müstakil Konut';
+      let defText = 'Müstakil konut ve standart villalar için mimari proje ve ruhsat dosyası';
+
+      if (clampedArea >= 300) {
+        baseCost = 33900;
+        classCode = 'IV-B';
+        className = 'IV. Sınıf (B) Grubu — Lüks Konut / Villa';
+        defText = 'Müstakil lüks konutlar ve özellikli villalar için mimari proje ve ruhsat dosyası';
+      }
+
+      const unitCost = Math.round(baseCost * APPLICATION_PRICE_MULTIPLIER);
+      ministryClass = {
+        code: classCode,
+        name: className,
+        baseUnitCostPerM2: baseCost,
+        multiplier: APPLICATION_PRICE_MULTIPLIER,
+        unitCostPerM2: unitCost,
+        officialGazette: 'Resmî Gazete: 3 Şubat 2026 / Sayı: 33157',
+        definition: defText
+      };
+      showConservationBoard = false;
+      isGrantEligible = false;
+
+      totalEstimatedCost = clampedArea * unitCost * matFactor;
+      let serviceFeeRate = 0.045;
+      if (clampedArea > 1000) serviceFeeRate *= 0.88;
+      else if (clampedArea > 500) serviceFeeRate *= 0.94;
+
+      const fullTmmobBase = totalEstimatedCost * serviceFeeRate * locFactor;
+      baseCalculatedFee = fullTmmobBase;
+    }
+  }
+
+  // Seçilen hizmetlerin ağırlık katsayısı
+  const availableServices = getServicesForType(projectType, domain);
   const selectedServiceList = availableServices.filter(s => selectedServices.includes(s.id));
-  
   const totalWeightSelected = selectedServiceList.reduce((acc, s) => acc + s.weight, 0);
-  const normalizedWeight = Math.max(0.2, totalWeightSelected);
+  const normalizedWeight = Math.max(0.2, totalWeightSelected || 1.0);
 
-  // Nihai TMMOB Yasal Taban Bedeli
-  const tmmobBaseFee = Math.round(fullTmmobBase * normalizedWeight);
+  // Nihai Taban Bedel
+  const tmmobBaseFee = Math.round(baseCalculatedFee * normalizedWeight);
 
-  // 3 Kademeli Paket Fiyatları
+  // Paket çarpanları
+  const activePackageTiers = domain === 'execution' ? EXECUTION_PACKAGE_TIERS : PROJECT_PACKAGE_TIERS;
   const packageFees: Record<PackageTier, number> = {
     basic: tmmobBaseFee,
-    comprehensive: Math.round(tmmobBaseFee * PACKAGE_TIERS.comprehensive.multiplier),
-    turnkey: Math.round(tmmobBaseFee * PACKAGE_TIERS.turnkey.multiplier)
+    comprehensive: Math.round(tmmobBaseFee * activePackageTiers.comprehensive.multiplier),
+    turnkey: Math.round(tmmobBaseFee * activePackageTiers.turnkey.multiplier)
   };
 
-  // Her paket için aşamalı ödeme planı
+  // Ödeme Planları
   const paymentPlans: Record<PackageTier, PaymentStage[]> = {
-    basic: calculatePaymentPlan(packageFees.basic, projectType),
-    comprehensive: calculatePaymentPlan(packageFees.comprehensive, projectType),
-    turnkey: calculatePaymentPlan(packageFees.turnkey, projectType)
+    basic: calculatePaymentPlan(packageFees.basic, projectType, domain),
+    comprehensive: calculatePaymentPlan(packageFees.comprehensive, projectType, domain),
+    turnkey: calculatePaymentPlan(packageFees.turnkey, projectType, domain)
   };
 
-  // Lokasyon / Koruma Kurulu Bilgisi
+  // Lokasyon ve Kurul Bilgisi
   const locInfo = LOCATION_FACTORS[locationArea] || LOCATION_FACTORS.istanbul_fatih;
   const conservationBoard = {
     name: locInfo.boardName,
@@ -627,14 +1126,10 @@ export function calculateQuote(inputs: QuoteInputs): QuoteResult {
     note: locInfo.desc
   };
 
-  // Kültür ve Turizm Bakanlığı Hibe Desteği Uygunluğu (Tescilli 1. veya 2. Grup Restorasyon)
-  const isGrantEligible = projectType === 'restoration' && (heritageStatus === 'grade_1' || heritageStatus === 'grade_2');
-
   // Zaman Çizelgesi
-  const hasBoard = projectType === 'restoration' || selectedServices.includes('conservation_board');
-  const timelineSteps = getTimelineSteps(projectType, hasBoard, locInfo.boardDuration);
+  const timelineSteps = getTimelineSteps(projectType, domain, showConservationBoard, locInfo.boardDuration);
 
-  // Kalem bazlı dağılım (TMMOB taban bedel üzerinden)
+  // Kalem bazlı dağılım
   const breakdown: BreakdownItem[] = selectedServiceList.map(s => {
     const itemRatio = s.weight / (totalWeightSelected || 1);
     return {
@@ -645,9 +1140,9 @@ export function calculateQuote(inputs: QuoteInputs): QuoteResult {
     };
   });
 
-  // Tahmini süre hesabı (Hafta)
-  let minWeeks = 6;
-  let maxWeeks = 10;
+  // Tahmini süre
+  let minWeeks = domain === 'execution' ? 8 : 4;
+  let maxWeeks = domain === 'execution' ? 16 : 8;
   if (clampedArea > 1000) {
     minWeeks += 6;
     maxWeeks += 10;
@@ -655,17 +1150,19 @@ export function calculateQuote(inputs: QuoteInputs): QuoteResult {
     minWeeks += 3;
     maxWeeks += 5;
   }
-  if (hasBoard) {
-    maxWeeks += 4;
+  if (showConservationBoard) {
+    maxWeeks += 6;
   }
 
   return {
+    domain,
     totalEstimatedCost: Math.round(totalEstimatedCost),
     tmmobBaseFee,
     ministryClass,
     packageFees,
     paymentPlans,
     timelineSteps,
+    showConservationBoard,
     isGrantEligible,
     conservationBoard,
     breakdown,
@@ -675,7 +1172,6 @@ export function calculateQuote(inputs: QuoteInputs): QuoteResult {
       heritageFactor: herFactor,
       locationFactor: locFactor
     },
-    // Geriye dönük uyumluluk
     recommendedFee: packageFees.comprehensive
   };
 }

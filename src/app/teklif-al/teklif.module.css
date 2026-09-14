@@ -1632,3 +1632,219 @@
   }
 }
 
+/* Step 1 Lead Gating */
+.leadGateCard {
+  background: linear-gradient(145deg, #18181b 0%, #201d19 100%);
+  border: 1px solid rgba(197, 168, 128, 0.35);
+  border-radius: 14px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.leadGateHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.leadGateTitle {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.leadGateDesc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.25rem;
+  line-height: 1.4;
+}
+
+.leadGateGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .leadGateGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.leadInputRequired {
+  border: 1px solid rgba(197, 168, 128, 0.4);
+  background: #141414;
+  color: #fff;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  font-size: 16px;
+  width: 100%;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.leadInputRequired:focus {
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 10px rgba(197, 168, 128, 0.25);
+}
+
+.leadGateAlert {
+  font-size: 0.8rem;
+  color: #f87171;
+  margin-top: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(239, 68, 68, 0.1);
+  padding: 0.5rem 0.85rem;
+  border-radius: 6px;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+/* Domain Switcher (Proje vs Uygulama) */
+.domainSwitcher {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 640px) {
+  .domainSwitcher {
+    grid-template-columns: 1fr;
+  }
+}
+
+.domainBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1.25rem 1.5rem;
+  background: #141414;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.domainBtn:hover {
+  border-color: rgba(197, 168, 128, 0.4);
+  transform: translateY(-2px);
+}
+
+.domainBtnActive {
+  background: linear-gradient(145deg, #1c1917 0%, #28221a 100%);
+  border: 2px solid var(--accent-gold);
+  box-shadow: 0 10px 25px rgba(197, 168, 128, 0.15);
+}
+
+.domainIconBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: rgba(197, 168, 128, 0.15);
+  color: var(--accent-gold);
+  margin-bottom: 0.75rem;
+}
+
+.domainTitle {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.domainSubtitle {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.35;
+}
+
+/* Arsa Durumu Seçimi (Uygulama -> Yeni Yapı) */
+.landCardGroup {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .landCardGroup {
+    grid-template-columns: 1fr;
+  }
+}
+
+.landCard {
+  background: #161616;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.landCard:hover {
+  border-color: rgba(197, 168, 128, 0.4);
+}
+
+.landCardSelected {
+  border-color: var(--accent-gold);
+  background: rgba(197, 168, 128, 0.08);
+}
+
+.landCardTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+}
+
+.landCardDesc {
+  font-size: 0.775rem;
+  color: var(--text-secondary);
+}
+
+/* Kilitli Canlı Fiyat Göstergesi (Adım 1 ve 2) */
+.summaryCostBoxLocked {
+  background: #18181b;
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.lockIconWrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--accent-gold);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.65rem;
+}
+
+.lockTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e4e4e7;
+  margin-bottom: 0.25rem;
+}
+
+.lockDesc {
+  font-size: 0.775rem;
+  color: #71717a;
+  line-height: 1.35;
+}
+
+

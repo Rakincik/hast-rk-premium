@@ -12,22 +12,31 @@ import {
   ArrowLeft, 
   Check, 
   Printer, 
-  Send,
-  Sliders,
-  CheckCircle2,
-  Clock,
-  Info,
-  CreditCard,
+  Send, 
+  Sliders, 
+  CheckCircle2, 
+  Clock, 
+  Info, 
+  CreditCard, 
   CalendarCheck,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Lock,
+  Hammer,
+  PenTool,
+  AlertCircle,
+  Phone,
+  User,
+  Wrench
 } from "lucide-react";
 import { 
+  ServiceDomain,
   ProjectType, 
   BuildingMaterial, 
   HeritageStatus, 
   LocationArea,
   PackageTier,
-  PACKAGE_TIERS,
+  PROJECT_PACKAGE_TIERS,
+  EXECUTION_PACKAGE_TIERS,
   getServicesForType,
   calculateQuote, 
   formatCurrencyTL,
@@ -39,26 +48,45 @@ import {
 function WizardContent() {
   const searchParams = useSearchParams();
   const [currentStep, setCurrentStep] = useState<number>(1);
+  
+  // Ana Soru: Proje mi? Uygulama mı?
+  const [domain, setDomain] = useState<ServiceDomain>("project");
+  
+  // Proje Alt Kategorisi
   const [projectType, setProjectType] = useState<ProjectType>("restoration");
+  
+  // Teknik Parametreler
   const [area, setArea] = useState<number>(300);
   const [buildingMaterial, setBuildingMaterial] = useState<BuildingMaterial>("stone_masonry");
   const [heritageStatus, setHeritageStatus] = useState<HeritageStatus>("grade_2");
   const [locationArea, setLocationArea] = useState<LocationArea>("istanbul_fatih");
   const [selectedPackage, setSelectedPackage] = useState<PackageTier>("comprehensive");
+  
+  // Arsa Durumu (Uygulama -> Yeni Yapı için)
+  const [hasLand, setHasLand] = useState<'yes' | 'looking'>('yes');
 
-  // Handle URL type parameter on mount
+  // Lead Gate State (Ad Soyad ve Telefon - En başta zorunlu)
+  const [leadForm, setLeadForm] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    note: ""
+  });
+  const [leadError, setLeadError] = useState<string>("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  // URL type parametresi varsa oku
   useEffect(() => {
     const typeParam = searchParams.get("type");
     if (typeParam === "restoration" || typeParam === "new_architecture" || typeParam === "strengthening") {
+      setDomain("project");
       setProjectType(typeParam as ProjectType);
-      const defaults = getServicesForType(typeParam as ProjectType).filter(s => s.isRecommended).map(s => s.id);
+      const defaults = getServicesForType(typeParam as ProjectType, "project").filter(s => s.isRecommended).map(s => s.id);
       setSelectedServices(defaults);
     }
   }, [searchParams]);
 
-  // Hizmet listesi ve varsayılan seçilenler
-  const availableServices = useMemo(() => getServicesForType(projectType), [projectType]);
-  
+  // Seçili hizmetler
   const [selectedServices, setSelectedServices] = useState<string[]>([
     "laser_scan",
     "survey_drawing",
@@ -67,10 +95,24 @@ function WizardContent() {
     "conservation_board"
   ]);
 
+  // Domain değiştiğinde alt tipi ve servisleri otomatik uyarla
+  const handleDomainChange = (newDomain: ServiceDomain) => {
+    setDomain(newDomain);
+    let defaultType: ProjectType;
+    if (newDomain === 'execution') {
+      defaultType = 'exec_restoration';
+    } else {
+      defaultType = 'restoration';
+    }
+    setProjectType(defaultType);
+    const defaults = getServicesForType(defaultType, newDomain).filter(s => s.isRecommended).map(s => s.id);
+    setSelectedServices(defaults);
+  };
+
   // Proje tipi değişince servisleri sıfırla
   const handleTypeChange = (type: ProjectType) => {
     setProjectType(type);
-    const defaults = getServicesForType(type).filter(s => s.isRecommended).map(s => s.id);
+    const defaults = getServicesForType(type, domain).filter(s => s.isRecommended).map(s => s.id);
     setSelectedServices(defaults);
   };
 
@@ -87,49 +129,68 @@ function WizardContent() {
   // Hesaplama Motoru Çıktısı
   const quoteResult = useMemo(() => {
     return calculateQuote({
+      domain,
       projectType,
       areaSquareMeters: area,
       buildingMaterial,
       heritageStatus,
       locationArea,
-      selectedServices
+      selectedServices,
+      hasLand
     });
-  }, [projectType, area, buildingMaterial, heritageStatus, locationArea, selectedServices]);
+  }, [domain, projectType, area, buildingMaterial, heritageStatus, locationArea, selectedServices, hasLand]);
 
-  // Lead Form State
-  const [leadForm, setLeadForm] = useState({
-    name: "",
-    phone: "",
-    email: "",
-    note: ""
-  });
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  // Aktif paket listesi (Proje vs Uygulama)
+  const activePackageTiers = domain === 'execution' ? EXECUTION_PACKAGE_TIERS : PROJECT_PACKAGE_TIERS;
+  const availableServices = useMemo(() => getServicesForType(projectType, domain), [projectType, domain]);
+
+  // Lead Gate Doğrulaması (Adım 1'den Adım 2'ye geçiş kuralı)
+  const handleNextStep = () => {
+    if (currentStep === 1) {
+      if (!leadForm.name.trim() || leadForm.name.trim().length < 3) {
+        setLeadError("Lütfen adınızı ve soyadınızı eksiksiz giriniz.");
+        return;
+      }
+      const cleanPhone = leadForm.phone.replace(/\D/g, "");
+      if (cleanPhone.length < 10) {
+        setLeadError("Lütfen en az 10 haneli geçerli bir telefon numarası giriniz (Örn: 05XX XXX XX XX).");
+        return;
+      }
+      setLeadError("");
+    }
+    setCurrentStep((prev) => Math.min(prev + 1, 4));
+  };
 
   const handleSubmitLead = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitted(true);
   };
 
-  // WhatsApp Mesajı Oluşturucu (Temiz, net ve profesyonel format)
+  // WhatsApp Mesajı Oluşturucu
   const getWhatsAppLink = () => {
-    const typeNames: Record<ProjectType, string> = {
-      restoration: "Tarihi Eser Restorasyon & Rölöve",
-      new_architecture: "Yeni Mimari Proje & Tasarım",
-      strengthening: "Statik Güçlendirme & Rölöve"
+    const typeTitleMap: Record<ProjectType, string> = {
+      restoration: "Eski Eser Restorasyon Projesi (2863 Sayılı Kanun)",
+      new_architecture: "Yeni Yapı Mimari Tasarım & Ruhsat Projesi",
+      strengthening: "Statik Güçlendirme Projesi (1.200 TL/m²)",
+      exec_restoration: "Tarihi Yapı Restorasyon Uygulaması (73.125 TL/m²)",
+      exec_new: `Yeni Yapı İnşaat Uygulaması (${hasLand === 'yes' ? 'Arsa Hazır' : 'Arsa Arayışında'})`,
+      exec_renovation: "Tadilat & Tamirat Uygulaması (17.000 TL/m²)",
+      exec_strengthening: "Statik Güçlendirme Uygulaması (26.450 TL/m²)"
     };
 
     const text = encodeURIComponent(
-      `Merhaba Hastürk Mimarlık,\n\nWeb sitenizdeki Teklif Hesaplama Sihirbazı üzerinden projem için ön fizibilite yaptım:\n` +
-      `• Proje Türü: ${typeNames[projectType]}\n` +
+      `Merhaba Hastürk Mimarlık,\n\nWeb sitenizdeki Akıllı Teklif Sihirbazı üzerinden fizibilite oluşturdum:\n` +
+      `• Danışan: ${leadForm.name} (${leadForm.phone})\n` +
+      `• Hizmet Alanı: ${domain === 'execution' ? 'Uygulama & Şantiye İmalatı' : 'Mimari & Mühendislik Proje Hizmeti'}\n` +
+      `• Kategori: ${typeTitleMap[projectType]}\n` +
       `• Yaklaşık Alan: ${area} m²\n` +
       `• Yapı Türü: ${MATERIAL_FACTORS[buildingMaterial]?.label}\n` +
       `• Konum / Bölge: ${LOCATION_FACTORS[locationArea]?.label}\n` +
-      `• Yetkili Kurul: ${quoteResult.conservationBoard.name}\n` +
-      `• Bakanlık Sınıfı: ${quoteResult.ministryClass.code} (${formatCurrencyTL(quoteResult.ministryClass.unitCostPerM2)}/m² [1.5×])\n` +
-      `• Yapı Yaklaşık Maliyeti (PYM): ${formatCurrencyTL(quoteResult.totalEstimatedCost)}\n` +
-      `• Tercih Edilen Paket: ${PACKAGE_TIERS[selectedPackage].name}\n` +
-      `• Paket Proje Bedeli: ${formatCurrencyTL(quoteResult.packageFees[selectedPackage])}\n\n` +
-      `Projemizin detaylarını görüşmek ve yerinde keşif randevusu oluşturmak istiyorum.`
+      (quoteResult.showConservationBoard ? `• Yetkili Kurul: ${quoteResult.conservationBoard.name}\n` : '') +
+      `• Seçilen Paket: ${activePackageTiers[selectedPackage].name}\n` +
+      `• Hesaplanan Bedel: ${formatCurrencyTL(quoteResult.packageFees[selectedPackage])}\n` +
+      (leadForm.note ? `• Not: ${leadForm.note}\n` : '') +
+      `\nDetaylı keşif randevusu ve resmi teklif dosyamız için görüşmek istiyorum.`
     );
     return `https://wa.me/905404278875?text=${text}`;
   };
@@ -146,14 +207,14 @@ function WizardContent() {
       {/* Header */}
       <div className={styles.header}>
         <div className={styles.badge}>
-          <Landmark size={15} /> ÇŞİDB 2026 Yapı Birim Maliyetleri (Resmî Gazete: 33157) & TMMOB Normları
+          <Landmark size={15} /> ÇŞİDB 2026 Yapı Birim Maliyetleri & TMMOB Normları
         </div>
         <h1 className={styles.title}>
-          Akıllı Mimari & Restorasyon <br/>
+          Akıllı Mimari & Uygulama <br/>
           <span className={styles.titleGold}>Teklif Sihirbazı</span>
         </h1>
         <p className={styles.subtitle}>
-          Çevre, Şehircilik ve İklim Değişikliği Bakanlığı 2026 Yapı Yaklaşık Birim Maliyetleri (Resmî Gazete Sayı: 33157) ve TMMOB yasal asgari taban bedelleriyle projenizi anında hesaplayın.
+          Mimarlar Odası asgari bedel tarifesi ve 2026 Çevre, Şehircilik ve İklim Değişikliği Bakanlığı uygulama birim maliyetleriyle projenizi saniyeler içinde hesaplayın.
         </p>
       </div>
 
@@ -166,7 +227,7 @@ function WizardContent() {
         />
 
         {[
-          { num: 1, label: "Proje Tipi" },
+          { num: 1, label: "Hizmet & Bilgi" },
           { num: 2, label: "Yapı Parametreleri" },
           { num: 3, label: "Hizmet Kapsamı" },
           { num: 4, label: "Teklif & Rapor" }
@@ -178,7 +239,13 @@ function WizardContent() {
               key={step.num}
               type="button"
               className={`${styles.stepItem} ${isActive ? styles.stepItemActive : ""} ${isCompleted ? styles.stepItemCompleted : ""}`}
-              onClick={() => setCurrentStep(step.num)}
+              onClick={() => {
+                if (step.num > 1 && currentStep === 1) {
+                  handleNextStep();
+                } else {
+                  setCurrentStep(step.num);
+                }
+              }}
             >
               <div className={styles.stepCircle}>
                 {isCompleted ? <Check size={18} /> : step.num}
@@ -194,7 +261,8 @@ function WizardContent() {
         {/* Left Side: Step Content */}
         <div className={styles.stepBody}>
           <AnimatePresence mode="wait">
-            {/* ADIM 1: Proje Türü */}
+            
+            {/* ADIM 1: İletişim Bilgileri (Lead Gating) & Hizmet Seçimi */}
             {currentStep === 1 && (
               <motion.div 
                 key="step1" 
@@ -203,44 +271,182 @@ function WizardContent() {
                 animate="visible" 
                 exit="exit"
               >
-                <h2 className={styles.stepTitle}>Projenizin Ana Kategorisini Belirleyin</h2>
-                <p className={styles.stepDesc}>
-                  Mimarlar Odası asgari bedel tebliğinde restorasyon ve yeni mimari tasarım farklı formüllerle hesaplanır.
-                </p>
+                {/* 1. İletişim Bilgileri Kartı (Zorunlu Gating) */}
+                <div className={styles.leadGateCard}>
+                  <div className={styles.leadGateHeader}>
+                    <User size={20} color="var(--accent-gold)" />
+                    <span className={styles.leadGateTitle}>1. İletişim & Danışan Bilgileri</span>
+                  </div>
+                  <p className={styles.leadGateDesc}>
+                    Projenizin resmi fizibilite raporunu oluşturabilmemiz ve keşif detaylarını paylaşabilmemiz için iletişim bilgilerinizi giriniz.
+                  </p>
+                  
+                  <div className={styles.leadGateGrid}>
+                    <div>
+                      <label className={styles.inputLabel}>Adınız Soyadınız *</label>
+                      <input 
+                        type="text" 
+                        required
+                        value={leadForm.name}
+                        onChange={(e) => {
+                          setLeadForm({ ...leadForm, name: e.target.value });
+                          if (leadError) setLeadError("");
+                        }}
+                        className={styles.leadInputRequired} 
+                        placeholder="Örn: Ahmet Yılmaz" 
+                      />
+                    </div>
+                    <div>
+                      <label className={styles.inputLabel}>Telefon Numaranız *</label>
+                      <input 
+                        type="tel" 
+                        required
+                        value={leadForm.phone}
+                        onChange={(e) => {
+                          setLeadForm({ ...leadForm, phone: e.target.value });
+                          if (leadError) setLeadError("");
+                        }}
+                        className={styles.leadInputRequired} 
+                        placeholder="05XX XXX XX XX" 
+                      />
+                    </div>
+                  </div>
+
+                  {leadError && (
+                    <div className={styles.leadGateAlert}>
+                      <AlertCircle size={16} />
+                      <span>{leadError}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* 2. Ana Soru: Proje mi? Uygulama mı? */}
+                <div style={{ marginBottom: "1.5rem" }}>
+                  <h2 className={styles.stepTitle}>Hangi Alanda Hizmet Almak İstiyorsunuz?</h2>
+                  <p className={styles.stepDesc}>
+                    Mimarlık ve mühendislik proje tasarımı ile anahtar teslim şantiye uygulaması farklı mevzuat ve birim fiyatlarla hesaplanır.
+                  </p>
+
+                  <div className={styles.domainSwitcher}>
+                    <div 
+                      className={`${styles.domainBtn} ${domain === "project" ? styles.domainBtnActive : ""}`}
+                      onClick={() => handleDomainChange("project")}
+                    >
+                      <div className={styles.domainIconBadge}><PenTool size={22} /></div>
+                      <div className={styles.domainTitle}>Proje Hizmeti</div>
+                      <div className={styles.domainSubtitle}>
+                        TMMOB Mimarlar Odası odaklı; Rölöve, Restitüsyon, Restorasyon, Yeni Mimari Ruhsat & Statik Projelendirme.
+                      </div>
+                    </div>
+
+                    <div 
+                      className={`${styles.domainBtn} ${domain === "execution" ? styles.domainBtnActive : ""}`}
+                      onClick={() => handleDomainChange("execution")}
+                    >
+                      <div className={styles.domainIconBadge}><Hammer size={22} /></div>
+                      <div className={styles.domainTitle}>Uygulama Hizmeti</div>
+                      <div className={styles.domainSubtitle}>
+                        Şantiye & taahhüt odaklı; Tarihi Eser Restorasyonu, Anahtar Teslim İnşaat, Tadilat & Statik Güçlendirme İmalatı.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. Alt Kategori Seçimi */}
+                <h3 style={{ fontSize: "1.1rem", marginBottom: "0.75rem", color: "var(--text-primary)" }}>
+                  {domain === "project" ? "Projelendirme Kategorisini Seçin:" : "Uygulama / Şantiye Kategorisini Seçin:"}
+                </h3>
 
                 <div className={styles.typeGrid}>
-                  <div 
-                    className={`${styles.typeCard} ${projectType === "restoration" ? styles.typeCardSelected : ""}`}
-                    onClick={() => handleTypeChange("restoration")}
-                  >
-                    <div className={styles.typeIconWrapper}><Landmark size={26} /></div>
-                    <h3 className={styles.typeCardTitle}>Tarihi Eser & Restorasyon</h3>
-                    <p className={styles.typeCardDesc}>
-                      Ahşap konak, yalı, taş bina, cami, çeşme gibi tescilli kültür varlıklarının rölöve, restitüsyon ve restorasyon projeleri.
-                    </p>
-                  </div>
+                  {domain === "project" ? (
+                    <>
+                      {/* Proje: Eski Eser (2863 Sayılı Kanuna Tabi) */}
+                      <div 
+                        className={`${styles.typeCard} ${projectType === "restoration" ? styles.typeCardSelected : ""}`}
+                        onClick={() => handleTypeChange("restoration")}
+                      >
+                        <div className={styles.typeIconWrapper}><Landmark size={26} /></div>
+                        <h3 className={styles.typeCardTitle}>Eski Eser (2863 Sayılı Kanun)</h3>
+                        <p className={styles.typeCardDesc}>
+                          2863 Sayılı Kültür ve Tabiat Varlıklarını Koruma Kanununa tabi tescilli yapılar için Lidar, rölöve, restitüsyon ve kurul onay projeleri.
+                        </p>
+                      </div>
 
-                  <div 
-                    className={`${styles.typeCard} ${projectType === "new_architecture" ? styles.typeCardSelected : ""}`}
-                    onClick={() => handleTypeChange("new_architecture")}
-                  >
-                    <div className={styles.typeIconWrapper}><Building2 size={26} /></div>
-                    <h3 className={styles.typeCardTitle}>Yeni Mimari Tasarım</h3>
-                    <p className={styles.typeCardDesc}>
-                      Müstakil villa, lüks konut, butik otel veya ticari yapılar için sıfırdan mimari konsept, ruhsat ve uygulama projeleri.
-                    </p>
-                  </div>
+                      {/* Proje: Yeni Mimari */}
+                      <div 
+                        className={`${styles.typeCard} ${projectType === "new_architecture" ? styles.typeCardSelected : ""}`}
+                        onClick={() => handleTypeChange("new_architecture")}
+                      >
+                        <div className={styles.typeIconWrapper}><Building2 size={26} /></div>
+                        <h3 className={styles.typeCardTitle}>Yeni Yapı Mimari Tasarım</h3>
+                        <p className={styles.typeCardDesc}>
+                          Müstakil villa, konut veya ticari yapılar için belediye ruhsat, konsept ve uygulama projeleri (Koruma Kurulu gerektirmez).
+                        </p>
+                      </div>
 
-                  <div 
-                    className={`${styles.typeCard} ${projectType === "strengthening" ? styles.typeCardSelected : ""}`}
-                    onClick={() => handleTypeChange("strengthening")}
-                  >
-                    <div className={styles.typeIconWrapper}><ShieldCheck size={26} /></div>
-                    <h3 className={styles.typeCardTitle}>Statik Güçlendirme & Rölöve</h3>
-                    <p className={styles.typeCardDesc}>
-                      Deprem dayanımı analizi, taşıyıcı sistem rölövesi, çatlak haritalama ve onaylı yapısal güçlendirme projeleri.
-                    </p>
-                  </div>
+                      {/* Proje: Statik Güçlendirme */}
+                      <div 
+                        className={`${styles.typeCard} ${projectType === "strengthening" ? styles.typeCardSelected : ""}`}
+                        onClick={() => handleTypeChange("strengthening")}
+                      >
+                        <div className={styles.typeIconWrapper}><ShieldCheck size={26} /></div>
+                        <h3 className={styles.typeCardTitle}>Statik Güçlendirme Projesi</h3>
+                        <p className={styles.typeCardDesc}>
+                          Mevcut bina taşıyıcı sistemi analizi, deprem performans tahkiki ve onaylı güçlendirme uygulama projeleri (1.200 TL / m²).
+                        </p>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {/* Uygulama: Tarihi Restorasyon */}
+                      <div 
+                        className={`${styles.typeCard} ${projectType === "exec_restoration" ? styles.typeCardSelected : ""}`}
+                        onClick={() => handleTypeChange("exec_restoration")}
+                      >
+                        <div className={styles.typeIconWrapper}><Landmark size={26} /></div>
+                        <h3 className={styles.typeCardTitle}>Tarihi Yapı Restorasyonu</h3>
+                        <p className={styles.typeCardDesc}>
+                          2863 sayılı kanun ve Koruma Kurulu onaylı restorasyon uygulaması, özgün konservasyon ve fenni mesuliyet (73.125 TL / m²).
+                        </p>
+                      </div>
+
+                      {/* Uygulama: Yeni İnşaat */}
+                      <div 
+                        className={`${styles.typeCard} ${projectType === "exec_new" ? styles.typeCardSelected : ""}`}
+                        onClick={() => handleTypeChange("exec_new")}
+                      >
+                        <div className={styles.typeIconWrapper}><Building2 size={26} /></div>
+                        <h3 className={styles.typeCardTitle}>Yeni Yapı İnşaat Uygulaması</h3>
+                        <p className={styles.typeCardDesc}>
+                          Arsanız üzerine anahtar teslim kaba ve ince yapı inşaat taahhüdü, şantiye şefliği ve yapı kullanım (İskan) teslimi.
+                        </p>
+                      </div>
+
+                      {/* Uygulama: Tadilat & Tamirat */}
+                      <div 
+                        className={`${styles.typeCard} ${projectType === "exec_renovation" ? styles.typeCardSelected : ""}`}
+                        onClick={() => handleTypeChange("exec_renovation")}
+                      >
+                        <div className={styles.typeIconWrapper}><Wrench size={26} /></div>
+                        <h3 className={styles.typeCardTitle}>Tadilat & Tamirat Uygulaması</h3>
+                        <p className={styles.typeCardDesc}>
+                          Mevcut yapıda iç mekan yenileme, tesisat sıfırlama, çatı onarımı, ıslak hacimler ve lüks ince işçilik (17.000 TL / m²).
+                        </p>
+                      </div>
+
+                      {/* Uygulama: Statik Güçlendirme İmalatı */}
+                      <div 
+                        className={`${styles.typeCard} ${projectType === "exec_strengthening" ? styles.typeCardSelected : ""}`}
+                        onClick={() => handleTypeChange("exec_strengthening")}
+                      >
+                        <div className={styles.typeIconWrapper}><ShieldCheck size={26} /></div>
+                        <h3 className={styles.typeCardTitle}>Statik Güçlendirme İmalatı</h3>
+                        <p className={styles.typeCardDesc}>
+                          Karbon lif (CFRP), çelik mantolama, temel takviyesi ve epoksi enjeksiyon şantiye imalatları (26.450 TL / m² - ÇŞİDB Liste).
+                        </p>
+                      </div>
+                    </>
+                  )}
                 </div>
               </motion.div>
             )}
@@ -258,7 +464,7 @@ function WizardContent() {
                 <div>
                   <h2 className={styles.stepTitle}>Yapı Alanı ve Teknik Detaylar</h2>
                   <p className={styles.stepDesc}>
-                    Yapının yaklaşık toplam inşaat alanı ve yapım tekniği yaklaşık birim maliyetleri ve katsayıları doğrudan etkiler.
+                    Yapının toplam inşaat/kullanım alanı ve yapım tekniği yaklaşık birim maliyetleri ve katsayıları doğrudan etkiler.
                   </p>
                 </div>
 
@@ -266,7 +472,9 @@ function WizardContent() {
                 <div className={styles.sliderGroup}>
                   <div className={styles.sliderHeader}>
                     <span className={styles.sliderLabel}>
-                      {projectType === "restoration" ? "Belgelemeye Esas Yaklaşık Kapalı Alan (m²)" : "Toplam İnşaat Alanı (m²)"}
+                      {domain === "execution" 
+                        ? (projectType === "exec_renovation" ? "Tadilat Yapılacak Kapalı Alan (m²)" : "Toplam İnşaat / İmalat Alanı (m²)")
+                        : (projectType === "restoration" ? "2863 Sayılı Kanun Kapsamında Belgelemeye Esas Alan (m²)" : "Toplam Proje Alanı (m²)")}
                     </span>
                     <div className={styles.sliderValueBox}>
                       <span>{area}</span> m²
@@ -289,25 +497,46 @@ function WizardContent() {
                   </div>
                 </div>
 
-                {/* Çevre, Şehircilik ve İklim Değişikliği Bakanlığı 2026 Resmi Yapı Sınıfı ve PYM Kartı */}
+                {/* Eğer Uygulama -> Yeni Yapı ise: "Arsanız Var mı?" Sorusu */}
+                {domain === "execution" && projectType === "exec_new" && (
+                  <div>
+                    <label className={styles.sliderLabel} style={{ display: "block", marginBottom: "0.5rem" }}>
+                      Arsa Durumunuz
+                    </label>
+                    <div className={styles.landCardGroup}>
+                      <div 
+                        className={`${styles.landCard} ${hasLand === 'yes' ? styles.landCardSelected : ''}`}
+                        onClick={() => setHasLand('yes')}
+                      >
+                        <div className={styles.landCardTitle}>✅ Evet, Arsam Hazır / Tapulu</div>
+                        <div className={styles.landCardDesc}>İnşaat yapılacak arsam hazır veya ruhsat sürecindeyim.</div>
+                      </div>
+                      <div 
+                        className={`${styles.landCard} ${hasLand === 'looking' ? styles.landCardSelected : ''}`}
+                        onClick={() => setHasLand('looking')}
+                      >
+                        <div className={styles.landCardTitle}>🔍 Henüz Arsa Arayışındayım</div>
+                        <div className={styles.landCardDesc}>Hedeflediğim yapı için ön fizibilite ve yaklaşık maliyet hesabı yapıyorum.</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Sadeleştirilmiş Bakanlık / Mevzuat Sınıfı Bilgi Kartı (Yan 733k fiyat karmaşası kaldırıldı) */}
                 <div className={styles.ministryClassCard}>
                   <div className={styles.ministryClassHeader}>
                     <div className={styles.ministryBadge}>
                       <Landmark size={14} /> {quoteResult.ministryClass.officialGazette}
                     </div>
-                    <div className={styles.ministryUnitCostBadge}>
-                      1.5× Uygulama Birim Fiyatı: <strong>{formatCurrencyTL(quoteResult.ministryClass.unitCostPerM2)} / m²</strong>
+                    <div style={{ fontSize: "0.8rem", color: "var(--accent-gold)", fontWeight: 600 }}>
+                      {domain === "execution" ? "Resmi Uygulama Normu" : "TMMOB Mimarlık Normu"}
                     </div>
                   </div>
                   <div className={styles.ministryClassName}>
-                    {quoteResult.ministryClass.name} ({quoteResult.ministryClass.code})
+                    {quoteResult.ministryClass.name}
                   </div>
                   <div className={styles.ministryClassDesc}>
-                    {quoteResult.ministryClass.definition} (Resmi Liste: {formatCurrencyTL(quoteResult.ministryClass.baseUnitCostPerM2)}/m² • 1.5× Uygulama Esaslı)
-                  </div>
-                  <div className={styles.ministryPymRow}>
-                    <span>Reel Yapı Yaklaşık Maliyeti (PYM):</span>
-                    <strong>{formatCurrencyTL(quoteResult.totalEstimatedCost)}</strong>
+                    {quoteResult.ministryClass.definition}
                   </div>
                 </div>
 
@@ -334,11 +563,11 @@ function WizardContent() {
                   </div>
                 </div>
 
-                {/* Tescil Durumu (Restorasyon ise) */}
-                {projectType === "restoration" && (
+                {/* SADECE ESKİ ESER İSE: Tescil Derecesi, Koruma Kurulu ve %50 Hibe Kartı */}
+                {quoteResult.showConservationBoard && (
                   <div>
                     <label className={styles.sliderLabel} style={{ display: "block", marginBottom: "0.75rem" }}>
-                      Kültür Varlığı Tescil Derecesi
+                      2863 Sayılı Kanun Kapsamında Tescil Derecesi
                     </label>
                     <div className={styles.optionsGrid}>
                       {(Object.keys(HERITAGE_FACTORS) as HeritageStatus[]).map((herKey) => {
@@ -359,10 +588,10 @@ function WizardContent() {
                   </div>
                 )}
 
-                {/* Bölge & Koruma Havzası Seçimi */}
+                {/* Bölge Seçimi */}
                 <div>
                   <label className={styles.sliderLabel} style={{ display: "block", marginBottom: "0.75rem" }}>
-                    Yapının Bulunduğu Bölge & Koruma Havzası
+                    Yapının Bulunduğu Bölge & İlçe
                   </label>
                   <div className={styles.optionsGrid}>
                     {(Object.keys(LOCATION_FACTORS) as LocationArea[]).map((locKey) => {
@@ -381,45 +610,48 @@ function WizardContent() {
                     })}
                   </div>
 
-                  {/* Dinamik Yetkili Koruma Kurulu & Bölge Bilgi Kartı */}
-                  <div className={styles.boardInfoCard}>
-                    <div className={styles.boardInfoHeader}>
-                      <div className={styles.boardInfoBadge}>
-                        <Landmark size={14} /> Yetkili Koruma Bölge Kurulu
-                      </div>
-                      <div className={styles.boardDurationBadge}>
-                        <Clock size={13} style={{ display: "inline", verticalAlign: "middle", marginRight: "4px" }} />
-                        Tahmini Onay: {quoteResult.conservationBoard.weeks}
-                      </div>
-                    </div>
-                    <div className={styles.boardName}>{quoteResult.conservationBoard.name}</div>
-                    <div className={styles.boardDesc}>
-                      📌 {quoteResult.conservationBoard.note}
-                    </div>
-                  </div>
-
-                  {/* T.C. Kültür ve Turizm Bakanlığı Hibe Desteği Uyarısı (Tescilli Restorasyon İse) */}
-                  {quoteResult.isGrantEligible && (
-                    <div className={styles.grantNoticeCard}>
-                      <div className={styles.grantIconWrapper}>
-                        <ShieldCheck size={22} />
-                      </div>
-                      <div>
-                        <div className={styles.grantTitle}>
-                          <span>T.C. Kültür ve Turizm Bakanlığı Proje Desteği</span>
-                          <span className={styles.grantTag}>%50 Hibe Fırsatı</span>
+                  {/* SADECE ESKİ ESER İSE: Dinamik Koruma Kurulu ve Hibe Uyarısı Gösterilir */}
+                  {quoteResult.showConservationBoard && (
+                    <>
+                      <div className={styles.boardInfoCard}>
+                        <div className={styles.boardInfoHeader}>
+                          <div className={styles.boardInfoBadge}>
+                            <Landmark size={14} /> Yetkili Koruma Bölge Kurulu (2863 Sayılı Kanun)
+                          </div>
+                          <div className={styles.boardDurationBadge}>
+                            <Clock size={13} style={{ display: "inline", verticalAlign: "middle", marginRight: "4px" }} />
+                            Tahmini Onay: {quoteResult.conservationBoard.weeks}
+                          </div>
                         </div>
-                        <p className={styles.grantDesc}>
-                          Taşınmaz Kültür Varlıklarının Onarımına Yardım Fonu kapsamında bu yapınız için rölöve, restitüsyon ve restorasyon proje bedelinin %50'sine kadar nakdi hibe alınabilmektedir. Proje dosyanız Bakanlık hibe kabul normlarına uygun olarak tanzim edilecektir.
-                        </p>
+                        <div className={styles.boardName}>{quoteResult.conservationBoard.name}</div>
+                        <div className={styles.boardDesc}>
+                          📌 {quoteResult.conservationBoard.note}
+                        </div>
                       </div>
-                    </div>
+
+                      {quoteResult.isGrantEligible && (
+                        <div className={styles.grantNoticeCard}>
+                          <div className={styles.grantIconWrapper}>
+                            <ShieldCheck size={22} />
+                          </div>
+                          <div>
+                            <div className={styles.grantTitle}>
+                              <span>T.C. Kültür ve Turizm Bakanlığı Proje Desteği</span>
+                              <span className={styles.grantTag}>%50 Nakdi Hibe</span>
+                            </div>
+                            <p className={styles.grantDesc}>
+                              Taşınmaz Kültür Varlıklarının Onarımına Yardım Fonu kapsamında bu yapınız için proje ve restorasyon bedelinin %50'sine kadar nakdi hibe desteği alınabilmektedir. Dosyanız Bakanlık hibe kabul normlarına uygun olarak tanzim edilecektir.
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
               </motion.div>
             )}
 
-            {/* ADIM 3: Hizmet Kapsamı */}
+            {/* ADIM 3: Hizmet Kapsamı (FİYAT BU ADIMDA VE SONRASINDA AÇILIR!) */}
             {currentStep === 3 && (
               <motion.div 
                 key="step3" 
@@ -432,7 +664,9 @@ function WizardContent() {
                   <div>
                     <h2 className={styles.stepTitle}>Talep Edilen Hizmet Kapsamı</h2>
                     <p className={styles.stepDesc} style={{ marginBottom: 0 }}>
-                      İhtiyacınıza uygun hizmet paketlerini seçin veya özelleştirin.
+                      {domain === "execution" 
+                        ? "Uygulama sürecinde ihtiyaç duyduğunuz şantiye ve imalat başlıklarını belirleyin."
+                        : "TMMOB şartnamesine uygun mimari ve mühendislik proje kapsamını belirleyin."}
                     </p>
                   </div>
                   <button 
@@ -482,33 +716,36 @@ function WizardContent() {
                 animate="visible" 
                 exit="exit"
               >
-                <h2 className={styles.stepTitle}>Ön Teklif & Maliyet Analiz Raporu</h2>
+                <h2 className={styles.stepTitle}>
+                  {domain === "execution" ? "Uygulama & İmalat Teklif Raporu" : "Mimari Proje Teklif & Maliyet Raporu"}
+                </h2>
                 <p className={styles.stepDesc}>
-                  Seçtiğiniz kriterler doğrultusunda ÇŞİDB 2026 birim maliyetleri ve TMMOB standartlarına göre hazırlanan resmi analiz ve 3 kademeli teklif paketleri:
+                  Seçtiğiniz kriterler doğrultusunda {domain === "execution" ? "ÇŞİDB 2026 reel uygulama normlarına" : "TMMOB 2026 asgari standartlarına"} göre hazırlanan 3 kademeli teklif paketleri:
                 </p>
 
-                {/* Resmi ÇŞİDB PYM ve Referans Şeridi */}
+                {/* Resmi Referans Şeridi */}
                 <div className={styles.officialPymBanner}>
                   <div className={styles.officialPymLeft}>
                     <FileSpreadsheet size={22} color="var(--accent-gold)" />
                     <div>
                       <div className={styles.officialPymTitle}>
-                        Yapı Yaklaşık Maliyeti (PYM): <strong>{formatCurrencyTL(quoteResult.totalEstimatedCost)}</strong>
+                        {domain === "execution" ? "Hesaplanan Yapı İmalat Maliyeti:" : "Yapı Yaklaşık Maliyeti (PYM):"}{" "}
+                        <strong>{formatCurrencyTL(quoteResult.totalEstimatedCost)}</strong>
                       </div>
                       <div className={styles.officialPymSub}>
-                        {quoteResult.ministryClass.name} • 1.5× Birim Fiyat: {formatCurrencyTL(quoteResult.ministryClass.unitCostPerM2)}/m² ({quoteResult.ministryClass.officialGazette})
+                        {quoteResult.ministryClass.name} • {quoteResult.ministryClass.officialGazette}
                       </div>
                     </div>
                   </div>
                   <div className={styles.officialPymTag}>
-                    TMMOB Taban: {formatCurrencyTL(quoteResult.tmmobBaseFee)}
+                    {domain === "execution" ? "1. Sınıf Şantiye İmalatı" : `TMMOB Taban: ${formatCurrencyTL(quoteResult.tmmobBaseFee)}`}
                   </div>
                 </div>
 
                 {/* 3 Kademeli Paket Seçim Kartları */}
                 <div className={styles.packageGrid}>
-                  {(Object.keys(PACKAGE_TIERS) as PackageTier[]).map((tierKey) => {
-                    const pkg = PACKAGE_TIERS[tierKey];
+                  {(Object.keys(activePackageTiers) as PackageTier[]).map((tierKey) => {
+                    const pkg = activePackageTiers[tierKey];
                     const isSelected = selectedPackage === tierKey;
                     const fee = quoteResult.packageFees[tierKey];
 
@@ -534,7 +771,9 @@ function WizardContent() {
                           <div className={styles.packageTagline}>{pkg.tagline}</div>
 
                           <div className={styles.packagePriceBox}>
-                            <div className={styles.packagePriceLabel}>Paket Proje Bedeli</div>
+                            <div className={styles.packagePriceLabel}>
+                              {domain === "execution" ? "Paket İmalat Bedeli" : "Paket Proje Bedeli"}
+                            </div>
                             <div className={styles.packagePriceAmount}>{formatCurrencyTL(fee)}</div>
                           </div>
                         </div>
@@ -552,17 +791,19 @@ function WizardContent() {
                   })}
                 </div>
 
-                {/* Süre ve Kurul Bilgi Şeridi */}
+                {/* Süre ve Bilgi Şeridi */}
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem", background: "#1c1917", padding: "1rem 1.25rem", borderRadius: "10px", border: "1px solid rgba(255,255,255,0.05)", marginBottom: "1.5rem" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
                     <Clock size={18} color="var(--accent-gold)" />
                     <span style={{ fontSize: "0.875rem", color: "#d4d4d8" }}>
-                      Öngörülen Projelendirme & Kurul Süresi: <strong>{quoteResult.estimatedDurationWeeks.min} - {quoteResult.estimatedDurationWeeks.max} Hafta</strong>
+                      Öngörülen {domain === "execution" ? "İmalat & Şantiye" : "Projelendirme"} Süresi: <strong>{quoteResult.estimatedDurationWeeks.min} - {quoteResult.estimatedDurationWeeks.max} Hafta</strong>
                     </span>
                   </div>
-                  <div style={{ fontSize: "0.85rem", color: "var(--accent-gold)" }}>
-                    {quoteResult.conservationBoard.name}
-                  </div>
+                  {quoteResult.showConservationBoard && (
+                    <div style={{ fontSize: "0.85rem", color: "var(--accent-gold)" }}>
+                      {quoteResult.conservationBoard.name}
+                    </div>
+                  )}
                 </div>
 
                 {/* Aşamalı Hakediş & Ödeme Planı */}
@@ -572,7 +813,7 @@ function WizardContent() {
                     <span>Aşamalı Hakediş & Ödeme Planı</span>
                   </div>
                   <p className={styles.sectionSubtext}>
-                    Seçilen <strong>{PACKAGE_TIERS[selectedPackage].name}</strong> ({formatCurrencyTL(quoteResult.packageFees[selectedPackage])}) için 4 aşamalı kurumsal hakediş takvimi:
+                    Seçilen <strong>{activePackageTiers[selectedPackage].name}</strong> ({formatCurrencyTL(quoteResult.packageFees[selectedPackage])}) için 4 aşamalı kurumsal hakediş takvimi:
                   </p>
 
                   <div className={styles.paymentGrid}>
@@ -596,10 +837,12 @@ function WizardContent() {
                 <div className={styles.timelineSection}>
                   <div className={styles.sectionHeading}>
                     <CalendarCheck size={19} color="var(--accent-gold)" />
-                    <span>Projelendirme & Kurul Süreç Takvimi</span>
+                    <span>{domain === "execution" ? "Şantiye & İmalat Süreç Takvimi" : "Projelendirme & Kurul Süreç Takvimi"}</span>
                   </div>
                   <p className={styles.sectionSubtext}>
-                    Saha etüdünden resmi onay sürecine kadar ilerleyecek 4 aşamalı proje yol haritası:
+                    {domain === "execution" 
+                      ? "Mobilizasyondan anahtar teslimine kadar ilerleyecek 4 aşamalı şantiye takvimi:" 
+                      : "Saha etüdünden resmi onay sürecine kadar ilerleyecek 4 aşamalı proje yol haritası:"}
                   </p>
 
                   <div className={styles.timelineGrid}>
@@ -608,44 +851,6 @@ function WizardContent() {
                         <span className={styles.timelineWeeks}>{tStep.weeks}</span>
                         <div className={styles.timelineTitle}>{tStep.title}</div>
                         <div className={styles.timelineDesc}>{tStep.desc}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Hibe Bildirimi (Eğer uygunsa) */}
-                {quoteResult.isGrantEligible && (
-                  <div className={styles.grantNoticeCard} style={{ marginTop: "2rem" }}>
-                    <div className={styles.grantIconWrapper}>
-                      <ShieldCheck size={24} />
-                    </div>
-                    <div>
-                      <div className={styles.grantTitle}>
-                        <span>🏛️ T.C. Kültür ve Turizm Bakanlığı Hibe Desteği Kapsamında</span>
-                        <span className={styles.grantTag}>%50 Nakdi Hibe</span>
-                      </div>
-                      <p className={styles.grantDesc}>
-                        Bu yapı tescilli kültür varlığı statüsünde olduğundan, Taşınmaz Kültür Varlıklarının Onarımına Yardım Fonu kapsamında proje hazırlama maliyetinizin %50'sine kadar geri ödemesiz hibe desteği başvurusunda bulunabilirsiniz.
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Maliyet Kırılım Çubukları */}
-                <div className={styles.breakdownSection}>
-                  <h3 className={styles.breakdownTitle}>Aşama Bazlı Hizmet Dağılımı (Taban Bedel Esaslı)</h3>
-                  <div className={styles.breakdownList}>
-                    {quoteResult.breakdown.map((item) => (
-                      <div key={item.id}>
-                        <div className={styles.breakdownItemRow}>
-                          <span>{item.name}</span>
-                          <span style={{ color: "var(--accent-gold)", fontWeight: 600, fontFamily: "var(--font-sans)", fontVariantNumeric: "tabular-nums" }}>
-                            {formatCurrencyTL(item.fee)} (%{item.percentage})
-                          </span>
-                        </div>
-                        <div className={styles.barTrack}>
-                          <div className={styles.barFill} style={{ width: `${item.percentage}%` }} />
-                        </div>
                       </div>
                     ))}
                   </div>
@@ -670,13 +875,13 @@ function WizardContent() {
                   </button>
                 </div>
 
-                {/* Resmi Teklif Formu */}
+                {/* Resmi Keşif & Proje Dosyası Talebi (Adım 1'deki bilgiler otomatik doldurulur) */}
                 <div className={styles.leadFormCard}>
                   <h3 style={{ fontSize: "1.2rem", marginBottom: "0.5rem", color: "var(--text-primary)" }}>
                     Resmi Keşif & Proje Dosyası Talebi
                   </h3>
                   <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>
-                    İletişim bilgilerinizi bırakın, Y. Mimar Okan Hastürk ve teknik ekibimiz projenizi yerinde inceleyerek kesin proje dosyanızı hazırlasın.
+                    1. Adımda girmiş olduğunuz iletişim bilgilerinizle talebiniz doğrudan Y. Mimar Okan Hastürk ve teknik ekibimize iletilir.
                   </p>
 
                   {isSubmitted ? (
@@ -684,35 +889,33 @@ function WizardContent() {
                       <CheckCircle2 size={24} style={{ marginBottom: "0.5rem" }} />
                       <p><strong>Talebiniz başarıyla alındı!</strong></p>
                       <p style={{ fontSize: "0.85rem", marginTop: "0.25rem" }}>
-                        Teknik ekibimiz en geç 24 saat içinde sizinle iletişime geçecektir.
+                        Sayın <strong>{leadForm.name}</strong>, teknik ekibimiz <strong>{leadForm.phone}</strong> numarası üzerinden en geç 24 saat içinde sizinle iletişime geçecektir.
                       </p>
                     </div>
                   ) : (
                     <form onSubmit={handleSubmitLead} className={styles.leadFormGrid}>
                       <div className={styles.inputGroup}>
-                        <label className={styles.inputLabel}>Adınız Soyadınız *</label>
+                        <label className={styles.inputLabel}>Adınız Soyadınız</label>
                         <input 
                           type="text" 
                           required
                           value={leadForm.name}
                           onChange={(e) => setLeadForm({ ...leadForm, name: e.target.value })}
                           className={styles.textInput} 
-                          placeholder="Örn: Ahmet Yılmaz" 
                         />
                       </div>
                       <div className={styles.inputGroup}>
-                        <label className={styles.inputLabel}>Telefon Numaranız *</label>
+                        <label className={styles.inputLabel}>Telefon Numaranız</label>
                         <input 
                           type="tel" 
                           required
                           value={leadForm.phone}
                           onChange={(e) => setLeadForm({ ...leadForm, phone: e.target.value })}
                           className={styles.textInput} 
-                          placeholder="05XX XXX XX XX" 
                         />
                       </div>
                       <div className={styles.inputGroup} style={{ gridColumn: "1 / -1" }}>
-                        <label className={styles.inputLabel}>E-posta Adresiniz</label>
+                        <label className={styles.inputLabel}>E-posta Adresiniz (İsteğe bağlı)</label>
                         <input 
                           type="email" 
                           value={leadForm.email}
@@ -757,7 +960,7 @@ function WizardContent() {
             {currentStep < 4 && (
               <button 
                 type="button" 
-                onClick={() => setCurrentStep(currentStep + 1)}
+                onClick={handleNextStep}
                 className={styles.nextBtn}
               >
                 {currentStep === 3 ? "Teklifi Hesapla" : "Sonraki Adım"} <ArrowRight size={16} />
@@ -775,9 +978,22 @@ function WizardContent() {
 
           <div className={styles.summaryRows}>
             <div className={styles.summaryRow}>
-              <span className={styles.summaryLabel}>Proje Türü:</span>
-              <span className={styles.summaryValue}>
-                {projectType === "restoration" ? "Restorasyon / Rölöve" : projectType === "new_architecture" ? "Yeni Mimari Tasarım" : "Statik Güçlendirme"}
+              <span className={styles.summaryLabel}>Hizmet Alanı:</span>
+              <span className={styles.summaryValue} style={{ color: "var(--accent-gold)", fontWeight: 600 }}>
+                {domain === "execution" ? "Uygulama & Şantiye" : "Mimari & Mühendislik Proje"}
+              </span>
+            </div>
+
+            <div className={styles.summaryRow}>
+              <span className={styles.summaryLabel}>Kategori:</span>
+              <span className={styles.summaryValue} style={{ fontSize: "0.82rem" }}>
+                {projectType === "restoration" ? "2863 Sayılı Eser Projesi" :
+                 projectType === "new_architecture" ? "Yeni Mimari Tasarım" :
+                 projectType === "strengthening" ? "Güçlendirme Projesi (1.200 TL)" :
+                 projectType === "exec_restoration" ? "Tarihi Restorasyon Uygulama" :
+                 projectType === "exec_new" ? "Yeni Yapı İnşaatı" :
+                 projectType === "exec_renovation" ? "Tadilat & Tamirat (17.000 TL)" :
+                 "Güçlendirme İmalatı (26.450 TL)"}
               </span>
             </div>
 
@@ -791,54 +1007,73 @@ function WizardContent() {
               <span className={styles.summaryValue}>{MATERIAL_FACTORS[buildingMaterial]?.label.split("/")[0]}</span>
             </div>
 
-            {projectType === "restoration" && (
-              <div className={styles.summaryRow}>
-                <span className={styles.summaryLabel}>Tescil:</span>
-                <span className={styles.summaryValue}>{HERITAGE_FACTORS[heritageStatus]?.label.split("/")[0]}</span>
-              </div>
-            )}
+            {/* Yetkili Kurul ve Tescil SADECE Eski Eser ise gösterilir */}
+            {quoteResult.showConservationBoard && (
+              <>
+                <div className={styles.summaryRow}>
+                  <span className={styles.summaryLabel}>Tescil:</span>
+                  <span className={styles.summaryValue}>{HERITAGE_FACTORS[heritageStatus]?.label.split("/")[0]}</span>
+                </div>
 
-            <div className={styles.summaryRow}>
-              <span className={styles.summaryLabel}>Yetkili Kurul:</span>
-              <span className={styles.summaryValue} style={{ fontSize: "0.8rem" }}>
-                {quoteResult.conservationBoard.name.replace("Kültür Varlıklarını Koruma Bölge Kurulu", "K.V.K.B.K.")}
-              </span>
-            </div>
+                <div className={styles.summaryRow}>
+                  <span className={styles.summaryLabel}>Yetkili Kurul:</span>
+                  <span className={styles.summaryValue} style={{ fontSize: "0.8rem" }}>
+                    {quoteResult.conservationBoard.name.replace("Kültür Varlıklarını Koruma Bölge Kurulu", "K.V.K.B.K.")}
+                  </span>
+                </div>
+              </>
+            )}
 
             <div className={styles.summaryRow}>
               <span className={styles.summaryLabel}>Seçili Hizmet:</span>
               <span className={styles.summaryValue}>{selectedServices.length} Hizmet</span>
             </div>
 
-            <div className={styles.summaryRow}>
-              <span className={styles.summaryLabel}>Bakanlık Sınıfı:</span>
-              <span className={styles.summaryValue}>{quoteResult.ministryClass.code} ({formatCurrencyTL(quoteResult.ministryClass.unitCostPerM2)}/m²)</span>
-            </div>
-
-            <div className={styles.summaryRow}>
-              <span className={styles.summaryLabel}>Yapı Maliyeti (PYM):</span>
-              <span className={styles.summaryValue} style={{ color: "var(--accent-gold)", fontWeight: 600 }}>
-                {formatCurrencyTL(quoteResult.totalEstimatedCost)}
-              </span>
-            </div>
+            {/* Yapı Yaklaşık Maliyeti (PYM) - Sadece 3. ve 4. adımda gösterilir */}
+            {currentStep >= 3 && (
+              <div className={styles.summaryRow}>
+                <span className={styles.summaryLabel}>
+                  {domain === "execution" ? "Yapı İmalat Maliyeti:" : "Yapı Yaklaşık Mal. (PYM):"}
+                </span>
+                <span className={styles.summaryValue} style={{ color: "var(--accent-gold)", fontWeight: 600 }}>
+                  {formatCurrencyTL(quoteResult.totalEstimatedCost)}
+                </span>
+              </div>
+            )}
           </div>
 
-          {/* Live Price Box - Clean & Transparent without 'Hastürk Öneri' */}
-          <div className={styles.summaryCostBox}>
-            <div className={styles.summaryCostTitle}>
-              {currentStep === 4 ? PACKAGE_TIERS[selectedPackage].name : "Tahmini Taban Bedel"}
+          {/* FİYAT GÖRÜNÜRLÜK KONTROLÜ: 1. ve 2. ADIMDA KİLİTLİ, 3. ADIMDA AÇILIR! */}
+          {currentStep < 3 ? (
+            <div className={styles.summaryCostBoxLocked}>
+              <div className={styles.lockIconWrapper}>
+                <Lock size={20} />
+              </div>
+              <div className={styles.lockTitle}>Hesaplama Kilidi</div>
+              <div className={styles.lockDesc}>
+                Proje detaylarınızı tamamlayınız. Fiyat ve resmi maliyet analizi <strong>3. Adımda</strong> hesaplanacaktır.
+              </div>
             </div>
-            <div className={styles.summaryCostAmount}>
-              {formatCurrencyTL(currentStep === 4 ? quoteResult.packageFees[selectedPackage] : quoteResult.tmmobBaseFee)}
+          ) : (
+            <div className={styles.summaryCostBox}>
+              <div className={styles.summaryCostTitle}>
+                {currentStep === 4 
+                  ? activePackageTiers[selectedPackage].name 
+                  : (domain === "execution" ? "Tahmini Uygulama Bedeli" : "Tahmini Taban Bedel")}
+              </div>
+              <div className={styles.summaryCostAmount}>
+                {formatCurrencyTL(currentStep === 4 ? quoteResult.packageFees[selectedPackage] : quoteResult.tmmobBaseFee)}
+              </div>
+              <div className={styles.summarySubCost}>
+                {domain === "execution" ? "1. Sınıf Şantiye İmalatı Esaslı" : "TMMOB 2026 Asgari Hizmet Normu"}
+              </div>
             </div>
-            <div className={styles.summarySubCost}>
-              TMMOB 2026 Asgari Hizmet Normu
-            </div>
-          </div>
+          )}
 
           <p className={styles.summaryDisclaimer}>
             <Info size={12} style={{ display: "inline-block", marginRight: "4px", verticalAlign: "middle" }} />
-            TMMOB Mimarlar Odası 2026 Mimarlık Hizmetleri Şartnamesi ve Bakanlık yaklaşık birim maliyetleri referans alınmıştır. Kesin bedel yerinde keşif sonrasında belirlenir.
+            {domain === "execution" 
+              ? "ÇŞİDB 2026 Yapı Yaklaşık Birim Maliyetleri ve piyasa imalat rayiçleri referans alınmıştır. Kesin bedel yerinde keşif sonrasında belirlenir."
+              : "TMMOB Mimarlar Odası 2026 Asgari Bedel Şartnamesi referans alınmıştır. Kesin bedel yerinde keşif sonrasında belirlenir."}
           </p>
         </aside>
       </div>

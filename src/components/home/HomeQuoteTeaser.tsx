@@ -23,7 +23,7 @@ import {
 } from "@/lib/quoteEngine";
 
 export default function HomeQuoteTeaser() {
-  const [projectType, setProjectType] = useState<ProjectType>("restoration");
+  const [projectType, setProjectType] = useState<'restoration' | 'new_architecture' | 'strengthening'>("restoration");
   const [area, setArea] = useState<number>(350);
   const [material, setMaterial] = useState<BuildingMaterial>("stone_masonry");
 
@@ -43,7 +43,7 @@ export default function HomeQuoteTeaser() {
     });
   }, [projectType, area, material]);
 
-  const typeLabels: Record<ProjectType, { title: string; icon: React.ReactNode }> = {
+  const typeLabels: Record<'restoration' | 'new_architecture' | 'strengthening', { title: string; icon: React.ReactNode }> = {
     restoration: {
       title: "Restorasyon & Rölöve",
       icon: <Building2 size={22} strokeWidth={1.5} />
@@ -113,7 +113,7 @@ export default function HomeQuoteTeaser() {
                 <span>1. Proje Türünü Seçin</span>
               </label>
               <div className={styles.typeSelector}>
-                {(Object.keys(typeLabels) as ProjectType[]).map((type) => (
+                {(Object.keys(typeLabels) as ('restoration' | 'new_architecture' | 'strengthening')[]).map((type) => (
                   <button
                     key={type}
                     type="button"
