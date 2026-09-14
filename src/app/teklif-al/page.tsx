@@ -25,7 +25,6 @@ import {
   PenTool,
   AlertCircle,
   Phone,
-  User,
   Wrench
 } from "lucide-react";
 import { 
@@ -144,16 +143,36 @@ function WizardContent() {
   const activePackageTiers = domain === 'execution' ? EXECUTION_PACKAGE_TIERS : PROJECT_PACKAGE_TIERS;
   const availableServices = useMemo(() => getServicesForType(projectType, domain), [projectType, domain]);
 
-  // Lead Gate Doğrulaması (Adım 1'den Adım 2'ye geçiş kuralı)
+  // Sadece telefon girişi & maskeleme: 05XX XXX XX XX (En fazla 11 rakam, harf engelli)
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let raw = e.target.value.replace(/\D/g, "");
+    if (raw.startsWith("90") && raw.length > 10) {
+      raw = raw.slice(2);
+    }
+    if (raw.startsWith("5")) {
+      raw = "0" + raw;
+    }
+    raw = raw.slice(0, 11);
+
+    let masked = raw;
+    if (raw.length > 4 && raw.length <= 7) {
+      masked = `${raw.slice(0, 4)} ${raw.slice(4)}`;
+    } else if (raw.length > 7 && raw.length <= 9) {
+      masked = `${raw.slice(0, 4)} ${raw.slice(4, 7)} ${raw.slice(7)}`;
+    } else if (raw.length > 9) {
+      masked = `${raw.slice(0, 4)} ${raw.slice(4, 7)} ${raw.slice(7, 9)} ${raw.slice(9, 11)}`;
+    }
+
+    setLeadForm((prev) => ({ ...prev, phone: masked }));
+    if (leadError) setLeadError("");
+  };
+
+  // Lead Gate Doğrulaması (Adım 1'den Adım 2'ye geçiş kuralı - Sadece telefon doğrulaması)
   const handleNextStep = () => {
     if (currentStep === 1) {
-      if (!leadForm.name.trim() || leadForm.name.trim().length < 3) {
-        setLeadError("Lütfen adınızı ve soyadınızı eksiksiz giriniz.");
-        return;
-      }
       const cleanPhone = leadForm.phone.replace(/\D/g, "");
       if (cleanPhone.length < 10) {
-        setLeadError("Lütfen en az 10 haneli geçerli bir telefon numarası giriniz (Örn: 05XX XXX XX XX).");
+        setLeadError("Lütfen geçerli bir cep telefonu numarası giriniz (Örn: 05XX XXX XX XX).");
         return;
       }
       setLeadError("");
@@ -178,9 +197,10 @@ function WizardContent() {
       exec_strengthening: "Statik Güçlendirme Uygulaması"
     };
 
+    const clientName = leadForm.name.trim() || "Danışan";
     const text = encodeURIComponent(
       `Merhaba Hastürk Mimarlık,\n\nWeb sitenizdeki Akıllı Teklif Sihirbazı üzerinden fizibilite oluşturdum:\n` +
-      `• Danışan: ${leadForm.name} (${leadForm.phone})\n` +
+      `• Danışan: ${clientName} (${leadForm.phone})\n` +
       `• Hizmet Alanı: ${domain === 'execution' ? 'Uygulama & Şantiye İmalatı' : 'Mimari & Mühendislik Proje Hizmeti'}\n` +
       `• Kategori: ${typeTitleMap[projectType]}\n` +
       `• Yaklaşık Alan: ${area} m²\n` +
@@ -271,93 +291,78 @@ function WizardContent() {
                 animate="visible" 
                 exit="exit"
               >
-                {/* 1. İletişim Bilgileri Kartı (Zorunlu Gating) */}
-                <div className={styles.leadGateCard}>
-                  <div className={styles.leadGateHeader}>
-                    <User size={20} color="var(--accent-gold)" />
-                    <span className={styles.leadGateTitle}>1. İletişim & Danışan Bilgileri</span>
-                  </div>
-                  <p className={styles.leadGateDesc}>
-                    Projenizin resmi fizibilite raporunu oluşturabilmemiz ve keşif detaylarını paylaşabilmemiz için iletişim bilgilerinizi giriniz.
-                  </p>
-                  
-                  <div className={styles.leadGateGrid}>
-                    <div>
-                      <label className={styles.inputLabel}>Adınız Soyadınız *</label>
-                      <input 
-                        type="text" 
-                        required
-                        value={leadForm.name}
-                        onChange={(e) => {
-                          setLeadForm({ ...leadForm, name: e.target.value });
-                          if (leadError) setLeadError("");
-                        }}
-                        className={styles.leadInputRequired} 
-                        placeholder="Örn: Ahmet Yılmaz" 
-                      />
+                {/* 1. Kompakt Telefon Gate Barı (SADECE TELEFON, Hızlı & Zarif) */}
+                <div className={styles.phoneGateBar}>
+                  <div className={styles.phoneGateLeft}>
+                    <div className={styles.phoneIconWrap}>
+                      <Phone size={20} />
                     </div>
                     <div>
-                      <label className={styles.inputLabel}>Telefon Numaranız *</label>
-                      <input 
-                        type="tel" 
-                        required
-                        value={leadForm.phone}
-                        onChange={(e) => {
-                          setLeadForm({ ...leadForm, phone: e.target.value });
-                          if (leadError) setLeadError("");
-                        }}
-                        className={styles.leadInputRequired} 
-                        placeholder="05XX XXX XX XX" 
-                      />
-                    </div>
-                  </div>
-
-                  {leadError && (
-                    <div className={styles.leadGateAlert}>
-                      <AlertCircle size={16} />
-                      <span>{leadError}</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* 2. Ana Soru: Proje mi? Uygulama mı? */}
-                <div style={{ marginBottom: "1.5rem" }}>
-                  <h2 className={styles.stepTitle}>Hangi Alanda Hizmet Almak İstiyorsunuz?</h2>
-                  <p className={styles.stepDesc}>
-                    Mimarlık ve mühendislik proje tasarımı ile anahtar teslim şantiye uygulaması farklı mevzuat ve birim fiyatlarla hesaplanır.
-                  </p>
-
-                  <div className={styles.domainSwitcher}>
-                    <div 
-                      className={`${styles.domainBtn} ${domain === "project" ? styles.domainBtnActive : ""}`}
-                      onClick={() => handleDomainChange("project")}
-                    >
-                      <div className={styles.domainIconBadge}><PenTool size={22} /></div>
-                      <div className={styles.domainTitle}>Proje Hizmeti</div>
-                      <div className={styles.domainSubtitle}>
-                        TMMOB Mimarlar Odası odaklı; Rölöve, Restitüsyon, Restorasyon, Yeni Mimari Ruhsat & Statik Projelendirme.
-                      </div>
-                    </div>
-
-                    <div 
-                      className={`${styles.domainBtn} ${domain === "execution" ? styles.domainBtnActive : ""}`}
-                      onClick={() => handleDomainChange("execution")}
-                    >
-                      <div className={styles.domainIconBadge}><Hammer size={22} /></div>
-                      <div className={styles.domainTitle}>Uygulama Hizmeti</div>
-                      <div className={styles.domainSubtitle}>
-                        Şantiye & taahhüt odaklı; Tarihi Eser Restorasyonu, Anahtar Teslim İnşaat, Tadilat & Statik Güçlendirme İmalatı.
+                      <div className={styles.phoneGateTitle}>Telefon Numaranızla Hızlı Başlayın</div>
+                      <div className={styles.phoneGateSub}>
+                        Resmi birim fiyat raporu ve ön fizibiliteniz için cep numaranızı giriniz.
                       </div>
                     </div>
                   </div>
+
+                  <div className={styles.phoneInputWrapper}>
+                    <div className={styles.countryCodeBadge}>
+                      <span>🇹🇷</span> +90
+                    </div>
+                    <input 
+                      type="tel" 
+                      inputMode="numeric"
+                      autoComplete="tel"
+                      maxLength={14}
+                      value={leadForm.phone}
+                      onChange={handlePhoneChange}
+                      placeholder="05XX XXX XX XX" 
+                      className={styles.phoneGateInput}
+                    />
+                  </div>
                 </div>
 
-                {/* 3. Alt Kategori Seçimi */}
-                <h3 style={{ fontSize: "1.1rem", marginBottom: "0.75rem", color: "var(--text-primary)" }}>
-                  {domain === "project" ? "Projelendirme Kategorisini Seçin:" : "Uygulama / Şantiye Kategorisini Seçin:"}
-                </h3>
+                {leadError && (
+                  <div className={styles.phoneGateAlert}>
+                    <AlertCircle size={16} />
+                    <span>{leadError}</span>
+                  </div>
+                )}
 
-                <div className={styles.typeGrid}>
+                {/* 2. Zarif Segmented Tab Kontrolü (Proje vs Uygulama) */}
+                <div className={styles.segmentedControl}>
+                  <button 
+                    type="button"
+                    className={`${styles.segmentBtn} ${domain === "project" ? styles.segmentBtnActive : ""}`}
+                    onClick={() => handleDomainChange("project")}
+                  >
+                    <PenTool size={18} />
+                    <span>Mimari & Statik Proje Hizmeti</span>
+                    <span className={styles.segmentTag}>TMMOB</span>
+                  </button>
+
+                  <button 
+                    type="button"
+                    className={`${styles.segmentBtn} ${domain === "execution" ? styles.segmentBtnActive : ""}`}
+                    onClick={() => handleDomainChange("execution")}
+                  >
+                    <Hammer size={18} />
+                    <span>Uygulama & Şantiye İmalatı</span>
+                    <span className={styles.segmentTag}>ÇŞİDB 2026</span>
+                  </button>
+                </div>
+
+                {/* 3. Alt Kategori Seçim Başlığı & Kart Izgarası */}
+                <div className={styles.sectionHeaderCompact}>
+                  <h3 className={styles.stepTitleCompact}>
+                    {domain === "project" ? "Projelendirme Kategorisini Seçin:" : "Uygulama / Şantiye Alanını Seçin:"}
+                  </h3>
+                  <span className={styles.stepBadgeCompact}>
+                    {domain === "project" ? "3 Kategori" : "4 Kategori"}
+                  </span>
+                </div>
+
+                <div className={domain === "execution" ? styles.typeGrid4 : styles.typeGrid}>
                   {domain === "project" ? (
                     <>
                       {/* Proje: Eski Eser (2863 Sayılı Kanuna Tabi) */}
@@ -365,7 +370,7 @@ function WizardContent() {
                         className={`${styles.typeCard} ${projectType === "restoration" ? styles.typeCardSelected : ""}`}
                         onClick={() => handleTypeChange("restoration")}
                       >
-                        <div className={styles.typeIconWrapper}><Landmark size={26} /></div>
+                        <div className={styles.typeIconWrapper}><Landmark size={24} /></div>
                         <h3 className={styles.typeCardTitle}>Eski Eser (2863 Sayılı Kanun)</h3>
                         <p className={styles.typeCardDesc}>
                           2863 Sayılı Kültür ve Tabiat Varlıklarını Koruma Kanununa tabi tescilli yapılar için Lidar, rölöve, restitüsyon ve kurul onay projeleri.
@@ -377,7 +382,7 @@ function WizardContent() {
                         className={`${styles.typeCard} ${projectType === "new_architecture" ? styles.typeCardSelected : ""}`}
                         onClick={() => handleTypeChange("new_architecture")}
                       >
-                        <div className={styles.typeIconWrapper}><Building2 size={26} /></div>
+                        <div className={styles.typeIconWrapper}><Building2 size={24} /></div>
                         <h3 className={styles.typeCardTitle}>Yeni Yapı Mimari Tasarım</h3>
                         <p className={styles.typeCardDesc}>
                           Müstakil villa, konut veya ticari yapılar için belediye ruhsat, konsept ve uygulama projeleri (Koruma Kurulu gerektirmez).
@@ -389,7 +394,7 @@ function WizardContent() {
                         className={`${styles.typeCard} ${projectType === "strengthening" ? styles.typeCardSelected : ""}`}
                         onClick={() => handleTypeChange("strengthening")}
                       >
-                        <div className={styles.typeIconWrapper}><ShieldCheck size={26} /></div>
+                        <div className={styles.typeIconWrapper}><ShieldCheck size={24} /></div>
                         <h3 className={styles.typeCardTitle}>Statik Güçlendirme Projesi</h3>
                         <p className={styles.typeCardDesc}>
                           Mevcut bina taşıyıcı sistemi analizi, deprem performans tahkiki ve onaylı güçlendirme uygulama projeleri.
@@ -403,7 +408,7 @@ function WizardContent() {
                         className={`${styles.typeCard} ${projectType === "exec_restoration" ? styles.typeCardSelected : ""}`}
                         onClick={() => handleTypeChange("exec_restoration")}
                       >
-                        <div className={styles.typeIconWrapper}><Landmark size={26} /></div>
+                        <div className={styles.typeIconWrapper}><Landmark size={24} /></div>
                         <h3 className={styles.typeCardTitle}>Tarihi Yapı Restorasyonu</h3>
                         <p className={styles.typeCardDesc}>
                           2863 sayılı kanun ve Koruma Kurulu onaylı restorasyon uygulaması, özgün konservasyon ve fenni mesuliyet.
@@ -415,7 +420,7 @@ function WizardContent() {
                         className={`${styles.typeCard} ${projectType === "exec_new" ? styles.typeCardSelected : ""}`}
                         onClick={() => handleTypeChange("exec_new")}
                       >
-                        <div className={styles.typeIconWrapper}><Building2 size={26} /></div>
+                        <div className={styles.typeIconWrapper}><Building2 size={24} /></div>
                         <h3 className={styles.typeCardTitle}>Yeni Yapı İnşaat Uygulaması</h3>
                         <p className={styles.typeCardDesc}>
                           Arsanız üzerine anahtar teslim kaba ve ince yapı inşaat taahhüdü, şantiye şefliği ve yapı kullanım (İskan) teslimi.
@@ -427,7 +432,7 @@ function WizardContent() {
                         className={`${styles.typeCard} ${projectType === "exec_renovation" ? styles.typeCardSelected : ""}`}
                         onClick={() => handleTypeChange("exec_renovation")}
                       >
-                        <div className={styles.typeIconWrapper}><Wrench size={26} /></div>
+                        <div className={styles.typeIconWrapper}><Wrench size={24} /></div>
                         <h3 className={styles.typeCardTitle}>Tadilat & Tamirat Uygulaması</h3>
                         <p className={styles.typeCardDesc}>
                           Mevcut yapıda iç mekan yenileme, tesisat sıfırlama, çatı onarımı, ıslak hacimler ve lüks ince işçilik.
@@ -439,7 +444,7 @@ function WizardContent() {
                         className={`${styles.typeCard} ${projectType === "exec_strengthening" ? styles.typeCardSelected : ""}`}
                         onClick={() => handleTypeChange("exec_strengthening")}
                       >
-                        <div className={styles.typeIconWrapper}><ShieldCheck size={26} /></div>
+                        <div className={styles.typeIconWrapper}><ShieldCheck size={24} /></div>
                         <h3 className={styles.typeCardTitle}>Statik Güçlendirme İmalatı</h3>
                         <p className={styles.typeCardDesc}>
                           Karbon lif (CFRP), çelik mantolama, temel takviyesi ve epoksi enjeksiyon şantiye imalatları.
@@ -889,29 +894,32 @@ function WizardContent() {
                       <CheckCircle2 size={24} style={{ marginBottom: "0.5rem" }} />
                       <p><strong>Talebiniz başarıyla alındı!</strong></p>
                       <p style={{ fontSize: "0.85rem", marginTop: "0.25rem" }}>
-                        Sayın <strong>{leadForm.name}</strong>, teknik ekibimiz <strong>{leadForm.phone}</strong> numarası üzerinden en geç 24 saat içinde sizinle iletişime geçecektir.
+                        Sayın <strong>{leadForm.name.trim() || "Danışanımız"}</strong>, teknik ekibimiz <strong>{leadForm.phone}</strong> numarası üzerinden en geç 24 saat içinde sizinle iletişime geçecektir.
                       </p>
                     </div>
                   ) : (
                     <form onSubmit={handleSubmitLead} className={styles.leadFormGrid}>
                       <div className={styles.inputGroup}>
-                        <label className={styles.inputLabel}>Adınız Soyadınız</label>
+                        <label className={styles.inputLabel}>Adınız Soyadınız (İsteğe bağlı)</label>
                         <input 
                           type="text" 
-                          required
                           value={leadForm.name}
                           onChange={(e) => setLeadForm({ ...leadForm, name: e.target.value })}
                           className={styles.textInput} 
+                          placeholder="Örn: Ahmet Yılmaz"
                         />
                       </div>
                       <div className={styles.inputGroup}>
-                        <label className={styles.inputLabel}>Telefon Numaranız</label>
+                        <label className={styles.inputLabel}>Telefon Numaranız *</label>
                         <input 
                           type="tel" 
                           required
+                          inputMode="numeric"
+                          maxLength={14}
                           value={leadForm.phone}
-                          onChange={(e) => setLeadForm({ ...leadForm, phone: e.target.value })}
+                          onChange={handlePhoneChange}
                           className={styles.textInput} 
+                          placeholder="05XX XXX XX XX"
                         />
                       </div>
                       <div className={styles.inputGroup} style={{ gridColumn: "1 / -1" }}>

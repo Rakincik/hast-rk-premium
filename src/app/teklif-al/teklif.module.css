@@ -1,6 +1,6 @@
 .container {
   min-height: 100vh;
-  padding: 8rem 2rem 5rem 2rem;
+  padding: 7rem 2rem 4rem 2rem;
   max-width: 1400px;
   margin: 0 auto;
   position: relative;
@@ -10,7 +10,7 @@
 .header {
   text-align: center;
   max-width: 800px;
-  margin: 0 auto 3.5rem auto;
+  margin: 0 auto 2.25rem auto;
 }
 
 .badge {
@@ -26,13 +26,13 @@
   font-weight: 500;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .title {
-  font-size: clamp(2.2rem, 4vw, 3.5rem);
+  font-size: clamp(2rem, 3.5vw, 3.2rem);
   line-height: 1.15;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
   color: var(--text-primary);
 }
 
@@ -45,8 +45,8 @@
 
 .subtitle {
   color: var(--text-secondary);
-  font-size: 1.1rem;
-  line-height: 1.6;
+  font-size: 1.05rem;
+  line-height: 1.55;
 }
 
 /* Wizard Stepper Progress Bar */
@@ -56,7 +56,7 @@
   align-items: center;
   position: relative;
   max-width: 750px;
-  margin: 0 auto 4rem auto;
+  margin: 0 auto 2.5rem auto;
 }
 
 .stepperProgressLine {
@@ -1632,140 +1632,210 @@
   }
 }
 
-/* Step 1 Lead Gating */
-.leadGateCard {
-  background: linear-gradient(145deg, #18181b 0%, #201d19 100%);
-  border: 1px solid rgba(197, 168, 128, 0.35);
+/* Clean Phone Gate Bar */
+.phoneGateBar {
+  background: linear-gradient(135deg, #18181b 0%, #221d17 100%);
+  border: 1px solid rgba(197, 168, 128, 0.4);
   border-radius: 14px;
-  padding: 1.5rem;
+  padding: 1.15rem 1.5rem;
   margin-bottom: 2rem;
-}
-
-.leadGateHeader {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.5rem;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
-.leadGateTitle {
+.phoneGateLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex: 1;
+  min-width: 260px;
+}
+
+.phoneIconWrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(197, 168, 128, 0.15);
+  color: var(--accent-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.phoneGateTitle {
   font-size: 1.05rem;
   font-weight: 700;
-  color: var(--text-primary);
-}
-
-.leadGateDesc {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  margin-bottom: 1.25rem;
-  line-height: 1.4;
-}
-
-.leadGateGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-@media (max-width: 640px) {
-  .leadGateGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.leadInputRequired {
-  border: 1px solid rgba(197, 168, 128, 0.4);
-  background: #141414;
   color: #fff;
-  border-radius: 8px;
-  padding: 0.85rem 1rem;
-  font-size: 16px;
-  width: 100%;
-  outline: none;
-  transition: all 0.2s ease;
-  box-sizing: border-box;
+  letter-spacing: -0.01em;
 }
 
-.leadInputRequired:focus {
+.phoneGateSub {
+  font-size: 0.82rem;
+  color: #a1a1aa;
+  margin-top: 0.2rem;
+  line-height: 1.35;
+}
+
+.phoneInputWrapper {
+  display: flex;
+  align-items: center;
+  background: #101012;
+  border: 1.5px solid rgba(197, 168, 128, 0.45);
+  border-radius: 10px;
+  padding: 0.4rem 0.6rem 0.4rem 0.85rem;
+  gap: 0.65rem;
+  transition: all 0.25s ease;
+  min-width: 290px;
+}
+
+.phoneInputWrapper:focus-within {
   border-color: var(--accent-gold);
-  box-shadow: 0 0 10px rgba(197, 168, 128, 0.25);
+  box-shadow: 0 0 16px rgba(197, 168, 128, 0.35);
 }
 
-.leadGateAlert {
-  font-size: 0.8rem;
+.countryCodeBadge {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--accent-gold);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding-right: 0.65rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.14);
+  white-space: nowrap;
+}
+
+.phoneGateInput {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  outline: none;
+  width: 100%;
+  font-family: var(--font-sans), monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.phoneGateInput::placeholder {
+  color: #52525b;
+  font-weight: 400;
+  letter-spacing: normal;
+}
+
+.phoneGateAlert {
+  width: 100%;
+  font-size: 0.82rem;
   color: #f87171;
-  margin-top: 0.75rem;
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  background: rgba(239, 68, 68, 0.1);
-  padding: 0.5rem 0.85rem;
-  border-radius: 6px;
-  border: 1px solid rgba(239, 68, 68, 0.25);
+  background: rgba(239, 68, 68, 0.12);
+  padding: 0.6rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  margin-top: -1rem;
+  margin-bottom: 1.5rem;
 }
 
-/* Domain Switcher (Proje vs Uygulama) */
-.domainSwitcher {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-@media (max-width: 640px) {
-  .domainSwitcher {
-    grid-template-columns: 1fr;
-  }
-}
-
-.domainBtn {
+/* Executive Segmented Tab Switcher (Proje vs Uygulama) */
+.segmentedControl {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 1.25rem 1.5rem;
   background: #141414;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
-  cursor: pointer;
-  text-align: left;
-  transition: all 0.25s ease;
-  position: relative;
+  padding: 0.35rem;
+  gap: 0.4rem;
+  margin-bottom: 1.75rem;
 }
 
-.domainBtn:hover {
-  border-color: rgba(197, 168, 128, 0.4);
-  transform: translateY(-2px);
+@media (max-width: 640px) {
+  .segmentedControl {
+    flex-direction: column;
+  }
 }
 
-.domainBtnActive {
-  background: linear-gradient(145deg, #1c1917 0%, #28221a 100%);
-  border: 2px solid var(--accent-gold);
-  box-shadow: 0 10px 25px rgba(197, 168, 128, 0.15);
-}
-
-.domainIconBadge {
-  display: inline-flex;
+.segmentBtn {
+  flex: 1;
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  background: rgba(197, 168, 128, 0.15);
-  color: var(--accent-gold);
-  margin-bottom: 0.75rem;
-}
-
-.domainTitle {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 0.25rem;
-}
-
-.domainSubtitle {
-  font-size: 0.8rem;
+  gap: 0.65rem;
+  padding: 0.85rem 1.25rem;
+  border-radius: 9px;
+  background: transparent;
+  border: none;
   color: var(--text-secondary);
-  line-height: 1.35;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.segmentBtn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.segmentBtnActive {
+  background: linear-gradient(135deg, #221e1a 0%, #2e261f 100%);
+  color: var(--accent-gold);
+  border: 1px solid rgba(197, 168, 128, 0.4);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.segmentTag {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(197, 168, 128, 0.12);
+  color: var(--accent-gold);
+  border: 1px solid rgba(197, 168, 128, 0.25);
+}
+
+.sectionHeaderCompact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  margin-bottom: 0.85rem;
+}
+
+.stepTitleCompact {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.stepBadgeCompact {
+  font-size: 0.725rem;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(197, 168, 128, 0.1);
+  color: var(--accent-gold);
+  border: 1px solid rgba(197, 168, 128, 0.25);
+  font-weight: 500;
+}
+
+/* Responsive Grid for 4 Execution Cards */
+.typeGrid4 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+  .typeGrid4 {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Arsa Durumu Seçimi (Uygulama -> Yeni Yapı) */
