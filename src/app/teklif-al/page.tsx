@@ -230,7 +230,8 @@ function WizardContent() {
           <Landmark size={15} /> ÇŞİDB 2026 Yapı Birim Maliyetleri & TMMOB Normları
         </div>
         <h1 className={styles.title}>
-          Akıllı Mimari & Uygulama <br/>
+          Akıllı Mimari & Uygulama{" "}
+          <br className={styles.desktopBr} />
           <span className={styles.titleGold}>Teklif Sihirbazı</span>
         </h1>
         <p className={styles.subtitle}>

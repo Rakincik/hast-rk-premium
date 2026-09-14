@@ -21,11 +21,12 @@
 }
 
 .title {
-  font-size: clamp(2.3rem, 4vw, 3.6rem);
+  font-size: clamp(1.85rem, 4.5vw, 3.6rem);
   font-weight: 300;
   line-height: 1.2;
   margin-bottom: 1.2rem;
   color: #ffffff;
+  overflow-wrap: break-word;
 }
 
 .subtitle {
@@ -108,4 +109,28 @@
   line-height: 1.8;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   padding-top: 1.2rem;
+}
+
+@media (max-width: 768px) {
+  .header {
+    margin-bottom: 2.5rem;
+  }
+
+  .title {
+    font-size: clamp(1.75rem, 6.5vw, 2.4rem);
+  }
+
+  .questionBtn {
+    padding: 1.2rem 1.15rem;
+  }
+
+  .questionText {
+    font-size: 1.05rem;
+  }
+
+  .answerContent {
+    padding: 0 1.15rem 1.25rem 1.15rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
 }

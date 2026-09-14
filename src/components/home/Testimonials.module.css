@@ -21,11 +21,12 @@
 }
 
 .title {
-  font-size: clamp(2.3rem, 4vw, 3.6rem);
+  font-size: clamp(1.85rem, 4.5vw, 3.6rem);
   font-weight: 300;
   line-height: 1.2;
   margin-bottom: 1.2rem;
   color: #ffffff;
+  overflow-wrap: break-word;
 }
 
 .subtitle {
@@ -142,4 +143,30 @@
   font-size: 0.78rem;
   color: var(--accent-gold);
   margin-top: 2px;
+}
+
+@media (max-width: 768px) {
+  .header {
+    margin-bottom: 2.5rem;
+  }
+
+  .title {
+    font-size: clamp(1.75rem, 6.5vw, 2.4rem);
+  }
+
+  .subtitle {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .card {
+    padding: 1.6rem 1.3rem;
+    border-radius: 16px;
+  }
+
+  .quoteText {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    margin-bottom: 1.5rem;
+  }
 }

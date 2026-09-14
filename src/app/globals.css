@@ -31,11 +31,21 @@ body {
   font-family: var(--font-sans);
   scroll-behavior: smooth;
   transition: background-color 0.3s ease, color 0.3s ease;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  -webkit-text-size-adjust: 100%;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-serif);
   font-weight: 400;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+p, span, a, label, button, input, textarea, select {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 a {
@@ -79,11 +89,17 @@ a {
 
 @media (max-width: 768px) {
   .container {
-    padding: 0 1.25rem;
+    padding: 0 1rem;
   }
 
   .section {
-    padding: 4.5rem 0;
+    padding: 3.5rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 0.85rem;
   }
 }
 

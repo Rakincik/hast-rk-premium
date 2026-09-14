@@ -30,11 +30,12 @@
 
 .title {
   font-family: var(--font-serif);
-  font-size: clamp(2.4rem, 4.5vw, 4rem);
+  font-size: clamp(1.85rem, 4.5vw, 4rem);
   font-weight: 300;
   letter-spacing: -0.5px;
   margin-bottom: 1rem;
   color: #ffffff;
+  overflow-wrap: break-word;
 }
 
 .titleGold {
@@ -216,10 +217,50 @@
 }
 
 @media (max-width: 768px) {
+  .section {
+    padding: 3.5rem 0;
+  }
+
+  .header {
+    margin-bottom: 1.75rem;
+    padding: 0 10px;
+  }
+
+  .title {
+    font-size: clamp(1.65rem, 6.5vw, 2.3rem);
+  }
+
+  .subtitle {
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+
+  .tabsContainer {
+    gap: 6px;
+    padding: 0 10px;
+    margin-bottom: 1.75rem;
+  }
+
+  .tabBtn {
+    padding: 8px 14px;
+    font-size: 0.78rem;
+  }
+
+  .sliderWrapper {
+    padding: 0 10px;
+  }
+
   .projectMetaCard {
     flex-direction: column;
     align-items: stretch;
-    padding: 1.25rem;
+    padding: 1.15rem;
+  }
+
+  .ctaBtn {
+    width: 100%;
+    justify-content: center;
+    padding: 10px 18px;
+    font-size: 0.82rem;
   }
 }
 

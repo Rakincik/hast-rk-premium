@@ -133,10 +133,11 @@
 
 .quoteTitle {
   font-family: var(--font-serif);
-  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-size: clamp(1.6rem, 3.5vw, 3rem);
   font-weight: 400;
   line-height: 1.25;
   color: #ffffff;
+  overflow-wrap: break-word;
 }
 
 .goldSpan {
@@ -214,4 +215,35 @@
   border-color: var(--accent-gold);
   color: var(--accent-gold);
   transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 3.5rem 0 4rem 0;
+  }
+
+  .grid {
+    gap: 2.5rem;
+  }
+
+  .quoteTitle {
+    font-size: clamp(1.45rem, 6vw, 2.2rem);
+  }
+
+  .paragraphs {
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .highlightText {
+    font-size: 1rem;
+    padding-left: 0.75rem;
+  }
+
+  .imageBadge {
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+    padding: 0.85rem 1rem;
+  }
 }

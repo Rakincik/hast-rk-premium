@@ -288,3 +288,54 @@
   color: var(--text-secondary);
   display: block;
 }
+
+@media (max-width: 768px) {
+  .heroTitle {
+    font-size: clamp(1.85rem, 7.5vw, 3.2rem);
+    line-height: 1.2;
+    margin-bottom: 1.25rem;
+  }
+
+  .heroSubtitle {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    padding-left: 1rem;
+    max-width: 100%;
+  }
+
+  .heroContent {
+    padding-top: 100px;
+    padding-bottom: 30px;
+  }
+
+  .aboutGrid {
+    padding: 2rem 1.25rem;
+    gap: 2.25rem;
+    border-radius: 18px;
+  }
+
+  .sectionTitle {
+    font-size: clamp(1.75rem, 6.5vw, 2.5rem);
+    margin-bottom: 1.25rem;
+  }
+
+  .aboutText p {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .aboutStats {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .statBox {
+    padding: 1.25rem 1.5rem;
+    border-radius: 12px;
+  }
+
+  .statBox h3 {
+    font-size: 2.6rem;
+  }
+}

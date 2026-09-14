@@ -22,8 +22,33 @@
 
 @media (max-width: 768px) {
   .bannerCard {
-    padding: 3rem 1.8rem;
-    gap: 2rem;
+    padding: 2.25rem 1.25rem;
+    gap: 1.75rem;
+    border-radius: 20px;
+  }
+
+  .title {
+    font-size: clamp(1.65rem, 6.5vw, 2.4rem);
+  }
+
+  .subtitle {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.75rem;
+  }
+
+  .primaryBtn,
+  .whatsappBtn,
+  .phoneBtn {
+    width: 100%;
+    justify-content: center;
+    padding: 1rem 1.5rem;
+    font-size: 0.92rem;
   }
 }
 
@@ -37,11 +62,12 @@
 }
 
 .title {
-  font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+  font-size: clamp(1.85rem, 4.5vw, 3.8rem);
   font-weight: 300;
   line-height: 1.15;
   max-width: 900px;
   color: #ffffff;
+  overflow-wrap: break-word;
 }
 
 .subtitle {
