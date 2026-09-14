@@ -12,9 +12,12 @@ import {
   CheckCircle2, 
   Calculator, 
   MessageCircle, 
-  Clock 
+  Hammer,
+  Landmark,
+  Wrench
 } from "lucide-react";
 import { 
+  ServiceDomain,
   ProjectType, 
   BuildingMaterial, 
   calculateQuote, 
@@ -23,58 +26,107 @@ import {
 } from "@/lib/quoteEngine";
 
 export default function HomeQuoteTeaser() {
-  const [projectType, setProjectType] = useState<'restoration' | 'new_architecture' | 'strengthening'>("restoration");
-  const [area, setArea] = useState<number>(350);
+  const [domain, setDomain] = useState<ServiceDomain>("project");
+  const [projectType, setProjectType] = useState<ProjectType>("restoration");
+  const [area, setArea] = useState<number>(300);
   const [material, setMaterial] = useState<BuildingMaterial>("stone_masonry");
 
-  // Calculate live results using the official Hastürk quote engine
+  // Domain değiştiğinde tipi otomatik uyarla
+  const handleDomainChange = (newDomain: ServiceDomain) => {
+    setDomain(newDomain);
+    if (newDomain === "execution") {
+      setProjectType("exec_restoration");
+    } else {
+      setProjectType("restoration");
+    }
+  };
+
+  // Hesaplama motoru
   const quoteResult = useMemo(() => {
-    const recommendedServices = getServicesForType(projectType)
-      .filter(s => s.isRecommended)
-      .map(s => s.id);
+    const recommendedServices = getServicesForType(projectType, domain)
+      .filter((s) => s.isRecommended)
+      .map((s) => s.id);
 
     return calculateQuote({
+      domain,
       projectType,
       areaSquareMeters: area,
       buildingMaterial: material,
       heritageStatus: "grade_2",
       locationArea: "istanbul_fatih",
-      selectedServices: recommendedServices
+      selectedServices: recommendedServices,
+      hasLand: "yes",
     });
-  }, [projectType, area, material]);
+  }, [domain, projectType, area, material]);
 
-  const typeLabels: Record<'restoration' | 'new_architecture' | 'strengthening', { title: string; icon: React.ReactNode }> = {
+  // Proje Hizmeti Kategorileri (3'lü)
+  const projectTypeLabels: Record<
+    "restoration" | "new_architecture" | "strengthening",
+    { title: string; icon: React.ReactNode }
+  > = {
     restoration: {
-      title: "Restorasyon & Rölöve",
-      icon: <Building2 size={22} strokeWidth={1.5} />
+      title: "Eski Eser (2863)",
+      icon: <Landmark size={20} strokeWidth={1.5} />,
     },
     new_architecture: {
       title: "Yeni Mimari Tasarım",
-      icon: <PenTool size={22} strokeWidth={1.5} />
+      icon: <Building2 size={20} strokeWidth={1.5} />,
     },
     strengthening: {
       title: "Statik Güçlendirme",
-      icon: <ShieldCheck size={22} strokeWidth={1.5} />
-    }
+      icon: <ShieldCheck size={20} strokeWidth={1.5} />,
+    },
+  };
+
+  // Uygulama Hizmeti Kategorileri (4'lü)
+  const executionTypeLabels: Record<
+    "exec_restoration" | "exec_new" | "exec_renovation" | "exec_strengthening",
+    { title: string; icon: React.ReactNode }
+  > = {
+    exec_restoration: {
+      title: "Tarihi Restorasyon",
+      icon: <Landmark size={20} strokeWidth={1.5} />,
+    },
+    exec_new: {
+      title: "Yeni Yapı İnşaatı",
+      icon: <Building2 size={20} strokeWidth={1.5} />,
+    },
+    exec_renovation: {
+      title: "Tadilat & Tamirat",
+      icon: <Wrench size={20} strokeWidth={1.5} />,
+    },
+    exec_strengthening: {
+      title: "Güçlendirme İmalatı",
+      icon: <ShieldCheck size={20} strokeWidth={1.5} />,
+    },
   };
 
   const materialLabels: Record<BuildingMaterial, string> = {
     stone_masonry: "Yığma Taş / Kagir",
     wood: "Geleneksel Ahşap",
     composite: "Karma (Bağdadi/Taş)",
-    concrete: "Betonarme"
+    concrete: "Betonarme",
   };
 
-  // Pre-filled WhatsApp link with calculated preview details
+  const typeTitleMap: Record<ProjectType, string> = {
+    restoration: "Eski Eser Restorasyon Projesi (2863)",
+    new_architecture: "Yeni Yapı Mimari Tasarım & Ruhsat",
+    strengthening: "Statik Güçlendirme Projesi",
+    exec_restoration: "Tarihi Yapı Restorasyon Uygulaması",
+    exec_new: "Yeni Yapı İnşaat Uygulaması",
+    exec_renovation: "Tadilat & Tamirat Uygulaması",
+    exec_strengthening: "Statik Güçlendirme Uygulaması",
+  };
+
   const whatsappMsg = encodeURIComponent(
-    `Merhaba Hastürk Mimarlık, anasayfa hesaplama motorunuz üzerinden bilgi almak istiyorum.\n\n` +
-    `• Proje Türü: ${typeLabels[projectType].title}\n` +
+    `Merhaba Hastürk Mimarlık, anasayfa hesaplama motorunuz üzerinden teklif simülasyonu oluşturdum:\n\n` +
+    `• Hizmet Alanı: ${domain === 'execution' ? 'Uygulama & Şantiye İmalatı' : 'Mimari & Mühendislik Proje Hizmeti'}\n` +
+    `• Kategori: ${typeTitleMap[projectType]}\n` +
     `• Yapı Alanı: ${area} m²\n` +
-    `• Malzeme: ${materialLabels[material]}\n` +
-    `• Bakanlık Sınıfı: ${quoteResult.ministryClass.name} (${quoteResult.ministryClass.code} - ${formatCurrencyTL(quoteResult.ministryClass.unitCostPerM2)}/m²)\n` +
-    `• Yapı Yaklaşık Maliyeti (PYM): ${formatCurrencyTL(quoteResult.totalEstimatedCost)}\n` +
-    `• Tahmini Proje Bedeli: ~${formatCurrencyTL(quoteResult.packageFees.comprehensive)}\n\n` +
-    `Detaylı keşif ve teklif için görüşebilir miyiz?`
+    `• Strüktür: ${materialLabels[material]}\n` +
+    `• Bakanlık Yaklaşık Maliyeti: ${formatCurrencyTL(quoteResult.totalEstimatedCost)}\n` +
+    `• Tahmini Hesaplanan Bedel: ~${formatCurrencyTL(quoteResult.packageFees.comprehensive)}\n\n` +
+    `Detaylı resmi keşif ve teklif dosyası için görüşmek istiyorum.`
   );
 
   return (
@@ -93,7 +145,7 @@ export default function HomeQuoteTeaser() {
             <span className="text-gold">Akıllı Mimari Teklif Motoru</span>
           </h2>
           <p className={styles.subtitle}>
-            Çevre, Şehircilik ve İklim Değişikliği Bakanlığı 2026 Yapı Yaklaşık Birim Maliyetleri ve TMMOB yasal taban formülleriyle yapınızın proje bedelini anında simüle edin.
+            Çevre, Şehircilik ve İklim Değişikliği Bakanlığı 2026 Yapı Yaklaşık Birim Maliyetleri ve TMMOB yasal taban formülleriyle projenizi saniyeler içinde hesaplayın.
           </p>
         </motion.div>
 
@@ -107,30 +159,74 @@ export default function HomeQuoteTeaser() {
           {/* Controls Column */}
           <div className={styles.inputsCol}>
             
-            {/* Project Type */}
-            <div className={styles.formGroup}>
-              <label className={styles.label}>
-                <span>1. Proje Türünü Seçin</span>
+            {/* 1. Hizmet Alanı Segmented Switcher (Proje vs Uygulama) */}
+            <div>
+              <label className={styles.label} style={{ marginBottom: "0.6rem" }}>
+                <span>1. Hizmet Alanını Belirleyin</span>
               </label>
-              <div className={styles.typeSelector}>
-                {(Object.keys(typeLabels) as ('restoration' | 'new_architecture' | 'strengthening')[]).map((type) => (
-                  <button
-                    key={type}
-                    type="button"
-                    className={`${styles.typeBtn} ${projectType === type ? styles.typeBtnActive : ""}`}
-                    onClick={() => setProjectType(type)}
-                  >
-                    {typeLabels[type].icon}
-                    <span>{typeLabels[type].title}</span>
-                  </button>
-                ))}
+              <div className={styles.domainSegmentedControl}>
+                <button
+                  type="button"
+                  className={`${styles.domainSegmentBtn} ${domain === "project" ? styles.domainSegmentBtnActive : ""}`}
+                  onClick={() => handleDomainChange("project")}
+                >
+                  <PenTool size={17} />
+                  <span>Mimari & Statik Proje</span>
+                  <span className={styles.domainSegmentTag}>TMMOB</span>
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.domainSegmentBtn} ${domain === "execution" ? styles.domainSegmentBtnActive : ""}`}
+                  onClick={() => handleDomainChange("execution")}
+                >
+                  <Hammer size={17} />
+                  <span>Şantiye Uygulaması</span>
+                  <span className={styles.domainSegmentTag}>ÇŞİDB 2026</span>
+                </button>
               </div>
             </div>
 
-            {/* Area Slider */}
+            {/* 2. Kategori Seçimi */}
+            <div className={styles.formGroup}>
+              <label className={styles.label}>
+                <span>2. {domain === "project" ? "Projelendirme Kategorisi" : "Şantiye & Uygulama Alanı"}</span>
+              </label>
+
+              {domain === "project" ? (
+                <div className={styles.typeSelector}>
+                  {(Object.keys(projectTypeLabels) as ("restoration" | "new_architecture" | "strengthening")[]).map((type) => (
+                    <button
+                      key={type}
+                      type="button"
+                      className={`${styles.typeBtn} ${projectType === type ? styles.typeBtnActive : ""}`}
+                      onClick={() => setProjectType(type)}
+                    >
+                      {projectTypeLabels[type].icon}
+                      <span>{projectTypeLabels[type].title}</span>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div className={styles.typeSelector4}>
+                  {(Object.keys(executionTypeLabels) as ("exec_restoration" | "exec_new" | "exec_renovation" | "exec_strengthening")[]).map((type) => (
+                    <button
+                      key={type}
+                      type="button"
+                      className={`${styles.typeBtn} ${projectType === type ? styles.typeBtnActive : ""}`}
+                      onClick={() => setProjectType(type)}
+                    >
+                      {executionTypeLabels[type].icon}
+                      <span>{executionTypeLabels[type].title}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* 3. Area Slider */}
             <div className={styles.formGroup}>
               <div className={styles.label}>
-                <span>2. Toplam İnşaat / Kapalı Alan:</span>
+                <span>3. Toplam İnşaat / Kapalı Alan:</span>
                 <span className={styles.sliderValue}>{area} m²</span>
               </div>
               <div className={styles.sliderContainer}>
@@ -147,10 +243,10 @@ export default function HomeQuoteTeaser() {
               </div>
             </div>
 
-            {/* Material */}
+            {/* 4. Material */}
             <div className={styles.formGroup}>
               <label className={styles.label}>
-                <span>3. Mevcut / Hedef Yapı Strüktürü</span>
+                <span>4. Mevcut / Hedef Yapı Strüktürü</span>
               </label>
               <div className={styles.materialSelector}>
                 {(Object.keys(materialLabels) as BuildingMaterial[]).map((mat) => (
@@ -171,45 +267,72 @@ export default function HomeQuoteTeaser() {
           {/* Result Output Column */}
           <div className={styles.resultsCol}>
             <div>
-              <span className={styles.resultTitle}>Tahmini Mimari & Mühendislik Bedeli</span>
+              <span className={styles.resultTitle}>
+                {domain === "execution" ? "Tahmini Uygulama Bedeli" : "Tahmini Mimari & Mühendislik Bedeli"}
+              </span>
               <div className={styles.mainFee}>
                 {formatCurrencyTL(quoteResult.packageFees.comprehensive)}
               </div>
               <p className={styles.mainFeeDesc}>
-                *{quoteResult.ministryClass.name} ({quoteResult.ministryClass.code} - {formatCurrencyTL(quoteResult.ministryClass.unitCostPerM2)}/m²) ve TMMOB standartları esas alınmıştır.
+                {domain === "execution" 
+                  ? `*ÇŞİDB 2026 ${quoteResult.ministryClass.name} reel uygulama rayiçleri esas alınmıştır.`
+                  : `*TMMOB 2026 Mimarlar Odası asgari bedel normları esas alınmıştır.`}
               </p>
             </div>
 
             <div className={styles.statsRow}>
               <div className={styles.statItem}>
-                <span className={styles.statLabel}>Bakanlık Yaklaşık Maliyeti (PYM)</span>
+                <span className={styles.statLabel}>
+                  {domain === "execution" ? "Hesaplanan Yapı Maliyeti:" : "Bakanlık Yaklaşık Mal. (PYM):"}
+                </span>
                 <span className={styles.statVal}>{formatCurrencyTL(quoteResult.totalEstimatedCost)}</span>
               </div>
               <div className={styles.statItem}>
-                <span className={styles.statLabel}>1.5× Uygulama Birim Fiyatı</span>
-                <span className={styles.statVal} style={{ fontSize: "0.9rem", color: "var(--accent-gold)" }}>
-                  {formatCurrencyTL(quoteResult.ministryClass.unitCostPerM2)}/m²
+                <span className={styles.statLabel}>Mevzuat Standartı:</span>
+                <span className={styles.statVal} style={{ fontSize: "0.85rem", color: "var(--accent-gold)" }}>
+                  {quoteResult.showConservationBoard 
+                    ? "2863 Sayılı Kanun & Koruma Kurulu" 
+                    : (domain === "execution" ? "1. Sınıf Şantiye Şefliği" : "Belediye Ruhsat Normu")}
                 </span>
               </div>
             </div>
 
             <div className={styles.includedFeatures}>
-              <div className={styles.featureItem}>
-                <CheckCircle2 size={16} className={styles.checkIcon} />
-                <span>3D Lazer Lidar Tarama & Nokta Bulutu Modelleme</span>
-              </div>
-              <div className={styles.featureItem}>
-                <CheckCircle2 size={16} className={styles.checkIcon} />
-                <span>Kültür Varlıkları Koruma Kurulu Dosya Yönetimi</span>
-              </div>
-              <div className={styles.featureItem}>
-                <CheckCircle2 size={16} className={styles.checkIcon} />
-                <span>Milimetrik Hasar Analizi ve Restitüsyon Raporu</span>
-              </div>
+              {domain === "execution" ? (
+                <>
+                  <div className={styles.featureItem}>
+                    <CheckCircle2 size={16} className={styles.checkIcon} />
+                    <span>Anahtar Teslim Şantiye Yönetimi & Fenni Mesuliyet</span>
+                  </div>
+                  <div className={styles.featureItem}>
+                    <CheckCircle2 size={16} className={styles.checkIcon} />
+                    <span>ÇŞİDB ve TSE Onaylı 1. Sınıf Malzeme Güvencesi</span>
+                  </div>
+                  <div className={styles.featureItem}>
+                    <CheckCircle2 size={16} className={styles.checkIcon} />
+                    <span>Aşamalı Hakediş ve Resmi Şantiye Günlüğü Takibi</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className={styles.featureItem}>
+                    <CheckCircle2 size={16} className={styles.checkIcon} />
+                    <span>3D Lazer Lidar Tarama & Nokta Bulutu Modelleme</span>
+                  </div>
+                  <div className={styles.featureItem}>
+                    <CheckCircle2 size={16} className={styles.checkIcon} />
+                    <span>{quoteResult.showConservationBoard ? "Kültür Varlıkları Koruma Kurulu Dosya Yönetimi" : "Belediye Ruhsat & Statik Onay Projeleri"}</span>
+                  </div>
+                  <div className={styles.featureItem}>
+                    <CheckCircle2 size={16} className={styles.checkIcon} />
+                    <span>Milimetrik Hasar Analizi ve Resmi Rölöve Raporu</span>
+                  </div>
+                </>
+              )}
             </div>
 
             <div className={styles.actionBtns}>
-              <Link href="/teklif-al" className={styles.primaryCta}>
+              <Link href={`/teklif-al?type=${projectType}`} className={styles.primaryCta}>
                 <Calculator size={18} />
                 <span>Detaylı Rapor & Teklif Al</span>
                 <ArrowRight size={18} />

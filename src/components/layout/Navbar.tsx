@@ -57,10 +57,10 @@ export default function Navbar() {
         <div className={`container ${styles.navContainer}`}>
           <Link href="/" className={styles.brand}>
             <Image 
-              src="/logo.avif" 
+              src="/logo-gold.png" 
               alt="Hastürk Sanat ve Mimarlık Logo" 
-              width={38} 
-              height={38} 
+              width={36} 
+              height={36} 
               priority
               className={styles.brandLogoImg}
             />

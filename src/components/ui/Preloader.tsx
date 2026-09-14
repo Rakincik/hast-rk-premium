@@ -68,7 +68,7 @@ export default function Preloader() {
             {/* Official Logo Emblem */}
             <div className={styles.logoWrapper}>
               <Image 
-                src="/logo.avif" 
+                src="/logo-gold.png" 
                 alt="Hastürk Logo" 
                 width={120} 
                 height={120} 
