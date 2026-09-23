@@ -5,13 +5,17 @@ import Link from "next/link";
 import styles from "./Projects.module.css";
 import { ArrowRight, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useSiteContent } from "@/context/SiteContentContext";
 
 export default function Projects() {
   const { t } = useLanguage();
+  const { content } = useSiteContent();
   const trackRef = useRef<HTMLDivElement>(null);
   const [hoveredProject, setHoveredProject] = useState<number | null>(null);
 
-  const flagshipProjects = [
+  const flagshipProjects = (content.projects && content.projects.length > 0)
+    ? content.projects.filter((p) => p.featuredOnHome !== false)
+    : [
     {
       id: 1,
       title: t("proj_1_title", "Taksim 360 Kentsel Yenileme & Restorasyon"),

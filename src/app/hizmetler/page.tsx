@@ -103,7 +103,36 @@ const services = [
   }
 ];
 
+import { useSiteContent } from "@/context/SiteContentContext";
+
 export default function HizmetlerPage() {
+  const { content } = useSiteContent();
+
+  const getIcon = (name?: string) => {
+    switch (name) {
+      case "Brush":
+        return <Brush size={28} />;
+      case "Hammer":
+        return <Hammer size={28} />;
+      case "Home":
+        return <Home size={28} />;
+      case "Construction":
+        return <Construction size={28} />;
+      case "Paintbrush":
+        return <Paintbrush size={28} />;
+      default:
+        return <Building2 size={28} />;
+    }
+  };
+
+  const list =
+    content.services && content.services.length > 0
+      ? content.services.map((s) => ({
+          ...s,
+          icon: getIcon(s.iconName),
+        }))
+      : services;
+
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
@@ -148,7 +177,7 @@ export default function HizmetlerPage() {
         initial="hidden"
         animate="visible"
       >
-        {services.map((service) => (
+        {list.map((service) => (
           <motion.div key={service.id} className={styles.card} variants={itemVariants}>
             <div>
               <div className={styles.cardTop}>

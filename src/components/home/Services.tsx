@@ -4,9 +4,28 @@ import { motion } from "framer-motion";
 import styles from "./Services.module.css";
 import { Hammer, Search, PenTool, ShieldCheck, Building2 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useSiteContent } from "@/context/SiteContentContext";
 
 export default function Services() {
   const { t } = useLanguage();
+  const { content } = useSiteContent();
+
+  const getIcon = (name?: string) => {
+    switch (name) {
+      case "Brush":
+        return <Search size={40} strokeWidth={1.5} />;
+      case "Hammer":
+        return <Hammer size={40} strokeWidth={1.5} />;
+      case "Home":
+        return <PenTool size={40} strokeWidth={1.5} />;
+      case "Construction":
+        return <ShieldCheck size={40} strokeWidth={1.5} />;
+      case "Paintbrush":
+        return <PenTool size={40} strokeWidth={1.5} />;
+      default:
+        return <Building2 size={40} strokeWidth={1.5} />;
+    }
+  };
 
   const servicesData = [
     {
@@ -41,6 +60,16 @@ export default function Services() {
     }
   ];
 
+  const list =
+    content.services && content.services.length > 0
+      ? content.services.map((s) => ({
+          id: s.id,
+          title: s.title,
+          description: s.desc,
+          icon: getIcon(s.iconName),
+        }))
+      : servicesData;
+
   return (
     <section className={`section ${styles.servicesSection}`}>
       <div className="container">
@@ -56,7 +85,7 @@ export default function Services() {
         </motion.div>
 
         <div className={styles.grid}>
-          {servicesData.map((service, index) => (
+          {list.map((service, index) => (
             <motion.div
               key={service.id}
               className={styles.card}

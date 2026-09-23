@@ -215,14 +215,19 @@ const categories = [
   { key: "taahhut", label: "Taahhüt" }
 ];
 
+import { useSiteContent } from "@/context/SiteContentContext";
+
 export default function ProjelerPage() {
+  const { content } = useSiteContent();
   const [activeCategory, setActiveCategory] = useState("all");
   const [selectedProject, setSelectedProject] = useState<ProjectData | null>(null);
 
+  const projectsList = (content.projects && content.projects.length > 0) ? content.projects : allProjects;
+
   const filteredProjects = useMemo(() => {
-    if (activeCategory === "all") return allProjects;
-    return allProjects.filter((p) => p.categoryKey === activeCategory);
-  }, [activeCategory]);
+    if (activeCategory === "all") return projectsList;
+    return projectsList.filter((p) => p.categoryKey === activeCategory);
+  }, [activeCategory, projectsList]);
 
   return (
     <div className={styles.container}>

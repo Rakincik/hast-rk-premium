@@ -5,9 +5,13 @@ import Link from "next/link";
 import styles from "./FounderNote.module.css";
 import { ArrowRight } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useSiteContent } from "@/context/SiteContentContext";
 
 export default function FounderNote() {
   const { t, language } = useLanguage();
+  const { content } = useSiteContent();
+
+  const founder = content.founder || {};
 
   return (
     <section className={styles.section}>
@@ -24,18 +28,18 @@ export default function FounderNote() {
           >
             <div className={styles.imageFrame}>
               <img 
-                src="https://static.wixstatic.com/media/4bb5c9_41a37e2d629b45c59b8e07b08500df6c~mv2.png" 
-                alt="Y. Mimar Okan HASTÜRK - Hastürk Sanat ve Mimarlık Kurucusu"
+                src={founder.image || "https://static.wixstatic.com/media/4bb5c9_41a37e2d629b45c59b8e07b08500df6c~mv2.png"} 
+                alt={`${founder.name || "Okan HASTÜRK"} - Hastürk Sanat ve Mimarlık Kurucusu`}
                 className={styles.portraitImg}
               />
               <div className={styles.imageOverlay} />
               <div className={styles.imageBadge}>
                 <div>
-                  <span className={styles.badgeName}>Okan HASTÜRK</span>
-                  <span className={styles.badgeRole}>{t("founder_role", "Y. Mimar · Kurucu")}</span>
+                  <span className={styles.badgeName}>{founder.name || "Okan HASTÜRK"}</span>
+                  <span className={styles.badgeRole}>{founder.role || t("founder_role", "Y. Mimar · Kurucu")}</span>
                 </div>
                 <div className={styles.badgeExp}>
-                  20+
+                  {founder.yearsExperience || "20+"}
                   <span>{t("stat_years", "Yıllık Tecrübe")}</span>
                 </div>
               </div>
@@ -50,25 +54,34 @@ export default function FounderNote() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <span className={styles.tagline}>{t("founder_badge", "Kurucu Mimarın Notu")}</span>
+            <span className={styles.tagline}>{founder.tagline || t("founder_badge", "Kurucu Mimarın Notu")}</span>
 
             <h2 className={styles.quoteTitle}>
-              {t("founder_title_1", "Tarihe dokunurken yalnızca taşları değil,")} <br />
-              <span className={styles.goldSpan}>{t("founder_title_2", "bir medeniyetin hafızasını onarıyoruz.")}</span>
+              {founder.title1 || t("founder_title_1", "Tarihe dokunurken yalnızca taşları değil,")} <br />
+              <span className={styles.goldSpan}>{founder.title2 || t("founder_title_2", "bir medeniyetin hafızasını onarıyoruz.")}</span>
             </h2>
 
             <div className={styles.paragraphs}>
-              <p>
-                {t("founder_p1", "Restorasyon bizim için sıradan bir inşaat faaliyeti değil; geçmişin büyük ustalarıyla çağdaş mühendisliğin ilkeleri arasında kurduğumuz derin bir diyalogdur.")}
-              </p>
+              {founder.paragraphs && founder.paragraphs.length > 0 ? (
+                founder.paragraphs.map((p, idx) => (
+                  <p key={idx}>{p}</p>
+                ))
+              ) : (
+                <>
+                  <p>
+                    {t("founder_p1", "Restorasyon bizim için sıradan bir inşaat faaliyeti değil; geçmişin büyük ustalarıyla çağdaş mühendisliğin ilkeleri arasında kurduğumuz derin bir diyalogdur.")}
+                  </p>
+                  <p>
+                    {t("founder_p2", "Boğaziçi'nin asırlık ahşap yalılarından Tarihi Yarımada'nın tescilli kagir konaklarına kadar her projede, eserin özgün ruhunu koruyarak geleceğe güvenle aktarmanın gururunu yaşıyoruz.")}
+                  </p>
+                </>
+              )}
 
-              <div className={styles.highlightText}>
-                &ldquo;{t("founder_quote", "Kültürel mirasımıza duyduğumuz saygı, projelendirmedeki milimetrik hassasiyetimiz ve şantiyedeki usta zanaatkarlığımız başarımızın yegane temelidir.")}&rdquo;
-              </div>
-
-              <p>
-                {t("founder_p2", "Boğaziçi'nin asırlık ahşap yalılarından Tarihi Yarımada'nın tescilli kagir konaklarına kadar her projede, eserin özgün ruhunu koruyarak geleceğe güvenle aktarmanın gururunu yaşıyoruz.")}
-              </p>
+              {founder.quote && (
+                <div className={styles.highlightText}>
+                  &ldquo;{founder.quote}&rdquo;
+                </div>
+              )}
             </div>
 
             <div className={styles.signatureArea}>

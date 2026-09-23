@@ -5,9 +5,11 @@ import styles from "./Footer.module.css";
 import { ArrowRight } from "lucide-react";
 import MagneticButton from "../ui/MagneticButton";
 import { useLanguage } from "@/context/LanguageContext";
+import { useSiteContent } from "@/context/SiteContentContext";
 
 export default function Footer() {
   const { t, language } = useLanguage();
+  const { content } = useSiteContent();
 
   const getCtaTitle = () => {
     switch (language) {
@@ -98,10 +100,14 @@ export default function Footer() {
           <div className={styles.column}>
             <h4 className={styles.colTitle}>{t("footer_contact_info", "İletişim & Ofis")}</h4>
             <div className={styles.links}>
-              <a href="mailto:info@hasturksm.com" className={styles.link}>info@hasturksm.com</a>
-              <a href="tel:+905404278875" className={styles.link}>+90 540 427 88 75</a>
-              <a href="https://maps.google.com" target="_blank" rel="noreferrer" className={styles.link}>
-                Gümüşsuyu / Beyoğlu<br/>İstanbul, Türkiye
+              <a href={`mailto:${content.settings?.email || "info@hasturksm.com"}`} className={styles.link}>
+                {content.settings?.email || "info@hasturksm.com"}
+              </a>
+              <a href={`tel:${content.settings?.phone || "+905404278875"}`} className={styles.link}>
+                {content.settings?.phoneDisplay || "+90 540 427 88 75"}
+              </a>
+              <a href={content.settings?.googleMapsUrl || "https://maps.google.com"} target="_blank" rel="noreferrer" className={styles.link}>
+                {content.settings?.address || "Gümüşsuyu / Beyoğlu\nİstanbul, Türkiye"}
               </a>
             </div>
           </div>
@@ -109,11 +115,11 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className={styles.bottomBar}>
-          <div>&copy; {new Date().getFullYear()} Hastürk Sanat ve Mimarlık. {t("footer_rights", "Tüm hakları saklıdır.")}</div>
+          <div>&copy; {new Date().getFullYear()} {content.settings?.companyName || "Hastürk Sanat ve Mimarlık"}. {t("footer_rights", "Tüm hakları saklıdır.")}</div>
           <div className={styles.socials}>
-            <a href="#" aria-label="Instagram">IG</a>
-            <a href="#" aria-label="LinkedIn">IN</a>
-            <a href="#" aria-label="Twitter">X</a>
+            <a href={content.settings?.socials?.instagram || "#"} target="_blank" rel="noreferrer" aria-label="Instagram">IG</a>
+            <a href={content.settings?.socials?.linkedin || "#"} target="_blank" rel="noreferrer" aria-label="LinkedIn">IN</a>
+            <Link href="/admin" style={{ opacity: 0.3, textDecoration: "none", color: "inherit", fontSize: "11px" }}>Admin</Link>
           </div>
         </div>
 

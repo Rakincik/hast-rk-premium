@@ -131,12 +131,29 @@ const showcaseProjects: BeforeAfterProject[] = [
   }
 ];
 
+import { useSiteContent } from "@/context/SiteContentContext";
+
 export default function BeforeAfterShowcase() {
   const { language, t } = useLanguage();
+  const { content } = useSiteContent();
   const [activeTab, setActiveTab] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const sliderPosition = useMotionValue(50);
+
+  const projectsList = (content.beforeAfter && content.beforeAfter.length > 0)
+    ? content.beforeAfter.map((item) => ({
+        id: item.id,
+        tabLabel: { tr: item.tabLabel, en: item.tabLabel, de: item.tabLabel, ar: item.tabLabel },
+        title: { tr: item.title, en: item.title, de: item.title, ar: item.title },
+        location: { tr: item.location, en: item.location, de: item.location, ar: item.location },
+        status: { tr: item.status, en: item.status, de: item.status, ar: item.status },
+        techniques: { tr: item.techniques, en: item.techniques, de: item.techniques, ar: item.techniques },
+        beforeImage: item.beforeImage,
+        afterImage: item.afterImage,
+        quoteType: item.quoteType || "restoration",
+      }))
+    : showcaseProjects;
 
   const clipPathValue = useTransform(sliderPosition, (val) => `inset(0 ${100 - val}% 0 0)`);
   const handleLeft = useTransform(sliderPosition, (val) => `${val}%`);
@@ -167,7 +184,7 @@ export default function BeforeAfterShowcase() {
     return () => window.removeEventListener("pointerup", handlePointerUp);
   }, []);
 
-  const project = showcaseProjects[activeTab];
+  const project = projectsList[activeTab % projectsList.length] || projectsList[0];
 
   return (
     <section className={`section container ${styles.showcaseSection}`}>
@@ -193,7 +210,7 @@ export default function BeforeAfterShowcase() {
 
       {/* Navigation Tabs */}
       <div className={styles.tabsContainer}>
-        {showcaseProjects.map((item, idx) => (
+        {projectsList.map((item, idx) => (
           <button
             key={item.id}
             type="button"

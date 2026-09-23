@@ -1,0 +1,554 @@
+import { SiteContent } from "./types/content";
+
+export const defaultSiteContent: SiteContent = {
+  hero: {
+    mode: "single_video",
+    videoUrl: "/bana_bu_görseli_web_sitemin_sl.mp4",
+    slides: [
+      {
+        id: "slide-1",
+        title1: "Geçmişin Dokusuna,",
+        title2: "Geleceğin İmzası",
+        subtitle: "Restorasyon, Rölöve, Mimari Tasarım ve Taahhüt işlerinde yılların verdiği ustalıkla tarihi değerlerimizi yarınlara taşıyoruz.",
+        mediaType: "video",
+        mediaUrl: "/bana_bu_görseli_web_sitemin_sl.mp4",
+        primaryBtnText: "Projelerimizi İnceleyin",
+        primaryBtnLink: "/projeler",
+        secondaryBtnText: "İletişime Geç",
+        secondaryBtnLink: "/iletisim",
+        active: true
+      },
+      {
+        id: "slide-2",
+        title1: "Tarihi Mirasa Saygı,",
+        title2: "Modern Mühendislik",
+        subtitle: "Tescilli kültür varlıklarında 3D LiDAR lazer tarama, statik güçlendirme ve Koruma Kurulu onaylı restorasyon projeleri.",
+        mediaType: "image",
+        mediaUrl: "/projects/taksim-360/IMG_2860.JPG",
+        primaryBtnText: "Hizmetlerimiz",
+        primaryBtnLink: "/hizmetler",
+        secondaryBtnText: "Fiyat / Teklif Al",
+        secondaryBtnLink: "/teklif-al",
+        active: true
+      },
+      {
+        id: "slide-3",
+        title1: "Geoteknik Zemin &",
+        title2: "Sismik Güçlendirme",
+        subtitle: "Tarihi yarımada ve hassas sit alanlarında kompakt mini kazık ve mikrokireç enjeksiyon sistemleriyle deprem güvenliği.",
+        mediaType: "image",
+        mediaUrl: "/projects/guclendirme/B72F58E1-9A83-46EE-8642-0FE84A786EBF.JPG",
+        primaryBtnText: "Projeleri Keşfet",
+        primaryBtnLink: "/projeler",
+        secondaryBtnText: "Hemen Ara",
+        secondaryBtnLink: "tel:+905404278875",
+        active: true
+      }
+    ]
+  },
+  settings: {
+    companyName: "Hastürk Sanat ve Mimarlık",
+    slogan: "Tarihe Dokunan Ustalık, Geleceğe Kalan Miras",
+    phone: "+90 540 427 88 75",
+    phoneDisplay: "0540 427 88 75",
+    whatsapp: "905404278875",
+    email: "info@hasturksm.com",
+    address: "Tarihi Yarımada & Beyoğlu / İstanbul",
+    workingHours: "Pazartesi - Cumartesi: 09:00 - 19:00",
+    googleMapsUrl: "https://maps.google.com",
+    socials: {
+      instagram: "https://instagram.com/hasturksanatmimarlik",
+      linkedin: "https://linkedin.com/company/hasturk-mimarlik",
+      youtube: "https://youtube.com"
+    },
+    meta: {
+      title: "Hastürk Sanat ve Mimarlık | Restorasyon & Rölöve",
+      description: "Tarihi dokuya saygı, modern mühendislik. Restorasyon, Rölöve, Mimari Tasarım, Taahhüt ve Güçlendirme hizmetleri.",
+      keywords: "restorasyon, rölöve, restitüsyon, tarihi bina güçlendirme, anıtlar kurulu, hastürk mimarlık",
+      ogImage: "/projects/taksim-360/IMG_2860.JPG"
+    },
+    logos: {
+      original: "/logo-original.png",
+      white: "/logo-white.png",
+      gold: "/logo-gold.png",
+      favicon: "/favicon.ico"
+    }
+  },
+  stats: {
+    yearsExperience: "20+",
+    completedProjects: "150+",
+    heritageHarmony: "%100",
+    aboutTitle1: "Ustalık Eserimiz:",
+    aboutTitle2: "Tarihe Duyulan Saygı",
+    aboutDesc: "Hastürk Sanat ve Mimarlık olarak, sadece binaları değil, yaşanmışlıkları da onarıyoruz. Uzman ekibimizle, kültürel mirasımızı modern mühendisliğin güvencesi altına alıyoruz."
+  },
+  founder: {
+    name: "Okan HASTÜRK",
+    role: "Y. Mimar · Kurucu",
+    yearsExperience: "20+",
+    image: "https://static.wixstatic.com/media/4bb5c9_41a37e2d629b45c59b8e07b08500df6c~mv2.png",
+    tagline: "Kurucu Mimarın Notu",
+    title1: "Tarihe dokunurken yalnızca taşları değil,",
+    title2: "bir medeniyetin hafızasını onarıyoruz.",
+    quote: "Her çatlak bir hikaye, her taş bir şahittir. Bizim görevimiz o şahitliği susturmak değil, aslına sadık kalarak bir asır daha konuşturmaktır.",
+    paragraphs: [
+      "Yirmi yılı aşkın süredir Tarihi Yarımada'dan Boğaziçi yalılarına, Anadolu'nun köklü anıtlarından sivil mimarlık mirasına kadar sayısız esere dokunduk. Her projede öğrendiğimiz en temel ilke şudur: Tarih, aceleye ve özensizliğe gelmez.",
+      "Modern teknolojinin tüm imkanlarını — 3D Lidar taramadan sonlu elemanlar sismik modellemesine — geleneksel horasan harcı ve el işçiliğiyle harmanlıyoruz. Geleceğe güvenle miras bırakılan her tarihi yapıda bu felsefenin imzası vardır."
+    ]
+  },
+  projects: [
+    {
+      id: 1,
+      title: "Taksim 360 Kentsel Yenileme & Restorasyon (361 Ada 3132 Parsel)",
+      category: "Restorasyon",
+      categoryKey: "restorasyon",
+      image: "/projects/taksim-360/IMG_2860.JPG",
+      gallery: [
+        "/projects/taksim-360/IMG_2860.JPG",
+        "/projects/taksim-360/IMG_2866.jpg",
+        "/projects/taksim-360/IMG_2885.jpg"
+      ],
+      location: "Taksim 360, Beyoğlu / İstanbul",
+      year: "2024",
+      status: "Tescilli Kültür Varlığı / Kentsel Yenileme",
+      area: "1.250 m²",
+      quoteType: "restoration",
+      description: "Taksim 360 kentsel yenileme projesi 361 ada 3132 parsel kapsamında; tarihi Levanten taş ve tuğla mimarisini yansıtan yapının özgün cephe silmeleri, cumbaları, döküm korkulukları ve süslemeleri aslına sadık kalınarak restore edilmiştir. Koruma Kurulu onaylı projeyle tarihi doku korunarak modern yaşama kazandırılmıştır.",
+      techniques: [
+        "361 Ada 3132 Parsel Tescilli Cephe Restorasyonu",
+        "Özgün Ahşap Cumba ve Silme Rekonstrüksiyonu",
+        "Tarihi Dövme Demir Korkuluk Konservasyonu",
+        "Doğal Taş & Horasan Sıva Konsolidasyonu",
+        "Kültür Varlıklarını Koruma Kurulu Onaylı İmalat"
+      ],
+      featuredOnHome: true
+    },
+    {
+      id: 2,
+      title: "Tarihi Yapı Geoteknik Zemin Sondajı & Mini Kazık Güçlendirme",
+      category: "Güçlendirme",
+      categoryKey: "guclendirme",
+      image: "/projects/guclendirme/B72F58E1-9A83-46EE-8642-0FE84A786EBF.JPG",
+      gallery: [
+        "/projects/guclendirme/B72F58E1-9A83-46EE-8642-0FE84A786EBF.JPG",
+        "/projects/guclendirme/IMG_0211.jpeg",
+        "/projects/guclendirme/IMG_4386.JPG"
+      ],
+      location: "Tarihi Yarımada / İstanbul",
+      year: "2024",
+      status: "Deprem Güvenliği & Zemin Tahkimatı",
+      area: "1.850 m²",
+      quoteType: "strengthening",
+      description: "Dar sokak dokusu ve hassas tarihi çevre koşullarında, kompakt Geotec paletli ve mobil sondaj makineleriyle zemin etüdü, temel altı mini kazık imalatı, karot donatı analizi ve yüksek basınçlı hidrolik kireç enjeksiyonuyla taşıyıcı zemin konsolidasyonu gerçekleştirilmiştir.",
+      techniques: [
+        "Kompakt Paletli Mini Kazık & Sondaj Makineleri",
+        "Temel Altı Enjeksiyon & Zemin İyileştirme",
+        "Yapısal Karot Donatı Analizi & Boşluk Tespiti",
+        "Sismik Yük Transferi & Çelik Ankrajlama",
+        "Üniversite Heyeti Zemin & Statik Raporu"
+      ],
+      featuredOnHome: true
+    },
+    {
+      id: 3,
+      title: "Tarihi Anıt Cami & Taş Minare Konservasyonu",
+      category: "Restorasyon",
+      categoryKey: "restorasyon",
+      image: "/projects/karma-isler/IMG-20231101-WA0063.JPG",
+      gallery: [
+        "/projects/karma-isler/IMG-20231101-WA0063.JPG",
+        "/projects/karma-isler/IMG-20231106-WA0024.JPG",
+        "/projects/karma-isler/IMG-20231110-WA0051.JPG",
+        "/projects/karma-isler/IMG-20231101-WA0062.JPG"
+      ],
+      location: "Fatih, Tarihi Yarımada / İstanbul",
+      year: "2023 - 2024",
+      status: "1. Grup Tescilli Anıt Eser",
+      area: "850 m²",
+      quoteType: "restoration",
+      description: "Tarihi anıt cami minaresinin çok katlı güvenlikli iskele sistemiyle donatılarak taş gövdesindeki yapısal mikro çatlakların kireç harcıyla enjeksiyonu, şerefe taş konsollarının temizliği, mukarnas onarımı ve külah kurşun örtüsünün aslına uygun yenilenmesi.",
+      techniques: [
+        "Yüksek İrtifa Güvenlikli İskele Sistemi",
+        "Kesme Taş Minare Gövdesi Çatlak Dikişi",
+        "Şerefe Taş Mukarnas Konservasyonu",
+        "Geleneksel Kurşun Külah Kaplama",
+        "Mikro-Kumlama ile Taş Yüzey Arındırma"
+      ],
+      featuredOnHome: true
+    },
+    {
+      id: 4,
+      title: "Tarihi Avlu Doğal Taş Döşeme & Çevre Düzenleme",
+      category: "Taahhüt",
+      categoryKey: "taahhut",
+      image: "/projects/karma-isler/IMG-20231120-WA0064.JPG",
+      gallery: [
+        "/projects/karma-isler/IMG-20231120-WA0064.JPG",
+        "/projects/karma-isler/IMG-20231120-WA0056.JPG",
+        "/projects/karma-isler/IMG-20231120-WA0055.JPG",
+        "/projects/karma-isler/IMG-20231120-WA0065.JPG"
+      ],
+      location: "Sultanahmet, Fatih / İstanbul",
+      year: "2024",
+      status: "Anıt Eser Çevre Düzenlemesi",
+      area: "2.200 m²",
+      quoteType: "restoration",
+      description: "Tarihi anıt eser avlusunda geleneksel taş işçiliğiyle honlu doğal traverten ve küfeki taş plakaların, su drenaj eğimleriyle kusursuz entegre edilerek döşenmesi ve revak altı zemin basamaklarının restorasyonu tamamlanmıştır.",
+      techniques: [
+        "Doğal Traverten & Küfeki Taşı Döşeme",
+        "Gizli Zemin Drenaj & Nem İzolasyonu",
+        "Eğim ve Kot Hassasiyeti Lazer Ölçümü",
+        "Tarihi Dokulu Harç Derz Dolgusu"
+      ],
+      featuredOnHome: true
+    },
+    {
+      id: 5,
+      title: "Tescilli Cephe Askılama & Çelik Tahkimat Sistemi",
+      category: "Güçlendirme",
+      categoryKey: "guclendirme",
+      image: "/projects/karma-isler/IMG-20231010-WA0025.JPG",
+      gallery: [
+        "/projects/karma-isler/IMG-20231010-WA0025.JPG",
+        "/projects/karma-isler/IMG-20231010-WA0024.JPG"
+      ],
+      location: "Galata, Beyoğlu / İstanbul",
+      year: "2024",
+      status: "2. Grup Tescilli Yapı",
+      area: "750 m²",
+      quoteType: "strengthening",
+      description: "Tarihi tescilli binanın sokak cephesini korumak ve olası sismik / rüzgar deformasyonlarını engellemek amacıyla kurulan ağır kafes çelik askılama kuleleri ile kimyasal ankrajlı güvenli taşıyıcı tahkimat sistemi kurulmuştur.",
+      techniques: [
+        "Ağır Çelik Profil Cephe Askılama Kulesi",
+        "Tarihi Duvar Kimyasal Ankraj Bağlantısı",
+        "Lazerli Deplasman & Oturma Takibi",
+        "İş Güvenliği & Çevre Emniyet Sistemi"
+      ],
+      featuredOnHome: true
+    },
+    {
+      id: 6,
+      title: "Geleneksel Masif Ahşap Doğrama & Pencere Rekonstrüksiyonu",
+      category: "Rölöve",
+      categoryKey: "rolove",
+      image: "/projects/karma-isler/IMG_20210512_123036_173.JPG",
+      gallery: [
+        "/projects/karma-isler/IMG_20210512_123036_173.JPG",
+        "/projects/karma-isler/IMG_20210512_123036_163.JPG",
+        "/projects/karma-isler/IMG_20210512_123036_181.JPG",
+        "/projects/karma-isler/IMG_20210512_123036_195.JPG"
+      ],
+      location: "Boğaziçi Yalıları / İstanbul",
+      year: "2024",
+      status: "Özel Zanaat Üretimi",
+      area: "Özel Marangoz Atölyesi",
+      quoteType: "restoration",
+      description: "Tarihi konak ve yalıların özgün rölöve detaylarına sadık kalınarak 1. sınıf fırınlanmış masif ahşaptan üretilen çift camlı yalıtımlı giyotin pencere, panjur ve kapı doğramalarının milimetrik imalatı ve şantiyede montajı.",
+      techniques: [
+        "Geleneksel Lamba-Zıvana Geçme Detayları",
+        "Emprenye & Nefes Alan Doğal Ahşap Cilası",
+        "Yüksek Isı & Ses Yalıtımlı Tarihi Profil",
+        "Pirinç İspanyolet & Geleneksel Aksesuarlar"
+      ],
+      featuredOnHome: true
+    },
+    {
+      id: 7,
+      title: "Tarihi Kagir Tuğla Duvar & Temel Konsolidasyonu",
+      category: "Restorasyon",
+      categoryKey: "restorasyon",
+      image: "/projects/karma-isler/IMG-20231227-WA0044.JPG",
+      gallery: [
+        "/projects/karma-isler/IMG-20231227-WA0044.JPG",
+        "/projects/karma-isler/IMG-20231127-WA0002.JPG",
+        "/projects/karma-isler/IMG-20231214-WA0057.JPG"
+      ],
+      location: "Karaköy / İstanbul",
+      year: "2024",
+      status: "Kentsel Sit Alanı",
+      area: "1.150 m²",
+      quoteType: "restoration",
+      description: "Tarihi yapılar arasında kalan taşıyıcı duvarların geleneksel harman tuğlası ve doğal hidrolik kireç harcıyla yeniden örülmesi, korozyon önleyici hatıllarla binanın statik bütünlüğünün sağlanması.",
+      techniques: [
+        "Geleneksel Harman Tuğlası Örgü Tekniği",
+        "Doğal Hidrolik Kireç (NHL) Bağlayıcı Harç",
+        "Paslanmaz Çelik Donatılı Duvar Hatılları",
+        "Nem ve Tuz Bariyeri İzolasyonu"
+      ],
+      featuredOnHome: false
+    },
+    {
+      id: 8,
+      title: "Tarihi Portal & Dövme Demir Cephe Restorasyonu",
+      category: "Mimari Tasarım",
+      categoryKey: "mimari",
+      image: "/projects/karma-isler/IMG-20231123-WA0080.JPG",
+      gallery: [
+        "/projects/karma-isler/IMG-20231123-WA0080.JPG",
+        "/projects/karma-isler/IMG-20231123-WA0070.JPG",
+        "/projects/karma-isler/IMG-20240101-WA0014.JPG"
+      ],
+      location: "Beyoğlu / Şişli",
+      year: "2024",
+      status: "2. Grup Tescilli Taş Apartman",
+      area: "680 m²",
+      quoteType: "restoration",
+      description: "Tarihi taş giriş portalının hassas temizliği, kemer sövelerinin onarımı, ferforje dövme demir balkon korkuluklarının korozyondan arındırılması ve Hastürk uzman şantiye denetimiyle güvenle tamamlanması.",
+      techniques: [
+        "Doğal Taş Giriş Portali Konservasyonu",
+        "Ferforje Demir Korozyon Temizliği ve Koruyucu Boya",
+        "Özgün Söve ve Kemer Tamiratı",
+        "Hastürk Uzman Şantiye Yönetimi"
+      ],
+      featuredOnHome: false
+    }
+  ],
+  beforeAfter: [
+    {
+      id: "galata",
+      tabLabel: "Taksim 360 Restorasyon",
+      title: "Taksim 360 Levanten Yapısı Restorasyon & Konservasyon",
+      location: "361 Ada 3132 Parsel, Beyoğlu / İstanbul",
+      status: "Tescilli Kültür Varlığı",
+      techniques: [
+        "Tescilli Cephe Restorasyonu",
+        "Özgün Ahşap Cumba Rekonstrüksiyonu",
+        "Dövme Demir Korkuluk Konservasyonu",
+        "Ağır Çelik Askılama Tahkimatı"
+      ],
+      beforeImage: "/projects/karma-isler/IMG-20231010-WA0025.JPG",
+      afterImage: "/projects/taksim-360/IMG_2860.JPG",
+      quoteType: "restoration"
+    },
+    {
+      id: "minare",
+      tabLabel: "Taş Minare & Cami",
+      title: "Tarihi Anıt Cami & Taş Minare Konservasyonu",
+      location: "Fatih, Tarihi Yarımada / İstanbul",
+      status: "1. Grup Tescilli Anıt Eser",
+      techniques: [
+        "Yüksek İrtifa Güvenlikli İskele",
+        "Kesme Taş Gövde Çatlak Dikişi",
+        "Şerefe Mukarnas Konservasyonu",
+        "Geleneksel Külah Kurşun Kaplama"
+      ],
+      beforeImage: "/projects/karma-isler/IMG-20231101-WA0063.JPG",
+      afterImage: "/projects/karma-isler/IMG-20231101-WA0062.JPG",
+      quoteType: "restoration"
+    },
+    {
+      id: "zemin",
+      tabLabel: "Zemin & Güçlendirme",
+      title: "Tarihi Yapı Geoteknik Zemin Sondajı & Temel Tahkimatı",
+      location: "Tarihi Yarımada / İstanbul",
+      status: "Deprem Güvenliği & Zemin İyileştirme",
+      techniques: [
+        "Kompakt Paletli Mini Kazık Makinesi",
+        "Temel Altı Enjeksiyon & Sondaj",
+        "Yapısal Karot Donatı Analizi",
+        "Sismik Yük Aktarımı"
+      ],
+      beforeImage: "/projects/guclendirme/B72F58E1-9A83-46EE-8642-0FE84A786EBF.JPG",
+      afterImage: "/projects/guclendirme/IMG_4386.JPG",
+      quoteType: "strengthening"
+    }
+  ],
+  services: [
+    {
+      id: 1,
+      index: "01",
+      title: "Restorasyon & Konservasyon",
+      desc: "Tescilli ahşap konaklar, yalılar, camiler ve taş binaların özgünlüğünü ve tarihi ruhunu koruyarak, Venedik Tüzüğü ilkelerine tam uyumla aslına döndürülmesi.",
+      iconName: "Building2",
+      quoteType: "restoration",
+      deliverables: [
+        "Kültür Varlıklarını Koruma Bölge Kurulu onay dosyaları",
+        "Geleneksel horasan harcı ve özgün malzeme analizleri",
+        "Bozulma & hasar tespit lejantları (patina, korozyon, çatlak)",
+        "Vakıflar Genel Müdürlüğü ve Belediye tescil süreç takibi"
+      ]
+    },
+    {
+      id: 2,
+      index: "02",
+      title: "Rölöve & Restitüsyon",
+      desc: "Tarihi ve tescilli yapıların mevcut geometrik durumlarının 3D karasal lazer tarama teknolojisiyle milimetrik hassasiyette ölçülüp resmi projeye dönüştürülmesi.",
+      iconName: "Brush",
+      quoteType: "restoration",
+      deliverables: [
+        "Milyonlarca koordinatlı 3D Lidar nokta bulutu (Point Cloud)",
+        "Milimetrik kat planları, kesitler ve cephe açılımları",
+        "Tarihi arşiv, tapu tahrir ve eski fotoğraf restitüsyon etütleri",
+        "Müdahale paftaları ve koruma öncelik raporları"
+      ]
+    },
+    {
+      id: 3,
+      index: "03",
+      title: "Statik Güçlendirme & Sismik Analiz",
+      desc: "Yığma taş, tuğla ve ahşap karkas yapıların deprem performanslarının modellenerek, tarihi dokuyu bozmayan görünmez modern tekniklerle güçlendirilmesi.",
+      iconName: "Hammer",
+      quoteType: "strengthening",
+      deliverables: [
+        "Lineer olmayan (Non-linear) dinamik deprem simülasyonları",
+        "CFRP (Karbon Elyaf Takviyeli Polimer) kompozit sargılama",
+        "Tarihi harç hidrolik kireç mikro-enjeksiyon konsolidasyonu",
+        "Üniversite danışman onaylı statik rapor ve hesap dosyaları"
+      ]
+    },
+    {
+      id: 4,
+      index: "04",
+      title: "Mimari Tasarım & İç Mimari",
+      desc: "Tarihi kabukların çağdaş yaşam standartları, lüks rezidans konforu veya butik otel fonksiyonlarıyla buluştuğu yüksek prestijli iç mekan tasarımları.",
+      iconName: "Home",
+      quoteType: "interior",
+      deliverables: [
+        "Özel imalat masif ahşap ve pirinç detay tasarımları",
+        "Akustik, aydınlatma ve iklimlendirme entegrasyonu",
+        "Fonksiyonel mekan dönüşüm ve sirkülasyon senaryoları",
+        "3D fotogerçekçi görselleştirme ve VR sanal tur"
+      ]
+    },
+    {
+      id: 5,
+      index: "05",
+      title: "Anahtar Teslim İnşaat & Taahhüt",
+      desc: "Projelendirilen tarihi veya modern nitelikli yapıların, uzman zanaatkarlar ve şantiye mimarları eşliğinde anahtar teslim olarak hayata geçirilmesi.",
+      iconName: "Construction",
+      quoteType: "turnkey",
+      deliverables: [
+        "Kesin hakediş ve şeffaf malzeme maliyet tabloları",
+        "Usta taşçılar, kalemkarlar ve sedefkarlarla şantiye yönetimi",
+        "İş güvenliği ve tescilli çevre koruma bariyerleme sistemleri",
+        "Yapı kullanma izin belgesi (İskan) ve tescil kapatma işlemleri"
+      ]
+    },
+    {
+      id: 6,
+      index: "06",
+      title: "Geleneksel Kalem İşi & Taş Konservasyonu",
+      desc: "Tarihi tavan çıtalamaları, kubbe kalem işleri, altın varak bezemeler ve taş yüzeylerin kimyasal kumlama olmaksızın mikro-arındırma ile korunması.",
+      iconName: "Paintbrush",
+      quoteType: "restoration",
+      deliverables: [
+        "Özgün pigment analizi ve aslına uygun boya hazırlığı",
+        "Lazer ve kontrollü mikro-partikül taş temizliği",
+        "Tuz kusması ve nem kaynaklı dökülmelerin kimyasal tedavisi",
+        "Geleneksel altın varak ve kündekari restorasyonu"
+      ]
+    }
+  ],
+  team: [
+    {
+      id: 1,
+      name: "Okan HASTÜRK",
+      role: "Y. Mimar",
+      email: "info@hasturksm.com",
+      image: "https://static.wixstatic.com/media/4bb5c9_41a37e2d629b45c59b8e07b08500df6c~mv2.png"
+    },
+    {
+      id: 2,
+      name: "Sevde Kübra AY HASTÜRK",
+      role: "Çevre Y. Mühendisi",
+      email: "info@hasturksm.com",
+      image: "https://static.wixstatic.com/media/4bb5c9_eb382daf7645407cb54770d4fb2326ca~mv2.png"
+    },
+    {
+      id: 3,
+      name: "Prof. Dr. Mehmet Fatih ALTAN",
+      role: "İnşaat Y. Müh. / Danışman",
+      email: "info@hasturksm.com",
+      image: "https://static.wixstatic.com/media/4bb5c9_cbc06f32ba8647ea8d5018bf890f539b~mv2.png"
+    },
+    {
+      id: 4,
+      name: "Baturay AKSOY",
+      role: "Avukat / Hukuk Danışmanlığı",
+      email: "info@hasturksm.com",
+      image: "https://static.wixstatic.com/media/4bb5c9_7c4dd496b5b0494e8f653aff6b0a88e9~mv2.jpg"
+    },
+    {
+      id: 5,
+      name: "Onur HASTÜRK",
+      role: "Sanat Danışmanı",
+      email: "info@hasturksm.com",
+      image: "https://static.wixstatic.com/media/4bb5c9_060eb66118df437081fb6bd08337982e~mv2.jpeg"
+    }
+  ],
+  articles: [
+    {
+      id: 1,
+      title: "Tarihi Yapılarda Horasan Harcının Önemi ve Kimyasal Analizleri",
+      category: "Restorasyon Bilimi",
+      readTime: "5 dk okuma",
+      date: "Ağustos 2026",
+      excerpt: "Geleneksel tuğla tozu ve kirecin bağlayıcı dansı: Tarihi kagir eserlerin özgün statik esnekliğini korumak için uygulanan laboratuvar formülasyonları.",
+      image: "/projects/karma-isler/IMG-20231227-WA0044.JPG"
+    },
+    {
+      id: 2,
+      title: "Boğaziçi Yalılarında Masif Ahşap Koruma ve Doğrama Detayları",
+      category: "Malzeme & Zanaat",
+      readTime: "4 dk okuma",
+      date: "Temmuz 2026",
+      excerpt: "Nem, deniz tuzu ve biyolojik zararlılara karşı geleneksel bezir yağı ve modern fırınlanmış masif ahşap profillerin koruma teknikleri.",
+      image: "/projects/karma-isler/IMG_20210512_123036_195.JPG"
+    },
+    {
+      id: 3,
+      title: "2026 Kültür Varlıkları Koruma Kurulu İzin ve Ruhsat Rehberi",
+      category: "Mevzuat & Süreç",
+      readTime: "6 dk okuma",
+      date: "Haziran 2026",
+      excerpt: "1. ve 2. Grup tescilli kültür varlıklarında rölöve, restitüsyon ve restorasyon projelerinin Anıtlar Kurulu onay aşamaları.",
+      image: "/projects/taksim-360/IMG_2860.JPG"
+    }
+  ],
+  faq: [
+    {
+      id: 1,
+      question: "1. Grup ve 2. Grup tarihi tescilli yapılar arasındaki fark nedir?",
+      answer: "1. Grup kültür varlıkları (cami, saray, köşk, türbe, medrese gibi anıtsal yapılar) toplumun ortak malı kabul edilir ve yapılacak müdahaleler çok katı aslına sadakat kurallarına tabidir. 2. Grup yapılar ise kentsel sit alanında kalan geleneksel konutlar, yalılar ve dükkanlar gibi sivil mimarlık örnekleridir. 2. Grup yapılarda dış cephe ve taşıyıcı kimlik korunurken iç mekanlar çağdaş konfor şartlarına uygun şekilde yeniden işlevlendirilebilir.",
+      category: "Mevzuat & Tescil"
+    },
+    {
+      id: 2,
+      question: "Kültür Varlıklarını Koruma Kurulu (Anıtlar Kurulu) onay süreci ortalama ne kadar sürer?",
+      answer: "Kurul onay süreçleri yapının tescil derecesine, bölgesine ve mevcut belgelerine bağlı olarak ortalama 3 ila 6 ay arasında tamamlanır. Hastürk Sanat ve Mimarlık olarak, 3D Lidar lazer tarama ile hazırladığımız milimetrik rölöve, restitüsyon ve restorasyon projeleri sayesinde Kurul'dan gelebilecek revizyon taleplerini en aza indirerek onay sürecini maksimum hızda sonuçlandırıyoruz.",
+      category: "Süreç & Ruhsat"
+    },
+    {
+      id: 3,
+      question: "TMMOB Asgari Bedeli ve restorasyon proje maliyetleri neye göre hesaplanır?",
+      answer: "Restorasyon ve rölöve proje bedelleri, TMMOB Mimarlar Odası'nın 'Rölöve, Restitüsyon ve Restorasyon Projeleri Yaklaşık Maliyet Hazırlama Yöntemi' ile her yıl resmi gazetede yayımlanan Yapı Yaklaşık Birim Maliyetleri baz alınarak hesaplanır. Yapının m² büyüklüğü, kagir/ahşap taşıyıcı türü, tescil derecesi ve Boğaziçi/Tarihi Yarımada gibi özel sit bölgeleri katsayıları doğrudan maliyeti belirler.",
+      category: "Maliyet & Fiyatlandırma"
+    },
+    {
+      id: 4,
+      question: "Tarihi yapıların deprem güvenliği ve güçlendirilmesi nasıl yapılır?",
+      answer: "Tarihi binalarda modern betonarme kolonlar eklemek tarihi dokuyu tahrip eder. Bunun yerine görünmez karbon fiber kumaş (CFRP) sargılama, hidrolik kireç mikro-enjeksiyonu, paslanmaz çelik gerdirmeler ve mini kazık zemin iyileştirmesi gibi geri dönüştürülebilir ve yapıya zarar vermeyen ileri mühendislik yöntemleri uygulanır.",
+      category: "Statik & Mühendislik"
+    }
+  ],
+  testimonials: [
+    {
+      id: 1,
+      name: "Murat Yılmaz",
+      role: "Yönetim Kurulu Başkanı",
+      company: "Yılmaz Holding",
+      text: "Beyoğlu'ndaki tescilli tarihi binamızın restorasyon ve kurul onay sürecini başından sonuna kadar kusursuz bir titizlikle yönettiler. Hem tarihi dokuya gösterdikleri saygı hem de mühendislik çözümleri muazzamdı.",
+      rating: 5,
+      project: "Beyoğlu Tescilli Levanten Binası Restorasyonu"
+    },
+    {
+      id: 2,
+      name: "Dr. Selin Alptekin",
+      role: "Mülk Sahibi",
+      company: "Boğaziçi Tarihi Yalı",
+      text: "Boğaz kıyısındaki yalı restorasyonumuzda ahşap konservasyonu ve rölöve aşamasındaki lazer hassasiyeti beklentilerimizin çok üzerindeydi. Okan Bey ve uzman ekibine teşekkür ederiz.",
+      rating: 5,
+      project: "Boğaziçi Masif Ahşap Rekonstrüksiyon"
+    }
+  ]
+};

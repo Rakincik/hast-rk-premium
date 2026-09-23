@@ -5,9 +5,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import styles from "./Faq.module.css";
 import { ChevronDown } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useSiteContent } from "@/context/SiteContentContext";
 
 export default function Faq() {
   const { t, language } = useLanguage();
+  const { content } = useSiteContent();
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const toggleFaq = (index: number) => {
@@ -82,6 +84,14 @@ export default function Faq() {
     }
   ];
 
+  const activeFaqData =
+    content.faq && content.faq.length > 0
+      ? content.faq.map((item) => ({
+          q: item.question,
+          a: item.answer,
+        }))
+      : faqData;
+
   return (
     <section className={`section ${styles.section}`}>
       <div className="container">
@@ -103,7 +113,7 @@ export default function Faq() {
         </motion.div>
 
         <div className={styles.faqContainer}>
-          {faqData.map((item, index) => {
+          {activeFaqData.map((item, index) => {
             const isOpen = openIndex === index;
             return (
               <motion.div 

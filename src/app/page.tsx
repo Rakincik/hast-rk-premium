@@ -20,9 +20,13 @@ import BeforeAfterShowcase from "@/components/home/BeforeAfterShowcase";
 import HorizontalScroll from "@/components/home/HorizontalScroll";
 import FounderNote from "@/components/home/FounderNote";
 import { useLanguage } from "@/context/LanguageContext";
+import { useSiteContent } from "@/context/SiteContentContext";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function Home() {
   const { t, language } = useLanguage();
+  const { content } = useSiteContent();
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -58,9 +62,28 @@ export default function Home() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [mouseX, mouseY]);
 
-  // Creative Text Animation (Word/Character reveal)
-  const titleText = t("hero_title_1", "Geçmişin Dokusuna,");
-  const titleSpan = t("hero_title_2", "Geleceğin İmzası");
+  const activeSlides = content.hero?.slides?.filter((s) => s.active) || [];
+  const currentSlide =
+    activeSlides[currentSlideIndex % (activeSlides.length || 1)] ||
+    content.hero?.slides?.[0];
+  const isCarousel = content.hero?.mode === "carousel" && activeSlides.length > 1;
+
+  useEffect(() => {
+    if (!isCarousel) return;
+    const timer = setInterval(() => {
+      setCurrentSlideIndex((prev) => (prev + 1) % activeSlides.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, [isCarousel, activeSlides.length]);
+
+  // Dynamic Texts
+  const titleText = currentSlide?.title1 || t("hero_title_1", "Geçmişin Dokusuna,");
+  const titleSpan = currentSlide?.title2 || t("hero_title_2", "Geleceğin İmzası");
+  const subtitleText = currentSlide?.subtitle || t("hero_subtitle", "Restorasyon, Rölöve, Mimari Tasarım ve Taahhüt işlerinde yılların verdiği ustalıkla tarihi değerlerimizi yarınlara taşıyoruz.");
+  const btn1Text = currentSlide?.primaryBtnText || t("hero_cta_projects", "Projelerimizi İnceleyin");
+  const btn1Link = currentSlide?.primaryBtnLink || "/projeler";
+  const btn2Text = currentSlide?.secondaryBtnText || t("hero_cta_contact", "İletişime Geç");
+  const btn2Link = currentSlide?.secondaryBtnLink || "/iletisim";
 
   const letterVariants: Variants = {
     hidden: { opacity: 0, y: 50, rotateX: -90 },
@@ -85,17 +108,102 @@ export default function Home() {
             rotateX: useTransform(bgMouseY, (v) => -v)
           }}
         >
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className={styles.heroImage}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-          >
-            <source src="/bana_bu_görseli_web_sitemin_sl.mp4" type="video/mp4" />
-          </video>
+          {content.hero?.mode === "single_video" ? (
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className={styles.heroImage}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            >
+              <source src={content.hero?.videoUrl || "/bana_bu_görseli_web_sitemin_sl.mp4"} type="video/mp4" />
+            </video>
+          ) : currentSlide?.mediaType === "video" ? (
+            <video
+              key={currentSlide.mediaUrl}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className={styles.heroImage}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            >
+              <source src={currentSlide.mediaUrl} type="video/mp4" />
+            </video>
+          ) : (
+            <img
+              key={currentSlide?.mediaUrl}
+              src={currentSlide?.mediaUrl || "/projects/taksim-360/IMG_2860.JPG"}
+              alt="Hero Slide"
+              className={styles.heroImage}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+          )}
           <div className={styles.heroOverlay} />
+
+          {/* Carousel slide controls if multiple slides */}
+          {isCarousel && (
+            <div
+              style={{
+                position: "absolute",
+                bottom: "30px",
+                right: "40px",
+                zIndex: 10,
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+              }}
+            >
+              <button
+                type="button"
+                onClick={() =>
+                  setCurrentSlideIndex((prev) =>
+                    prev === 0 ? activeSlides.length - 1 : prev - 1
+                  )
+                }
+                style={{
+                  background: "rgba(0,0,0,0.5)",
+                  border: "1px solid rgba(212,175,55,0.4)",
+                  borderRadius: "50%",
+                  width: "38px",
+                  height: "38px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#d4af37",
+                  cursor: "pointer",
+                }}
+              >
+                <ChevronLeft size={20} />
+              </button>
+
+              <span style={{ fontSize: "12px", color: "#fff", fontWeight: 600 }}>
+                {currentSlideIndex + 1} / {activeSlides.length}
+              </span>
+
+              <button
+                type="button"
+                onClick={() =>
+                  setCurrentSlideIndex((prev) => (prev + 1) % activeSlides.length)
+                }
+                style={{
+                  background: "rgba(0,0,0,0.5)",
+                  border: "1px solid rgba(212,175,55,0.4)",
+                  borderRadius: "50%",
+                  width: "38px",
+                  height: "38px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#d4af37",
+                  cursor: "pointer",
+                }}
+              >
+                <ChevronRight size={20} />
+              </button>
+            </div>
+          )}
         </motion.div>
 
         <motion.div 
@@ -104,7 +212,7 @@ export default function Home() {
         >
           <h1 className={styles.heroTitle}>
             <motion.div 
-              key={`t1-${language}`}
+              key={`t1-${language}-${currentSlide?.id || 0}`}
               className={styles.heroTitleLine}
               initial="hidden"
               animate="visible"
@@ -129,7 +237,7 @@ export default function Home() {
             </motion.div>
             
             <motion.div 
-              key={`t2-${language}`}
+              key={`t2-${language}-${currentSlide?.id || 0}`}
               className={`${styles.heroTitleLine} ${styles.heroTitleGold}`}
               initial="hidden"
               animate="visible"
@@ -155,13 +263,13 @@ export default function Home() {
           </h1>
           
           <motion.p 
-            key={`p-${language}`}
+            key={`p-${language}-${currentSlide?.id || 0}`}
             className={styles.heroSubtitle}
             initial={{ opacity: 0, clipPath: "inset(0 100% 0 0)" }}
             animate={{ opacity: 1, clipPath: "inset(0 0% 0 0)" }}
             transition={{ duration: 1.2, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
-            {t("hero_subtitle", "Restorasyon, Rölöve, Mimari Tasarım ve Taahhüt işlerinde yılların verdiği ustalıkla tarihi değerlerimizi yarınlara taşıyoruz.")}
+            {subtitleText}
           </motion.p>
           
           <motion.div 
@@ -171,13 +279,13 @@ export default function Home() {
             transition={{ duration: 1, delay: 1, ease: [0.16, 1, 0.3, 1] }}
           >
             <MagneticButton>
-              <Link href="/projeler" className={styles.primaryBtn}>
-                {t("hero_cta_projects", "Projelerimizi İnceleyin")}
+              <Link href={btn1Link} className={styles.primaryBtn}>
+                {btn1Text}
               </Link>
             </MagneticButton>
             <MagneticButton>
-              <Link href="/iletisim" className={styles.secondaryBtn}>
-                {t("hero_cta_contact", "İletişime Geç")} <ArrowRight size={18} />
+              <Link href={btn2Link} className={styles.secondaryBtn}>
+                {btn2Text} <ArrowRight size={18} />
               </Link>
             </MagneticButton>
           </motion.div>
@@ -204,11 +312,11 @@ export default function Home() {
             }}
           >
             <h2 className={styles.sectionTitle}>
-              {t("about_title_1", "Ustalık Eserimiz:")} <br />
-              {t("about_title_2", "Tarihe Duyulan Saygı")}
+              {content.stats?.aboutTitle1 || t("about_title_1", "Ustalık Eserimiz:")} <br />
+              {content.stats?.aboutTitle2 || t("about_title_2", "Tarihe Duyulan Saygı")}
             </h2>
             <p>
-              {t("about_desc", "Hastürk Sanat ve Mimarlık olarak, sadece binaları değil, yaşanmışlıkları da onarıyoruz. Uzman ekibimizle, kültürel mirasımızı modern mühendisliğin güvencesi altına alıyoruz.")}
+              {content.stats?.aboutDesc || t("about_desc", "Hastürk Sanat ve Mimarlık olarak, sadece binaları değil, yaşanmışlıkları da onarıyoruz. Uzman ekibimizle, kültürel mirasımızı modern mühendisliğin güvencesi altına alıyoruz.")}
             </p>
           </motion.div>
 
@@ -220,15 +328,15 @@ export default function Home() {
             }}
           >
             <div className={styles.statBox}>
-              <h3>20+</h3>
+              <h3>{content.stats?.yearsExperience || "20+"}</h3>
               <span>{t("stat_years", "Yıllık Tecrübe")}</span>
             </div>
             <div className={styles.statBox}>
-              <h3>150+</h3>
+              <h3>{content.stats?.completedProjects || "150+"}</h3>
               <span>{t("stat_projects", "Tamamlanan Proje")}</span>
             </div>
             <div className={styles.statBox}>
-              <h3>%100</h3>
+              <h3>{content.stats?.heritageHarmony || "%100"}</h3>
               <span>{t("stat_harmony", "Tarihi Doku Uyumu")}</span>
             </div>
           </motion.div>

@@ -5,7 +5,10 @@ import { motion, AnimatePresence, Variants } from "framer-motion";
 import styles from "./iletisim.module.css";
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle2, MessageCircle, Sparkles } from "lucide-react";
 
+import { useSiteContent } from "@/context/SiteContentContext";
+
 export default function IletisimPage() {
+  const { content } = useSiteContent();
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -36,7 +39,7 @@ export default function IletisimPage() {
       `• Mesaj: ${formData.message}\n\n` +
       `Görüşmek ve bilgi almak istiyorum.`
     );
-    return `https://wa.me/905404278875?text=${text}`;
+    return `https://wa.me/${content.settings?.whatsapp || "905404278875"}?text=${text}`;
   };
 
   const containerVariants: Variants = {
@@ -87,8 +90,7 @@ export default function IletisimPage() {
               <div className={styles.iconWrapper}><MapPin size={22} /></div>
               <div className={styles.infoText}>
                 <h3>Merkez Stüdyo & Ofis</h3>
-                <p>Ömer Avni Mah. Hacıhanım Sokağı No: 10/1</p>
-                <p>Gümüşsuyu, Beyoğlu / İSTANBUL</p>
+                <p>{content.settings?.address || "Ömer Avni Mah. Hacıhanım Sokağı No: 10/1, Gümüşsuyu, Beyoğlu / İSTANBUL"}</p>
                 <span className={styles.noteTag}>Ziyaretler randevu ile kabul edilmektedir</span>
               </div>
             </div>
@@ -97,9 +99,9 @@ export default function IletisimPage() {
               <div className={styles.iconWrapper}><Phone size={22} /></div>
               <div className={styles.infoText}>
                 <h3>Telefon & Danışma Hattı</h3>
-                <a href="tel:+905404278875">(+90) 540 427 88 75</a>
-                <br />
-                <a href="tel:+905333388960">(+90) 533 338 89 60</a>
+                <a href={`tel:${content.settings?.phone || "+905404278875"}`}>
+                  {content.settings?.phoneDisplay || "(+90) 540 427 88 75"}
+                </a>
               </div>
             </div>
 
@@ -107,7 +109,9 @@ export default function IletisimPage() {
               <div className={styles.iconWrapper}><Mail size={22} /></div>
               <div className={styles.infoText}>
                 <h3>E-Posta Adresi</h3>
-                <a href="mailto:info@hasturksm.com">info@hasturksm.com</a>
+                <a href={`mailto:${content.settings?.email || "info@hasturksm.com"}`}>
+                  {content.settings?.email || "info@hasturksm.com"}
+                </a>
               </div>
             </div>
 
@@ -115,8 +119,7 @@ export default function IletisimPage() {
               <div className={styles.iconWrapper}><Clock size={22} /></div>
               <div className={styles.infoText}>
                 <h3>Çalışma Saatleri</h3>
-                <p>Pazartesi – Cuma: 09:00 – 18:30</p>
-                <p>Cumartesi: 10:00 – 15:00 (Ön Keşif & Randevu)</p>
+                <p>{content.settings?.workingHours || "Pazartesi – Cuma: 09:00 – 18:30"}</p>
               </div>
             </div>
           </div>

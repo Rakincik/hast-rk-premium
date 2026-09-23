@@ -18,6 +18,7 @@ import AuroraGlow from "@/components/ui/AuroraGlow";
 import ArchitectRuler from "@/components/ui/ArchitectRuler";
 import FloatingContactWidget from "@/components/ui/FloatingContactWidget";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { SiteContentProvider } from "@/context/SiteContentContext";
 
 export default function RootLayout({
   children,
@@ -27,16 +28,18 @@ export default function RootLayout({
   return (
     <html lang="tr">
       <body className={`${inter.variable} ${playfair.variable}`}>
-        <LanguageProvider>
-          <Preloader />
-          <CustomCursor />
-          <AuroraGlow />
-          <ArchitectRuler />
-          <Navbar />
-          <main>{children}</main>
-          <Footer />
-          <FloatingContactWidget />
-        </LanguageProvider>
+        <SiteContentProvider>
+          <LanguageProvider>
+            <Preloader />
+            <CustomCursor />
+            <AuroraGlow />
+            <ArchitectRuler />
+            <Navbar />
+            <main>{children}</main>
+            <Footer />
+            <FloatingContactWidget />
+          </LanguageProvider>
+        </SiteContentProvider>
       </body>
     </html>
   );

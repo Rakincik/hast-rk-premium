@@ -43,7 +43,12 @@ const teamMembers = [
   }
 ];
 
+import { useSiteContent } from "@/context/SiteContentContext";
+
 export default function TeamPage() {
+  const { content } = useSiteContent();
+  const list = content.team && content.team.length > 0 ? content.team : teamMembers;
+
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
@@ -83,7 +88,7 @@ export default function TeamPage() {
         initial="hidden"
         animate="visible"
       >
-        {teamMembers.map((member) => (
+        {list.map((member) => (
           <motion.div key={member.id} className={styles.card} variants={itemVariants}>
             <div className={styles.imageWrapper}>
               <img 

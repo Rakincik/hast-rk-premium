@@ -5,9 +5,11 @@ import styles from "./Journal.module.css";
 import { ArrowRight, Clock, Calendar } from "lucide-react";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
+import { useSiteContent } from "@/context/SiteContentContext";
 
 export default function Journal() {
   const { t, language } = useLanguage();
+  const { content } = useSiteContent();
 
   const articles = [
     {
@@ -75,6 +77,9 @@ export default function Journal() {
     }
   ];
 
+  const activeArticles =
+    content.articles && content.articles.length > 0 ? content.articles : articles;
+
   return (
     <section className={`section ${styles.section}`}>
       <div className="container">
@@ -92,7 +97,7 @@ export default function Journal() {
         </div>
 
         <div className={styles.grid}>
-          {articles.map((article, idx) => (
+          {activeArticles.map((article, idx) => (
             <motion.div 
               key={article.id}
               className={styles.articleCard}
