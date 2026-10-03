@@ -472,6 +472,13 @@
       "role": "Sanat Danışmanı",
       "email": "info@hasturksm.com",
       "image": "https://static.wixstatic.com/media/4bb5c9_060eb66118df437081fb6bd08337982e~mv2.jpeg"
+    },
+    {
+      "id": 6,
+      "name": "Rüstem AKINCIK",
+      "role": "Dijital Dönüşüm Direktörü",
+      "email": "rustem@hasturksm.com",
+      "image": "/ra-cropped.jpeg"
     }
   ],
   "articles": [
