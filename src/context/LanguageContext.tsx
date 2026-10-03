@@ -12,8 +12,11 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+import { useSiteContent } from "@/context/SiteContentContext";
+
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>("tr");
+  const { content } = useSiteContent();
 
   // Load persisted language from localStorage on client mount
   useEffect(() => {
@@ -48,15 +51,17 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   };
 
   const t = (key: string, fallback?: string): string => {
-    if (translations[key]) {
-      if (translations[key][language]) {
-        return translations[key][language];
+    const activeTranslations = content?.translations || translations;
+
+    if (activeTranslations[key]) {
+      if (activeTranslations[key][language]) {
+        return activeTranslations[key][language];
       }
-      if (translations[key]["en"]) {
-        return translations[key]["en"];
+      if (activeTranslations[key]["en"]) {
+        return activeTranslations[key]["en"];
       }
-      if (translations[key]["tr"]) {
-        return translations[key]["tr"];
+      if (activeTranslations[key]["tr"]) {
+        return activeTranslations[key]["tr"];
       }
     }
     return fallback || key;

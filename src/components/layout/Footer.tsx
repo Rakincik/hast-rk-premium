@@ -115,11 +115,13 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className={styles.bottomBar}>
-          <div>&copy; {new Date().getFullYear()} {content.settings?.companyName || "Hastürk Sanat ve Mimarlık"}. {t("footer_rights", "Tüm hakları saklıdır.")}</div>
+          <div style={{ display: "flex", gap: "15px", alignItems: "center", flexWrap: "wrap", justifyContent: "center" }}>
+            <span>&copy; {new Date().getFullYear()} {content.settings?.companyName || "Hastürk Sanat ve Mimarlık"}. {t("footer_rights", "Tüm hakları saklıdır.")}</span>
+            <Link href="/admin" style={{ opacity: 0.3, textDecoration: "none", color: "inherit", fontSize: "11px" }}>Admin</Link>
+          </div>
           <div className={styles.socials}>
             <a href={content.settings?.socials?.instagram || "#"} target="_blank" rel="noreferrer" aria-label="Instagram">IG</a>
             <a href={content.settings?.socials?.linkedin || "#"} target="_blank" rel="noreferrer" aria-label="LinkedIn">IN</a>
-            <Link href="/admin" style={{ opacity: 0.3, textDecoration: "none", color: "inherit", fontSize: "11px" }}>Admin</Link>
           </div>
         </div>
 

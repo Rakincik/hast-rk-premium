@@ -98,42 +98,43 @@ export default function Journal() {
 
         <div className={styles.grid}>
           {activeArticles.map((article, idx) => (
-            <motion.div 
-              key={article.id}
-              className={styles.articleCard}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6, delay: idx * 0.15 }}
-            >
-              <div className={styles.imageBox}>
-                <img src={article.image} alt={article.title} />
-                <span className={styles.categoryBadge}>{article.category}</span>
-              </div>
-
-              <div className={styles.content}>
-                <div className={styles.metaRow}>
-                  <div className={styles.metaItem}>
-                    <Calendar size={13} />
-                    <span>{article.date}</span>
-                  </div>
-                  <div className={styles.metaItem}>
-                    <Clock size={13} />
-                    <span>{article.readTime}</span>
-                  </div>
+            <Link key={article.id} href={`/yayinlar/${article.id}`} style={{ textDecoration: "none" }}>
+              <motion.div 
+                className={styles.articleCard}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.6, delay: idx * 0.15 }}
+              >
+                <div className={styles.imageWrapper}>
+                  <img src={article.image} alt={article.title} className={styles.image} />
+                  <span className={styles.categoryBadge}>{article.category}</span>
                 </div>
 
-                <h3 className={styles.articleTitle}>{article.title}</h3>
-                <p className={styles.excerpt}>{article.excerpt}</p>
+                <div className={styles.content}>
+                  <div className={styles.meta}>
+                    <div className={styles.metaItem}>
+                      <Calendar size={13} />
+                      <span>{article.date}</span>
+                    </div>
+                    <div className={styles.metaItem}>
+                      <Clock size={13} />
+                      <span>{article.readTime}</span>
+                    </div>
+                  </div>
 
-                <div className={styles.cardFooter}>
-                  <span className={styles.readLink}>
-                    {language === "en" ? "Read Article" : language === "de" ? "Artikel Lesen" : language === "ar" ? "قراءة المقال" : "Makaleyi Oku"}
-                  </span>
-                  <ArrowRight size={15} className={styles.footerArrow} />
+                  <h3 className={styles.articleTitle}>{article.title}</h3>
+                  <p className={styles.articleExcerpt}>{article.excerpt}</p>
+
+                  <div className={styles.readMore}>
+                    <span>
+                      {language === "en" ? "Read Article" : language === "de" ? "Artikel Lesen" : language === "ar" ? "قراءة المقال" : "Makaleyi Oku"}
+                    </span>
+                    <ArrowRight size={15} />
+                  </div>
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            </Link>
           ))}
         </div>
       </div>

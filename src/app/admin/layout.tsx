@@ -21,6 +21,8 @@ import {
   LogOut,
   ShieldCheck,
   Loader2,
+  Type,
+  Calculator,
 } from "lucide-react";
 
 interface AdminLayoutContentProps {
@@ -110,6 +112,8 @@ function AdminLayoutContent({ children }: AdminLayoutContentProps) {
     { title: "Mimari Journal", href: "/admin/journal", icon: <BookOpen size={18} /> },
     { title: "SSS (Sorular)", href: "/admin/faq", icon: <HelpCircle size={18} /> },
     { title: "Medya Kütüphanesi", href: "/admin/medya", icon: <ImageIcon size={18} /> },
+    { title: "Teklif Sihirbazı Motoru", href: "/admin/teklif-sihirbazi", icon: <Calculator size={18} /> },
+    { title: "Genel Metinler (Dil)", href: "/admin/metinler", icon: <Type size={18} /> },
     { title: "Genel Ayarlar & SEO", href: "/admin/ayarlar", icon: <Settings size={18} /> },
   ];
 

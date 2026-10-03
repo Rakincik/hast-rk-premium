@@ -43,9 +43,20 @@ import {
   HERITAGE_FACTORS,
   LOCATION_FACTORS
 } from "@/lib/quoteEngine";
+import { useSiteContent } from "@/context/SiteContentContext";
 
 function WizardContent() {
   const searchParams = useSearchParams();
+  const { content } = useSiteContent();
+  const config = content.quoteConfig;
+
+  // Dynamic overrides
+  const projectPackages = config?.projectPackageTiers || PROJECT_PACKAGE_TIERS;
+  const execPackages = config?.executionPackageTiers || EXECUTION_PACKAGE_TIERS;
+  const matFactors = config?.materialFactors || MATERIAL_FACTORS;
+  const herFactors = config?.heritageFactors || HERITAGE_FACTORS;
+  const locFactors = config?.locationFactors || LOCATION_FACTORS;
+
   const [currentStep, setCurrentStep] = useState<number>(1);
   
   // Ana Soru: Proje mi? Uygulama mı?
@@ -136,11 +147,11 @@ function WizardContent() {
       locationArea,
       selectedServices,
       hasLand
-    });
-  }, [domain, projectType, area, buildingMaterial, heritageStatus, locationArea, selectedServices, hasLand]);
+    }, config);
+  }, [domain, projectType, area, buildingMaterial, heritageStatus, locationArea, selectedServices, hasLand, config]);
 
   // Aktif paket listesi (Proje vs Uygulama)
-  const activePackageTiers = domain === 'execution' ? EXECUTION_PACKAGE_TIERS : PROJECT_PACKAGE_TIERS;
+  const activePackageTiers = domain === 'execution' ? execPackages : projectPackages;
   const availableServices = useMemo(() => getServicesForType(projectType, domain), [projectType, domain]);
 
   // Sadece telefon girişi & maskeleme: 05XX XXX XX XX (En fazla 11 rakam, harf engelli)
@@ -204,8 +215,8 @@ function WizardContent() {
       `• Hizmet Alanı: ${domain === 'execution' ? 'Uygulama & Şantiye İmalatı' : 'Mimari & Mühendislik Proje Hizmeti'}\n` +
       `• Kategori: ${typeTitleMap[projectType]}\n` +
       `• Yaklaşık Alan: ${area} m²\n` +
-      `• Yapı Türü: ${MATERIAL_FACTORS[buildingMaterial]?.label}\n` +
-      `• Konum / Bölge: ${LOCATION_FACTORS[locationArea]?.label}\n` +
+      `• Yapı Türü: ${matFactors[buildingMaterial]?.label}\n` +
+      `• Konum / Bölge: ${locFactors[locationArea]?.label}\n` +
       (quoteResult.showConservationBoard ? `• Yetkili Kurul: ${quoteResult.conservationBoard.name}\n` : '') +
       `• Seçilen Paket: ${activePackageTiers[selectedPackage].name}\n` +
       `• Hesaplanan Bedel: ${formatCurrencyTL(quoteResult.packageFees[selectedPackage])}\n` +
@@ -552,8 +563,8 @@ function WizardContent() {
                     Yapım Tekniği / Taşıyıcı Sistem
                   </label>
                   <div className={styles.optionsGrid}>
-                    {(Object.keys(MATERIAL_FACTORS) as BuildingMaterial[]).map((matKey) => {
-                      const item = MATERIAL_FACTORS[matKey];
+                    {(Object.keys(matFactors) as BuildingMaterial[]).map((matKey) => {
+                      const item = matFactors[matKey];
                       const isSelected = buildingMaterial === matKey;
                       return (
                         <div 
@@ -576,8 +587,8 @@ function WizardContent() {
                       2863 Sayılı Kanun Kapsamında Tescil Derecesi
                     </label>
                     <div className={styles.optionsGrid}>
-                      {(Object.keys(HERITAGE_FACTORS) as HeritageStatus[]).map((herKey) => {
-                        const item = HERITAGE_FACTORS[herKey];
+                      {(Object.keys(herFactors) as HeritageStatus[]).map((herKey) => {
+                        const item = herFactors[herKey];
                         const isSelected = heritageStatus === herKey;
                         return (
                           <div 
@@ -600,8 +611,8 @@ function WizardContent() {
                     Yapının Bulunduğu Bölge & İlçe
                   </label>
                   <div className={styles.optionsGrid}>
-                    {(Object.keys(LOCATION_FACTORS) as LocationArea[]).map((locKey) => {
-                      const item = LOCATION_FACTORS[locKey];
+                    {(Object.keys(locFactors) as LocationArea[]).map((locKey) => {
+                      const item = locFactors[locKey];
                       const isSelected = locationArea === locKey;
                       return (
                         <div 
@@ -1013,7 +1024,7 @@ function WizardContent() {
 
             <div className={styles.summaryRow}>
               <span className={styles.summaryLabel}>Taşıyıcı Sistem:</span>
-              <span className={styles.summaryValue}>{MATERIAL_FACTORS[buildingMaterial]?.label.split("/")[0]}</span>
+              <span className={styles.summaryValue}>{matFactors[buildingMaterial]?.label.split("/")[0]}</span>
             </div>
 
             {/* Yetkili Kurul ve Tescil SADECE Eski Eser ise gösterilir */}

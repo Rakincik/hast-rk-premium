@@ -67,6 +67,10 @@ export const defaultSiteContent: SiteContent = {
       keywords: "restorasyon, rölöve, restitüsyon, tarihi bina güçlendirme, anıtlar kurulu, hastürk mimarlık",
       ogImage: "/projects/taksim-360/IMG_2860.JPG"
     },
+    tracking: {
+      googleAnalyticsId: "",
+      googleAdsId: ""
+    },
     logos: {
       original: "/logo-original.png",
       white: "/logo-white.png",
@@ -550,5 +554,13 @@ export const defaultSiteContent: SiteContent = {
       rating: 5,
       project: "Boğaziçi Masif Ahşap Rekonstrüksiyon"
     }
-  ]
+  ],
+  translations: require("./translations").translations,
+  quoteConfig: {
+    projectPackageTiers: require("./quoteEngine").PROJECT_PACKAGE_TIERS,
+    executionPackageTiers: require("./quoteEngine").EXECUTION_PACKAGE_TIERS,
+    materialFactors: require("./quoteEngine").MATERIAL_FACTORS,
+    heritageFactors: require("./quoteEngine").HERITAGE_FACTORS,
+    locationFactors: require("./quoteEngine").LOCATION_FACTORS,
+  }
 };

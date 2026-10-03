@@ -388,6 +388,42 @@ export default function AdminSettingsPage() {
               }
               height="140px"
             />
+            
+            <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+              <h4 style={{ color: "#d4af37", marginBottom: "16px", fontSize: "14px", fontWeight: 600 }}>İzleme ve Reklam (Tracking)</h4>
+              <div className={styles.formRow}>
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>Google Analytics ID (G-XXXXXXX)</label>
+                  <input
+                    type="text"
+                    value={settings.tracking?.googleAnalyticsId || ""}
+                    onChange={(e) =>
+                      setSettings({
+                        ...settings,
+                        tracking: { ...settings.tracking, googleAnalyticsId: e.target.value },
+                      })
+                    }
+                    className={styles.formInput}
+                    placeholder="G-..."
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>Google Ads ID (AW-XXXXXXX)</label>
+                  <input
+                    type="text"
+                    value={settings.tracking?.googleAdsId || ""}
+                    onChange={(e) =>
+                      setSettings({
+                        ...settings,
+                        tracking: { ...settings.tracking, googleAdsId: e.target.value },
+                      })
+                    }
+                    className={styles.formInput}
+                    placeholder="AW-..."
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -73,7 +73,7 @@
 
 .heroWord {
   display: inline-flex;
-  white-space: nowrap;
+  white-space: normal;
   align-items: baseline;
 }
 

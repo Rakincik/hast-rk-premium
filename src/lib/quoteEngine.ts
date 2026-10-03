@@ -902,7 +902,7 @@ export function getTimelineSteps(
 }
 
 // 7. Ana Teklif Hesaplama Motoru
-export function calculateQuote(inputs: QuoteInputs): QuoteResult {
+export function calculateQuote(inputs: QuoteInputs, config?: any): QuoteResult {
   const {
     domain = 'project',
     projectType,
@@ -913,12 +913,18 @@ export function calculateQuote(inputs: QuoteInputs): QuoteResult {
     selectedServices
   } = inputs;
 
+  const matFactors = config?.materialFactors || MATERIAL_FACTORS;
+  const herFactors = config?.heritageFactors || HERITAGE_FACTORS;
+  const locFactors = config?.locationFactors || LOCATION_FACTORS;
+  const projectPackages = config?.projectPackageTiers || PROJECT_PACKAGE_TIERS;
+  const execPackages = config?.executionPackageTiers || EXECUTION_PACKAGE_TIERS;
+
   // Güvenlik sınırları (min 20m², max 10.000m²)
   const clampedArea = Math.max(20, Math.min(10000, areaSquareMeters || 100));
 
-  const matFactor = MATERIAL_FACTORS[buildingMaterial]?.factor || 1.0;
-  const herFactor = HERITAGE_FACTORS[heritageStatus]?.factor || 1.0;
-  const locFactor = LOCATION_FACTORS[locationArea]?.factor || 1.0;
+  const matFactor = matFactors[buildingMaterial]?.factor || 1.0;
+  const herFactor = herFactors[heritageStatus]?.factor || 1.0;
+  const locFactor = locFactors[locationArea]?.factor || 1.0;
 
   let ministryClass: MinistryClassInfo;
   let totalEstimatedCost = 0; // Yapı yaklaşık maliyeti
@@ -933,7 +939,7 @@ export function calculateQuote(inputs: QuoteInputs): QuoteResult {
     // === UYGULAMA / İNŞAAT HİZMETİ ===
     if (projectType === 'exec_restoration' || projectType === 'restoration') {
       // 1. Tarihi Yapı Restorasyon Uygulaması: 48.750 * 1.5 = 73.125 TL/m²
-      const baseCost = 48750;
+      const baseCost = config?.globalParameters?.execRestorationBaseCost || 48750;
       const unitCost = Math.round(baseCost * APPLICATION_PRICE_MULTIPLIER); // 73.125 TL
       ministryClass = {
         code: 'V-C',
@@ -950,7 +956,7 @@ export function calculateQuote(inputs: QuoteInputs): QuoteResult {
       baseCalculatedFee = totalEstimatedCost;
     } else if (projectType === 'exec_renovation') {
       // 2. Tadilat & Tamirat Uygulaması: Sabit 17.000 TL / m²
-      const unitCost = 17000;
+      const unitCost = config?.globalParameters?.execRenovationBaseCost || 17000;
       ministryClass = {
         code: 'TADİLAT',
         name: 'Kapsamlı İç Mekan Tadilat & Tamirat',
@@ -966,7 +972,7 @@ export function calculateQuote(inputs: QuoteInputs): QuoteResult {
       baseCalculatedFee = totalEstimatedCost;
     } else if (projectType === 'exec_strengthening') {
       // 3. Statik Güçlendirme Uygulaması: 1.5 ile ÇARPILMAZ! ÇŞİDB IV-A: 26.450 TL / m²
-      const unitCost = 26450;
+      const unitCost = config?.globalParameters?.execStrengtheningBaseCost || 26450;
       ministryClass = {
         code: 'IV-A',
         name: 'IV. Sınıf (A) Grubu — Taşıyıcı Güçlendirme İmalatı',
@@ -1104,7 +1110,7 @@ export function calculateQuote(inputs: QuoteInputs): QuoteResult {
   const tmmobBaseFee = Math.round(baseCalculatedFee * normalizedWeight);
 
   // Paket çarpanları
-  const activePackageTiers = domain === 'execution' ? EXECUTION_PACKAGE_TIERS : PROJECT_PACKAGE_TIERS;
+  const activePackageTiers = domain === 'execution' ? execPackages : projectPackages;
   const packageFees: Record<PackageTier, number> = {
     basic: tmmobBaseFee,
     comprehensive: Math.round(tmmobBaseFee * activePackageTiers.comprehensive.multiplier),
@@ -1119,7 +1125,7 @@ export function calculateQuote(inputs: QuoteInputs): QuoteResult {
   };
 
   // Lokasyon ve Kurul Bilgisi
-  const locInfo = LOCATION_FACTORS[locationArea] || LOCATION_FACTORS.istanbul_fatih;
+  const locInfo = locFactors[locationArea] || locFactors.istanbul_fatih;
   const conservationBoard = {
     name: locInfo.boardName,
     weeks: locInfo.boardDuration,

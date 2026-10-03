@@ -16,6 +16,7 @@ export default function CustomCursor() {
     if (!media.matches) return;
 
     setIsEnabled(true);
+    document.body.setAttribute("data-custom-cursor", "true");
 
     const updateMousePosition = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
@@ -41,6 +42,7 @@ export default function CustomCursor() {
     return () => {
       window.removeEventListener("mousemove", updateMousePosition);
       window.removeEventListener("mouseover", handleMouseOver);
+      document.body.removeAttribute("data-custom-cursor");
     };
   }, []);
 

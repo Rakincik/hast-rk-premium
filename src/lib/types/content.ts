@@ -108,6 +108,10 @@ export interface SiteSettings {
     keywords: string;
     ogImage: string;
   };
+  tracking: {
+    googleAnalyticsId?: string;
+    googleAdsId?: string;
+  };
   logos: {
     original: string;
     white: string;
@@ -137,6 +141,39 @@ export interface AboutStats {
   aboutDesc: string;
 }
 
+export interface QuotePackageDetail {
+  id: string;
+  name: string;
+  tagline: string;
+  multiplier: number;
+  features: string[];
+  isPopular?: boolean;
+}
+
+export interface QuoteServiceOption {
+  id: string;
+  name: string;
+  desc: string;
+  weight: number;
+  isRecommended?: boolean;
+}
+
+export interface QuoteConfig {
+  globalParameters?: {
+    execRestorationBaseCost: number;
+    execRenovationBaseCost: number;
+    execStrengtheningBaseCost: number;
+    execNewBaseCost: number;
+    projTmmobBaseCost: number;
+    inflationRate: number;
+  };
+  projectPackageTiers: Record<string, QuotePackageDetail>;
+  executionPackageTiers: Record<string, QuotePackageDetail>;
+  materialFactors: Record<string, { label: string; factor: number; desc: string }>;
+  heritageFactors: Record<string, { label: string; factor: number; desc: string }>;
+  locationFactors: Record<string, { label: string; factor: number; boardName: string; boardDuration: string; desc: string }>;
+}
+
 export interface SiteContent {
   hero: {
     mode: "single_video" | "carousel";
@@ -153,4 +190,6 @@ export interface SiteContent {
   articles: ArticleItem[];
   faq: FaqItem[];
   testimonials: TestimonialItem[];
+  translations?: Record<string, { tr: string; en: string; de: string; ar: string }>;
+  quoteConfig?: QuoteConfig;
 }

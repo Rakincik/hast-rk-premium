@@ -39,17 +39,26 @@ export default function Home() {
   // Interactive Mouse Parallax
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const springConfig = { damping: 25, stiffness: 150 };
   const smoothMouseX = useSpring(mouseX, springConfig);
   const smoothMouseY = useSpring(mouseY, springConfig);
 
-  const contentX = useTransform(smoothMouseX, [-1, 1], [-20, 20]);
-  const contentY = useTransform(smoothMouseY, [-1, 1], [-20, 20]);
-  const bgMouseX = useTransform(smoothMouseX, [-1, 1], [15, -15]);
-  const bgMouseY = useTransform(smoothMouseY, [-1, 1], [15, -15]);
+  const contentX = useTransform(smoothMouseX, [-1, 1], isMobile ? [0, 0] : [-20, 20]);
+  const contentY = useTransform(smoothMouseY, [-1, 1], isMobile ? [0, 0] : [-20, 20]);
+  const bgMouseX = useTransform(smoothMouseX, [-1, 1], isMobile ? [0, 0] : [15, -15]);
+  const bgMouseY = useTransform(smoothMouseY, [-1, 1], isMobile ? [0, 0] : [15, -15]);
 
   useEffect(() => {
+    if (isMobile) return;
     const handleMouseMove = (e: MouseEvent) => {
       const { innerWidth, innerHeight } = window;
       const x = (e.clientX / innerWidth) * 2 - 1;
@@ -60,7 +69,7 @@ export default function Home() {
 
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY]);
+  }, [mouseX, mouseY, isMobile]);
 
   const activeSlides = content.hero?.slides?.filter((s) => s.active) || [];
   const currentSlide =

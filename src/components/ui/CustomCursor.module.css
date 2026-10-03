@@ -16,11 +16,11 @@
     mix-blend-mode: difference;
   }
 
-  :global(body) {
+  :global(body[data-custom-cursor="true"]) {
     cursor: none;
   }
 
-  :global(a), :global(button) {
+  :global(body[data-custom-cursor="true"] a), :global(body[data-custom-cursor="true"] button) {
     cursor: none;
   }
 }
