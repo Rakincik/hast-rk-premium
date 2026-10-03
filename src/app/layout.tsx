@@ -63,10 +63,6 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  icons: {
-    icon: "/logo.avif",
-    apple: "/logo.avif",
-  },
 };
 
 import { LanguageProvider } from "@/context/LanguageContext";
