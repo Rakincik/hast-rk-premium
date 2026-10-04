@@ -189,6 +189,7 @@ function WizardContent() {
       setLeadError("");
     }
     setCurrentStep((prev) => Math.min(prev + 1, 4));
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleSubmitLead = (e: React.FormEvent) => {
@@ -276,6 +277,7 @@ function WizardContent() {
                   handleNextStep();
                 } else {
                   setCurrentStep(step.num);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
                 }
               }}
             >
@@ -303,6 +305,14 @@ function WizardContent() {
                 animate="visible" 
                 exit="exit"
               >
+                <div className={styles.botBubbleContainer}>
+                  <div className={styles.botAvatar}>
+                    <img src="/logo-gold.png" alt="Hastürk Asistan" />
+                  </div>
+                  <div className={styles.botMessage}>
+                    Merhaba! Ben <strong>Hastürk Akıllı Asistan.</strong> Size en doğru maliyeti sunabilmem için öncelikle iletişim numaranızı ve projenizin türünü seçebilir misiniz?
+                  </div>
+                </div>
                 {/* 1. Kompakt Telefon Gate Barı (SADECE TELEFON, Hızlı & Zarif) */}
                 <div className={styles.phoneGateBar}>
                   <div className={styles.phoneGateLeft}>
@@ -478,6 +488,14 @@ function WizardContent() {
                 exit="exit"
                 className={styles.formSection}
               >
+                <div className={styles.botBubbleContainer}>
+                  <div className={styles.botAvatar}>
+                    <img src="/logo-gold.png" alt="Hastürk Asistan" />
+                  </div>
+                  <div className={styles.botMessage}>
+                    Harika! Şimdi yapınızın büyüklüğünü ve bazı teknik detaylarını belirleyelim. Lütfen <strong>metrajı (m²)</strong> giriniz.
+                  </div>
+                </div>
                 <div>
                   <h2 className={styles.stepTitle}>Yapı Alanı ve Teknik Detaylar</h2>
                   <p className={styles.stepDesc}>
@@ -493,8 +511,14 @@ function WizardContent() {
                         ? (projectType === "exec_renovation" ? "Tadilat Yapılacak Kapalı Alan (m²)" : "Toplam İnşaat / İmalat Alanı (m²)")
                         : (projectType === "restoration" ? "2863 Sayılı Kanun Kapsamında Belgelemeye Esas Alan (m²)" : "Toplam Proje Alanı (m²)")}
                     </span>
-                    <div className={styles.sliderValueBox}>
-                      <span>{area}</span> m²
+                    <div className={styles.sliderValueBox} style={{ padding: "0.2rem 0", background: "rgba(197, 168, 128, 0.15)", border: "2px solid var(--accent-gold)" }}>
+                      <input 
+                        type="number" 
+                        value={area}
+                        onChange={(e) => setArea(Number(e.target.value) || 0)}
+                        style={{ width: "80px", background: "transparent", border: "none", color: "var(--accent-gold)", fontWeight: 700, fontSize: "1.4rem", textAlign: "right", outline: "none" }}
+                      />
+                      <span style={{ paddingRight: "0.8rem", fontSize: "1.1rem" }}>m²</span>
                     </div>
                   </div>
                   <input 
@@ -645,23 +669,6 @@ function WizardContent() {
                           📌 {quoteResult.conservationBoard.note}
                         </div>
                       </div>
-
-                      {quoteResult.isGrantEligible && (
-                        <div className={styles.grantNoticeCard}>
-                          <div className={styles.grantIconWrapper}>
-                            <ShieldCheck size={22} />
-                          </div>
-                          <div>
-                            <div className={styles.grantTitle}>
-                              <span>T.C. Kültür ve Turizm Bakanlığı Proje Desteği</span>
-                              <span className={styles.grantTag}>%50 Nakdi Hibe</span>
-                            </div>
-                            <p className={styles.grantDesc}>
-                              Taşınmaz Kültür Varlıklarının Onarımına Yardım Fonu kapsamında bu yapınız için proje ve restorasyon bedelinin %50'sine kadar nakdi hibe desteği alınabilmektedir. Dosyanız Bakanlık hibe kabul normlarına uygun olarak tanzim edilecektir.
-                            </p>
-                          </div>
-                        </div>
-                      )}
                     </>
                   )}
                 </div>
@@ -677,6 +684,14 @@ function WizardContent() {
                 animate="visible" 
                 exit="exit"
               >
+                <div className={styles.botBubbleContainer}>
+                  <div className={styles.botAvatar}>
+                    <img src="/logo-gold.png" alt="Hastürk Asistan" />
+                  </div>
+                  <div className={styles.botMessage}>
+                    Çok az kaldı! Projeye dahil etmemizi istediğiniz <strong>hizmetleri</strong> işaretleyin. İhtiyacınız olmayanları çıkarabilirsiniz.
+                  </div>
+                </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem", marginBottom: "1.5rem" }}>
                   <div>
                     <h2 className={styles.stepTitle}>Talep Edilen Hizmet Kapsamı</h2>
@@ -733,6 +748,14 @@ function WizardContent() {
                 animate="visible" 
                 exit="exit"
               >
+                <div className={styles.botBubbleContainer}>
+                  <div className={styles.botAvatar}>
+                    <img src="/logo-gold.png" alt="Hastürk Asistan" />
+                  </div>
+                  <div className={styles.botMessage}>
+                    İşte sonuçlar! Seçimlerinize göre hazırladığım <strong>3 farklı teklif paketini</strong> aşağıda inceleyebilirsiniz.
+                  </div>
+                </div>
                 <h2 className={styles.stepTitle}>
                   {domain === "execution" ? "Uygulama & İmalat Teklif Raporu" : "Mimari Proje Teklif & Maliyet Raporu"}
                 </h2>
