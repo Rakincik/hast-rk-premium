@@ -214,10 +214,8 @@
   }
 }
 
-/* About Snippet */
 .aboutSection {
   background-color: transparent;
-  margin-top: -5vh; /* Pull up to overlap the clipped hero */
   position: relative;
   z-index: 4;
 }

@@ -10,7 +10,8 @@
 
 @media (max-width: 768px) {
   .container {
-    padding: 2rem 0.5rem;
+    padding: 0;
+    min-height: 100dvh;
   }
 }
 
@@ -153,6 +154,28 @@
   }
 }
 
+@media (max-width: 768px) {
+  .wizardLayout {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100dvh;
+    z-index: 99999;
+    border-radius: 0;
+    overflow-y: auto;
+    margin: 0;
+    background: #090909;
+    box-shadow: none;
+  }
+  
+  .stepBody {
+    background: transparent;
+    padding: 2rem 1.25rem 4rem 1.25rem;
+    min-height: 100dvh;
+  }
+}
+
 /* Left Wizard Step Body (Now Right Content, White Theme) */
 .stepBody {
   flex: 1;
@@ -164,6 +187,21 @@
   justify-content: space-between;
   position: relative;
 }
+
+.phoneGateAlert {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  background: rgba(239, 68, 68, 0.1);
+  border-left: 3px solid #ef4444;
+  border-radius: 6px;
+  color: #fca5a5;
+  font-size: 0.85rem;
+}
+
 
 @media (max-width: 768px) {
   .stepBody {

@@ -69,3 +69,16 @@
   color: var(--text-secondary);
   line-height: 1.4;
 }
+
+@media (max-width: 767px) {
+  .trustGrid {
+    gap: 1.25rem;
+  }
+  .trustItem {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.8rem;
+    padding: 1.5rem 1rem;
+    align-items: center;
+  }
+}
