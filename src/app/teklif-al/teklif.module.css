@@ -266,12 +266,12 @@
   line-height: 1.5;
 }
 
-/* Step 1: Project Type Cards (White Theme) */
+/* Step 1: Project Type Cards (Desktop 3-col side-by-side) */
 .typeGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.25rem;
-  margin-bottom: 2.5rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .typeCard {
@@ -2297,89 +2297,99 @@
   }
 }
 
-/* Light Theme Overrides for Step Body Content */
+/* 100% Unified Dark Luxury Styles for Step Body Content */
 .sliderGroup {
-  background: #f9fafb !important;
-  border: 1px solid #e5e7eb !important;
+  background: #141414 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 14px !important;
 }
 .sliderLabel {
-  color: #111827 !important;
+  color: #ffffff !important;
 }
 .optionCard {
-  background: #ffffff !important;
-  border: 2px solid #e5e7eb !important;
+  background: #141414 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 12px !important;
 }
 .optionTitle {
-  color: #111827 !important;
+  color: #ffffff !important;
 }
 .optionDesc {
-  color: #4b5563 !important;
+  color: #a1a1aa !important;
 }
 .optionCardSelected {
   border-color: var(--accent-gold) !important;
-  background: rgba(197, 168, 128, 0.05) !important;
+  background: rgba(197, 168, 128, 0.12) !important;
+  box-shadow: 0 0 15px rgba(197, 168, 128, 0.2) !important;
 }
 .ministryClassCard {
-  background: #f9fafb !important;
-  border: 1px solid #e5e7eb !important;
+  background: linear-gradient(145deg, #18181b 0%, #201c16 100%) !important;
+  border: 1px solid rgba(197, 168, 128, 0.35) !important;
+  border-radius: 12px !important;
 }
 .ministryClassName {
-  color: #111827 !important;
+  color: var(--accent-gold) !important;
 }
 .ministryClassDesc {
-  color: #4b5563 !important;
+  color: #a1a1aa !important;
 }
 .officialPymBanner {
-  background: #f9fafb !important;
-  border: 1px solid #e5e7eb !important;
+  background: #141414 !important;
+  border: 1px solid rgba(197, 168, 128, 0.25) !important;
+  border-radius: 12px !important;
 }
 .officialPymTitle {
-  color: #111827 !important;
+  color: #ffffff !important;
 }
 .serviceItem {
-  background: #ffffff !important;
-  border: 2px solid #e5e7eb !important;
+  background: #141414 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 12px !important;
 }
 .serviceTitle {
-  color: #111827 !important;
+  color: #ffffff !important;
 }
 .serviceDesc {
-  color: #4b5563 !important;
+  color: #a1a1aa !important;
 }
 .serviceItemSelected {
   border-color: var(--accent-gold) !important;
-  background: rgba(197, 168, 128, 0.05) !important;
+  background: rgba(197, 168, 128, 0.12) !important;
 }
 .resultCard {
-  background: #ffffff !important;
-  border: 1px solid #e5e7eb !important;
+  background: #141414 !important;
+  border: 1px solid rgba(197, 168, 128, 0.25) !important;
+  border-radius: 16px !important;
 }
 .packageCard {
-  background: #ffffff !important;
-  border: 2px solid #e5e7eb !important;
+  background: #141414 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 16px !important;
 }
 .packageTitle {
-  color: #111827 !important;
+  color: #ffffff !important;
 }
 .packageTagline {
-  color: #4b5563 !important;
+  color: var(--accent-gold) !important;
 }
 .packageFeatureItem {
-  color: #4b5563 !important;
+  color: #e4e4e7 !important;
 }
 .packageCardSelected {
-  background: rgba(197, 168, 128, 0.05) !important;
+  background: rgba(197, 168, 128, 0.14) !important;
   border-color: var(--accent-gold) !important;
+  box-shadow: 0 0 25px rgba(197, 168, 128, 0.25) !important;
 }
 .boardInfoCard {
-  background: #f9fafb !important;
-  border: 1px solid #e5e7eb !important;
+  background: #141414 !important;
+  border: 1px solid rgba(197, 168, 128, 0.25) !important;
+  border-radius: 12px !important;
 }
 .boardName {
-  color: #111827 !important;
+  color: #ffffff !important;
 }
 .boardDesc {
-  color: #4b5563 !important;
+  color: #a1a1aa !important;
 }
 
 /* Story Progress & Swipe UI */
