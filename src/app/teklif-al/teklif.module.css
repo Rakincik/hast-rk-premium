@@ -188,6 +188,38 @@
   position: relative;
 }
 
+.closeWizardBtn {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.closeWizardBtn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .closeWizardBtn {
+    top: 1rem;
+    right: 1rem;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.15);
+  }
+}
+
+
 .phoneGateAlert {
   display: flex;
   align-items: center;

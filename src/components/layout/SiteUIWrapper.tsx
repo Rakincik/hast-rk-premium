@@ -12,6 +12,7 @@ import FloatingContactWidget from "@/components/ui/FloatingContactWidget";
 export default function SiteUIWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
+  const isTeklifAl = pathname === "/teklif-al";
 
   if (isAdmin) {
     return <main>{children}</main>;
@@ -22,11 +23,11 @@ export default function SiteUIWrapper({ children }: { children: React.ReactNode 
       <Preloader />
       <CustomCursor />
       <AuroraGlow />
-      <ArchitectRuler />
-      <Navbar />
+      {!isTeklifAl && <ArchitectRuler />}
+      {!isTeklifAl && <Navbar />}
       <main>{children}</main>
-      <Footer />
-      <FloatingContactWidget />
+      {!isTeklifAl && <Footer />}
+      {!isTeklifAl && <FloatingContactWidget />}
     </>
   );
 }

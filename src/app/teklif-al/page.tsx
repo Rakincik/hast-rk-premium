@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import styles from "./teklif.module.css";
 import { 
@@ -25,7 +26,8 @@ import {
   PenTool,
   AlertCircle,
   Phone,
-  Wrench
+  Wrench,
+  X
 } from "lucide-react";
 import { 
   ServiceDomain,
@@ -260,6 +262,9 @@ function WizardContent() {
     <div className={styles.container}>
       {/* Main Wizard Grid */}
       <div className={styles.wizardLayout}>
+        <Link href="/" className={styles.closeWizardBtn} aria-label="Kapat">
+          <X size={24} />
+        </Link>
         {/* Left Side: Step Content */}
         <div className={styles.stepBody}>
           {/* Story Progress Bar */}
