@@ -48,8 +48,10 @@
   transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.imageFrame:hover .portraitImg {
-  transform: scale(1.04);
+@media (hover: hover) {
+  .imageFrame:hover .portraitImg {
+    transform: scale(1.04);
+  }
 }
 
 .imageOverlay {
@@ -210,11 +212,13 @@
   transition: all 0.3s ease;
 }
 
-.teamLink:hover {
-  background: #1e1e1e;
-  border-color: var(--accent-gold);
-  color: var(--accent-gold);
-  transform: translateY(-2px);
+@media (hover: hover) {
+  .teamLink:hover {
+    background: #1e1e1e;
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+    transform: translateY(-2px);
+  }
 }
 
 @media (max-width: 768px) {

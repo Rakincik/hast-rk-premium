@@ -7,6 +7,7 @@ import styles from "./Projects.module.css";
 import { ArrowRight, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSiteContent } from "@/context/SiteContentContext";
+import SwipeDots from "@/components/ui/SwipeDots";
 
 export default function Projects() {
   const { t } = useLanguage();
@@ -172,6 +173,7 @@ export default function Projects() {
             </Link>
           ))}
         </div>
+        <SwipeDots trackRef={trackRef} count={flagshipProjects.length} />
       </div>
     </section>
   );

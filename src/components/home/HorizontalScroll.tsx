@@ -5,6 +5,7 @@ import styles from "./horizontalScroll.module.css";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
+import SwipeDots from "@/components/ui/SwipeDots";
 
 export default function HorizontalScroll() {
   const { t, language } = useLanguage();
@@ -136,6 +137,7 @@ export default function HorizontalScroll() {
             </div>
           ))}
         </div>
+        <SwipeDots trackRef={trackRef} count={steps.length} />
       </div>
     </section>
   );

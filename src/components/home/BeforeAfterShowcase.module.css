@@ -198,8 +198,10 @@
   cursor: ew-resize;
 }
 
-.sliderContainer:hover .handle {
-  transform: scale(1.1);
+@media (hover: hover) {
+  .sliderContainer:hover .handle {
+    transform: scale(1.1);
+  }
 }
 
 /* Project Info Metadata Strip */

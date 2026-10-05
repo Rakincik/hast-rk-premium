@@ -25,10 +25,12 @@
   cursor: pointer;
 }
 
-.whatsappBtn:hover {
-  background: #20ba5a;
-  transform: scale(1.08) translateY(-2px);
-  box-shadow: 0 12px 30px rgba(37, 211, 102, 0.55), 0 6px 15px rgba(0, 0, 0, 0.6);
+@media (hover: hover) {
+  .whatsappBtn:hover {
+    background: #20ba5a;
+    transform: scale(1.08) translateY(-2px);
+    box-shadow: 0 12px 30px rgba(37, 211, 102, 0.55), 0 6px 15px rgba(0, 0, 0, 0.6);
+  }
 }
 
 /* Pulsing radar ripple */
@@ -92,13 +94,18 @@
 /* Mobile responsive adjustments */
 @media (max-width: 640px) {
   .whatsappFloat {
-    bottom: 18px;
-    right: 18px;
+    bottom: 14px;
+    right: 14px;
   }
 
   .whatsappBtn {
-    width: 52px;
-    height: 52px;
+    width: 46px;
+    height: 46px;
+  }
+
+  .whatsappBtn svg {
+    width: 24px;
+    height: 24px;
   }
 
   .tooltip {
