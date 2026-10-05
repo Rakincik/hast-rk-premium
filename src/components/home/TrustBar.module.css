@@ -11,7 +11,7 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
-  align-items: center;
+  align-items: stretch;
 }
 
 @media (min-width: 768px) {
@@ -32,10 +32,12 @@
   transition: all 0.3s ease;
 }
 
-.trustItem:hover {
-  background: #161616;
-  border-color: rgba(197, 168, 128, 0.4);
-  transform: translateY(-2px);
+@media (hover: hover) {
+  .trustItem:hover {
+    background: #161616;
+    border-color: rgba(197, 168, 128, 0.4);
+    transform: translateY(-2px);
+  }
 }
 
 .iconWrapper {
@@ -71,14 +73,35 @@
 }
 
 @media (max-width: 767px) {
+  .trustSection {
+    padding: 2.25rem 0;
+  }
   .trustGrid {
-    gap: 1.25rem;
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
   }
   .trustItem {
-    flex-direction: column;
-    text-align: center;
-    gap: 0.8rem;
-    padding: 1.5rem 1rem;
+    flex-direction: row;
     align-items: center;
+    text-align: start;
+    gap: 0.9rem;
+    padding: 0.9rem 1rem;
+    border-radius: 12px;
+  }
+  .iconWrapper {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+  }
+  .textContent {
+    min-width: 0;
+  }
+  .itemTitle {
+    font-size: 0.95rem;
+    margin-bottom: 0.15rem;
+  }
+  .itemSubtitle {
+    font-size: 0.82rem;
+    line-height: 1.45;
   }
 }
