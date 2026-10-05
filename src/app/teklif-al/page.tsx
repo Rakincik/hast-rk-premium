@@ -195,6 +195,8 @@ function WizardContent() {
   const handleSubmitLead = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitted(true);
+    // Vercel serverless mail vs. olmadığı için doğrudan WhatsApp'a yönlendiriyoruz
+    window.open(getWhatsAppLink(), "_blank");
   };
 
   // WhatsApp Mesajı Oluşturucu
@@ -929,7 +931,7 @@ function WizardContent() {
                       <CheckCircle2 size={24} style={{ marginBottom: "0.5rem" }} />
                       <p><strong>Talebiniz başarıyla alındı!</strong></p>
                       <p style={{ fontSize: "0.85rem", marginTop: "0.25rem" }}>
-                        Sayın <strong>{leadForm.name.trim() || "Danışanımız"}</strong>, teknik ekibimiz <strong>{leadForm.phone}</strong> numarası üzerinden en geç 24 saat içinde sizinle iletişime geçecektir.
+                        Sayın <strong>{leadForm.name.trim() || "Danışanımız"}</strong>, talebiniz WhatsApp üzerinden hazırlanıyor. Yönlendirme yapılmadıysa <a href={getWhatsAppLink()} target="_blank" style={{ color: "var(--accent-gold)", textDecoration: "underline" }}>buraya tıklayın</a>.
                       </p>
                     </div>
                   ) : (
@@ -979,7 +981,7 @@ function WizardContent() {
                       </div>
                       <button type="submit" className={styles.submitBtn}>
                         <Send size={16} style={{ display: "inline-block", marginRight: "6px" }} />
-                        Resmi Keşif Talebini Gönder
+                        WhatsApp Üzerinden Teklifi Tamamla
                       </button>
                     </form>
                   )}
