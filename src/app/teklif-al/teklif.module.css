@@ -141,10 +141,11 @@
   flex-direction: row-reverse; /* Put Summary on LEFT, Steps on RIGHT */
   width: 100%;
   max-width: 1100px;
-  background: #ffffff;
+  background: #0d0d0d;
+  border: 1px solid rgba(197, 168, 128, 0.25);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
   margin: 0 auto;
 }
 
@@ -167,20 +168,22 @@
     margin: 0;
     background: #090909;
     box-shadow: none;
+    border: none;
   }
   
   .stepBody {
     background: transparent;
-    padding: 2rem 1.25rem 4rem 1.25rem;
+    padding: 1rem 0.85rem 4.5rem 0.85rem;
     min-height: 100dvh;
   }
 }
 
-/* Left Wizard Step Body (Now Right Content, White Theme) */
+/* Left Wizard Step Body (Now Right Content) */
 .stepBody {
   flex: 1;
-  background: #ffffff;
-  padding: 3rem;
+  background: #0d0d0d;
+  color: #ffffff;
+  padding: 2.5rem;
   min-height: 550px;
   display: flex;
   flex-direction: column;
@@ -272,10 +275,10 @@
 }
 
 .typeCard {
-  background: #ffffff;
-  border: 2px solid #e5e7eb;
+  background: #141414;
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
-  padding: 1.5rem;
+  padding: 1.25rem;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
@@ -289,38 +292,38 @@
 .typeCard:hover {
   border-color: rgba(197, 168, 128, 0.5);
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
 }
 
 .typeCardSelected {
-  border-color: var(--accent-gold);
-  background: rgba(197, 168, 128, 0.05);
-  box-shadow: 0 4px 15px rgba(197, 168, 128, 0.15);
+  border-color: var(--accent-gold) !important;
+  background: rgba(197, 168, 128, 0.12) !important;
+  box-shadow: 0 0 20px rgba(197, 168, 128, 0.25) !important;
 }
 
 .typeIconWrapper {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: 10px;
-  background: rgba(197, 168, 128, 0.1);
+  background: rgba(197, 168, 128, 0.12);
   color: var(--accent-gold);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .typeCardTitle {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-family: var(--font-serif);
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-  color: #111827;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+  color: #ffffff;
 }
 
 .typeCardDesc {
-  font-size: 0.85rem;
-  color: #4b5563;
+  font-size: 0.82rem;
+  color: #a1a1aa;
   line-height: 1.4;
 }
 
@@ -1428,24 +1431,46 @@
   }
 
   /* Step 1 Type Cards */
-  .typeGrid {
+  .typeGrid,
+  .typeGrid4 {
     grid-template-columns: 1fr;
-    gap: 0.85rem;
-    margin-bottom: 1.5rem;
+    gap: 0.45rem;
+    margin-bottom: 0.75rem;
   }
 
   .typeCard {
-    padding: 1.15rem;
+    padding: 0.65rem 0.85rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+    border-radius: 10px;
   }
 
   .typeIconWrapper {
-    width: 40px;
-    height: 40px;
-    margin-bottom: 0.85rem;
+    width: 36px;
+    height: 36px;
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .typeIconWrapper svg {
+    width: 18px;
+    height: 18px;
   }
 
   .typeCardTitle {
-    font-size: 1.05rem;
+    font-size: 0.92rem;
+    margin-bottom: 0.1rem;
+  }
+
+  .typeCardDesc {
+    font-size: 0.76rem;
+    line-height: 1.25;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   /* Step 2 Sliders & Options */
@@ -1901,101 +1926,125 @@
   }
 }
 
-/* Clean Phone Gate Bar */
+/* Sleek Step Header with Live Price */
+.stepHeaderSleek {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.stepTagline {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--accent-gold);
+  font-weight: 600;
+}
+
+.stepMainTitle {
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: #ffffff;
+  margin: 0.15rem 0 0 0;
+}
+
+.livePriceBadge {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  background: rgba(197, 168, 128, 0.1);
+  border: 1px solid rgba(197, 168, 128, 0.3);
+  border-radius: 8px;
+  padding: 0.3rem 0.65rem;
+}
+
+.livePriceLabel {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--accent-gold);
+  font-weight: 600;
+}
+
+.livePriceValue {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Compact Phone Gate Bar */
 .phoneGateBar {
-  background: linear-gradient(135deg, #18181b 0%, #221d17 100%);
-  border: 1px solid rgba(197, 168, 128, 0.4);
-  border-radius: 14px;
-  padding: 1.15rem 1.5rem;
-  margin-bottom: 2rem;
+  background: #141414;
+  border: 1px solid rgba(197, 168, 128, 0.35);
+  border-radius: 10px;
+  padding: 0.45rem 0.75rem;
+  margin-bottom: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 1.25rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  gap: 0.65rem;
 }
 
 .phoneGateLeft {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
-  flex: 1;
-  min-width: 260px;
-}
-
-.phoneIconWrap {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  background: rgba(197, 168, 128, 0.15);
-  color: var(--accent-gold);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  gap: 0.45rem;
   flex-shrink: 0;
 }
 
-.phoneGateTitle {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: -0.01em;
+.phoneIconGold {
+  color: var(--accent-gold);
 }
 
-.phoneGateSub {
+.phoneGateTitle {
   font-size: 0.82rem;
-  color: #a1a1aa;
-  margin-top: 0.2rem;
-  line-height: 1.35;
+  font-weight: 600;
+  color: #e4e4e7;
 }
 
 .phoneInputWrapper {
+  flex: 1;
+  max-width: 240px;
   display: flex;
   align-items: center;
-  background: #101012;
-  border: 1.5px solid rgba(197, 168, 128, 0.45);
-  border-radius: 10px;
-  padding: 0.4rem 0.6rem 0.4rem 0.85rem;
-  gap: 0.65rem;
-  transition: all 0.25s ease;
-  min-width: 290px;
-}
-
-.phoneInputWrapper:focus-within {
-  border-color: var(--accent-gold);
-  box-shadow: 0 0 16px rgba(197, 168, 128, 0.35);
+  background: #0d0d0d;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 0.3rem 0.55rem;
+  gap: 0.4rem;
 }
 
 .countryCodeBadge {
-  font-size: 0.88rem;
-  font-weight: 600;
+  font-size: 0.78rem;
   color: var(--accent-gold);
+  font-weight: 600;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  padding-right: 0.4rem;
   display: flex;
   align-items: center;
-  gap: 0.35rem;
-  padding-right: 0.65rem;
-  border-right: 1px solid rgba(255, 255, 255, 0.14);
-  white-space: nowrap;
+  gap: 0.25rem;
 }
 
 .phoneGateInput {
   background: transparent;
   border: none;
-  color: #fff;
-  font-size: 1.1rem;
+  color: #ffffff;
+  font-size: 0.88rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
-  outline: none;
   width: 100%;
-  font-family: var(--font-sans), monospace;
-  font-variant-numeric: tabular-nums;
+  outline: none;
 }
 
 .phoneGateInput::placeholder {
   color: #52525b;
   font-weight: 400;
-  letter-spacing: normal;
 }
 
 .phoneGateAlert {
@@ -2006,28 +2055,22 @@
   align-items: center;
   gap: 0.4rem;
   background: rgba(239, 68, 68, 0.12);
-  padding: 0.6rem 0.9rem;
+  padding: 0.5rem 0.8rem;
   border-radius: 8px;
   border: 1px solid rgba(239, 68, 68, 0.3);
-  margin-top: -1rem;
-  margin-bottom: 1.5rem;
+  margin-top: -0.5rem;
+  margin-bottom: 0.75rem;
 }
 
-/* Executive Segmented Tab Switcher (Proje vs Uygulama) */
+/* Segmented Tab Switcher (Side by Side on All Screens) */
 .segmentedControl {
   display: flex;
   background: #141414;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  padding: 0.35rem;
-  gap: 0.4rem;
-  margin-bottom: 1.75rem;
-}
-
-@media (max-width: 640px) {
-  .segmentedControl {
-    flex-direction: column;
-  }
+  border-radius: 10px;
+  padding: 0.25rem;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
 }
 
 .segmentBtn {
@@ -2035,21 +2078,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.65rem;
-  padding: 0.85rem 1.25rem;
-  border-radius: 9px;
+  gap: 0.5rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
   background: transparent;
   border: none;
   color: var(--text-secondary);
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 0.82rem;
   font-weight: 600;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.segmentBtn:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.04);
+  transition: all 0.2s ease;
 }
 
 .segmentBtnActive {

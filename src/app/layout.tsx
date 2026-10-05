@@ -12,9 +12,9 @@ export const metadata: Metadata = {
   },
   description: "Tarihi dokuya saygı, modern mühendislik. Eski eser rölöve, restitüsyon, restorasyon, mimari tasarım, taahhüt ve güçlendirme hizmetleri.",
   icons: {
-    icon: "/logo-gold.png",
-    shortcut: "/logo-gold.png",
-    apple: "/logo-gold.png",
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/icon.png",
   },
   keywords: [
     // Core Services

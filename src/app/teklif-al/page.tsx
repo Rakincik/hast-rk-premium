@@ -294,26 +294,24 @@ function WizardContent() {
                 onDragEnd={handleDragEnd}
                 className={styles.swipeableStep}
               >
-                <div className={styles.botBubbleContainer}>
-                  <div className={styles.botAvatar}>
-                    <img src="/logo-gold.png" alt="Hastürk Asistan" />
+                <div className={styles.stepHeaderSleek}>
+                  <div>
+                    <span className={styles.stepTagline}>Ön Fizibilite & Maliyet Robotu</span>
+                    <h2 className={styles.stepMainTitle}>Hizmet Türü ve Proje Kategorisi</h2>
                   </div>
-                  <div className={styles.botMessage}>
-                    Merhaba! Ben <strong>Hastürk Akıllı Asistan.</strong> Size en doğru maliyeti sunabilmem için öncelikle iletişim numaranızı ve projenizin türünü seçebilir misiniz?
+                  <div className={styles.livePriceBadge}>
+                    <span className={styles.livePriceLabel}>Canlı Tahmin</span>
+                    <span className={styles.livePriceValue}>
+                      {formatCurrencyTL(quoteResult.packageFees.basic)} - {formatCurrencyTL(quoteResult.packageFees.turnkey)}
+                    </span>
                   </div>
                 </div>
-                {/* 1. Kompakt Telefon Gate Barı (SADECE TELEFON, Hızlı & Zarif) */}
+
+                {/* 1. Kompakt Telefon Barı */}
                 <div className={styles.phoneGateBar}>
                   <div className={styles.phoneGateLeft}>
-                    <div className={styles.phoneIconWrap}>
-                      <Phone size={20} />
-                    </div>
-                    <div>
-                      <div className={styles.phoneGateTitle}>Telefon Numaranızla Hızlı Başlayın</div>
-                      <div className={styles.phoneGateSub}>
-                        Resmi birim fiyat raporu ve ön fizibiliteniz için cep numaranızı giriniz.
-                      </div>
-                    </div>
+                    <Phone size={16} className={styles.phoneIconGold} />
+                    <span className={styles.phoneGateTitle}>Cep Telefonu</span>
                   </div>
 
                   <div className={styles.phoneInputWrapper}>
@@ -481,14 +479,7 @@ function WizardContent() {
                 onDragEnd={handleDragEnd}
                 className={`${styles.formSection} ${styles.swipeableStep}`}
               >
-                <div className={styles.botBubbleContainer}>
-                  <div className={styles.botAvatar}>
-                    <img src="/logo-gold.png" alt="Hastürk Asistan" />
-                  </div>
-                  <div className={styles.botMessage}>
-                    Harika! Şimdi yapınızın büyüklüğünü ve bazı teknik detaylarını belirleyelim. Lütfen <strong>metrajı (m²)</strong> giriniz.
-                  </div>
-                </div>
+
                 <div>
                   <h2 className={styles.stepTitle}>Yapı Alanı ve Teknik Detaylar</h2>
                   <p className={styles.stepDesc}>
@@ -682,14 +673,7 @@ function WizardContent() {
                 onDragEnd={handleDragEnd}
                 className={styles.swipeableStep}
               >
-                <div className={styles.botBubbleContainer}>
-                  <div className={styles.botAvatar}>
-                    <img src="/logo-gold.png" alt="Hastürk Asistan" />
-                  </div>
-                  <div className={styles.botMessage}>
-                    Çok az kaldı! Projeye dahil etmemizi istediğiniz <strong>hizmetleri</strong> işaretleyin. İhtiyacınız olmayanları çıkarabilirsiniz.
-                  </div>
-                </div>
+
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem", marginBottom: "1.5rem" }}>
                   <div>
                     <h2 className={styles.stepTitle}>Talep Edilen Hizmet Kapsamı</h2>
@@ -751,14 +735,7 @@ function WizardContent() {
                 onDragEnd={handleDragEnd}
                 className={styles.swipeableStep}
               >
-                <div className={styles.botBubbleContainer}>
-                  <div className={styles.botAvatar}>
-                    <img src="/logo-gold.png" alt="Hastürk Asistan" />
-                  </div>
-                  <div className={styles.botMessage}>
-                    İşte sonuçlar! Seçimlerinize göre hazırladığım <strong>3 farklı teklif paketini</strong> aşağıda inceleyebilirsiniz.
-                  </div>
-                </div>
+
                 <h2 className={styles.stepTitle}>
                   {domain === "execution" ? "Uygulama & İmalat Teklif Raporu" : "Mimari Proje Teklif & Maliyet Raporu"}
                 </h2>
