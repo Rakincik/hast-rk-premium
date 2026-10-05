@@ -369,12 +369,16 @@
   box-shadow: 0 0 18px rgba(197, 168, 128, 0.22) !important;
 }
 
-.typeCardTop {
+.typeCardMain {
   width: 100%;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.45rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.45rem;
+}
+
+.typeCardInfo {
+  width: 100%;
 }
 
 .typeIconWrapper {
@@ -390,6 +394,9 @@
 }
 
 .typeRadioCircle {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
   width: 18px;
   height: 18px;
   border-radius: 50%;
@@ -425,6 +432,59 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   margin: 0;
+}
+
+/* Selected Feature Box - Fills Empty Space Elegantly */
+.selectedTypeFeatureBox {
+  background: linear-gradient(145deg, #151413 0%, #1e1b17 100%);
+  border: 1px solid rgba(197, 168, 128, 0.25);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  margin-top: 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.selectedFeatureHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.sparkleIconGold {
+  color: var(--accent-gold);
+  flex-shrink: 0;
+}
+
+.selectedFeatureTitle {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--accent-gold);
+  letter-spacing: 0.02em;
+}
+
+.featurePillsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.featurePill {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.74rem;
+  color: #d4d4d8;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.35rem 0.55rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.featureCheckGold {
+  color: var(--accent-gold);
+  flex-shrink: 0;
 }
 
 /* Step 2: Sliders & Form Selectors */
@@ -1539,48 +1599,66 @@
     line-height: 1.45;
   }
 
-  /* Step 1 Type Cards Mobile (Ultra Compact Zero Scroll) */
+  /* Step 1 Type Cards Mobile (Rich & Balanced) */
   .typeGrid,
   .typeGrid4 {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
+    gap: 0.5rem;
     margin-bottom: 0.5rem;
   }
 
   .typeCard {
-    padding: 0.5rem 0.75rem;
+    padding: 0.65rem 0.85rem;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    border-radius: 9px;
-    gap: 0.5rem;
+    border-radius: 11px;
+    gap: 0.65rem;
+    min-height: 54px;
   }
 
-  .typeCardTop {
-    width: auto;
-    margin-bottom: 0;
-    gap: 0.5rem;
+  .typeCardMain {
     display: flex;
+    flex-direction: row;
     align-items: center;
+    gap: 0.65rem;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .typeCardInfo {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
   }
 
   .typeIconWrapper {
-    width: 26px;
-    height: 26px;
-    border-radius: 6px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
     margin-bottom: 0;
     flex-shrink: 0;
   }
 
   .typeIconWrapper svg {
-    width: 14px;
-    height: 14px;
+    width: 17px;
+    height: 17px;
+  }
+
+  .typeRadioCircle {
+    position: static;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
   }
 
   .typeCardTitle {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
+    font-weight: 600;
     margin-bottom: 0;
     white-space: nowrap;
     overflow: hidden;
@@ -1588,7 +1666,36 @@
   }
 
   .typeCardDesc {
-    display: none !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 0.72rem;
+    color: #a1a1aa;
+    line-height: 1.25;
+    margin: 0;
+  }
+
+  /* Selected Feature Box on Mobile */
+  .selectedTypeFeatureBox {
+    padding: 0.65rem 0.75rem;
+    margin-top: 0.5rem;
+    gap: 0.4rem;
+  }
+
+  .selectedFeatureTitle {
+    font-size: 0.78rem;
+    line-height: 1.25;
+  }
+
+  .featurePillsGrid {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+
+  .featurePill {
+    font-size: 0.72rem;
+    padding: 0.3rem 0.5rem;
   }
 
   /* Step 2 Sliders & Options */

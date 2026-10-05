@@ -27,7 +27,8 @@ import {
   AlertCircle,
   Phone,
   Wrench,
-  X
+  X,
+  Sparkles
 } from "lucide-react";
 import { 
   ServiceDomain,
@@ -381,16 +382,18 @@ function WizardContent() {
                           className={`${styles.typeCard} ${projectType === "restoration" ? styles.typeCardSelected : ""}`} 
                           onClick={() => handleTypeChange("restoration")}
                         >
-                          <div className={styles.typeCardTop}>
+                          <div className={styles.typeCardMain}>
                             <div className={styles.typeIconWrapper}><Landmark size={20} /></div>
-                            <div className={styles.typeRadioCircle}>
-                              {projectType === "restoration" && <Check size={11} strokeWidth={3.5} />}
+                            <div className={styles.typeCardInfo}>
+                              <h3 className={styles.typeCardTitle}>Eski Eser (2863 SK)</h3>
+                              <p className={styles.typeCardDesc}>
+                                2863 SK tescilli yapılar için Lidar, rölöve, restitüsyon ve kurul onay projeleri.
+                              </p>
                             </div>
                           </div>
-                          <h3 className={styles.typeCardTitle}>Eski Eser (2863 SK)</h3>
-                          <p className={styles.typeCardDesc}>
-                            2863 Sayılı Kanuna tabi tescilli yapılar için Lidar, rölöve, restitüsyon ve kurul onay projeleri.
-                          </p>
+                          <div className={styles.typeRadioCircle}>
+                            {projectType === "restoration" && <Check size={11} strokeWidth={3.5} />}
+                          </div>
                         </div>
 
                         {/* Proje: Yeni Mimari */}
@@ -398,16 +401,18 @@ function WizardContent() {
                           className={`${styles.typeCard} ${projectType === "new_architecture" ? styles.typeCardSelected : ""}`} 
                           onClick={() => handleTypeChange("new_architecture")}
                         >
-                          <div className={styles.typeCardTop}>
+                          <div className={styles.typeCardMain}>
                             <div className={styles.typeIconWrapper}><Building2 size={20} /></div>
-                            <div className={styles.typeRadioCircle}>
-                              {projectType === "new_architecture" && <Check size={11} strokeWidth={3.5} />}
+                            <div className={styles.typeCardInfo}>
+                              <h3 className={styles.typeCardTitle}>Yeni Yapı Mimari</h3>
+                              <p className={styles.typeCardDesc}>
+                                Müstakil villa, konut ve ticari yapılar için belediye ruhsat ve mimari projeler.
+                              </p>
                             </div>
                           </div>
-                          <h3 className={styles.typeCardTitle}>Yeni Yapı Mimari</h3>
-                          <p className={styles.typeCardDesc}>
-                            Müstakil villa, konut ve ticari yapılar için belediye ruhsat, konsept ve uygulama projeleri.
-                          </p>
+                          <div className={styles.typeRadioCircle}>
+                            {projectType === "new_architecture" && <Check size={11} strokeWidth={3.5} />}
+                          </div>
                         </div>
 
                         {/* Proje: Statik Güçlendirme */}
@@ -415,16 +420,18 @@ function WizardContent() {
                           className={`${styles.typeCard} ${projectType === "strengthening" ? styles.typeCardSelected : ""}`} 
                           onClick={() => handleTypeChange("strengthening")}
                         >
-                          <div className={styles.typeCardTop}>
+                          <div className={styles.typeCardMain}>
                             <div className={styles.typeIconWrapper}><ShieldCheck size={20} /></div>
-                            <div className={styles.typeRadioCircle}>
-                              {projectType === "strengthening" && <Check size={11} strokeWidth={3.5} />}
+                            <div className={styles.typeCardInfo}>
+                              <h3 className={styles.typeCardTitle}>Statik Güçlendirme</h3>
+                              <p className={styles.typeCardDesc}>
+                                Bina taşıyıcı analizi, deprem performans tahkiki ve onaylı güçlendirme projeleri.
+                              </p>
                             </div>
                           </div>
-                          <h3 className={styles.typeCardTitle}>Statik Güçlendirme</h3>
-                          <p className={styles.typeCardDesc}>
-                            Mevcut bina taşıyıcı analizi, deprem performans tahkiki ve onaylı güçlendirme projeleri.
-                          </p>
+                          <div className={styles.typeRadioCircle}>
+                            {projectType === "strengthening" && <Check size={11} strokeWidth={3.5} />}
+                          </div>
                         </div>
                       </>
                     ) : (
@@ -434,16 +441,18 @@ function WizardContent() {
                           className={`${styles.typeCard} ${projectType === "exec_restoration" ? styles.typeCardSelected : ""}`} 
                           onClick={() => handleTypeChange("exec_restoration")}
                         >
-                          <div className={styles.typeCardTop}>
+                          <div className={styles.typeCardMain}>
                             <div className={styles.typeIconWrapper}><Landmark size={20} /></div>
-                            <div className={styles.typeRadioCircle}>
-                              {projectType === "exec_restoration" && <Check size={11} strokeWidth={3.5} />}
+                            <div className={styles.typeCardInfo}>
+                              <h3 className={styles.typeCardTitle}>Tarihi Restorasyon</h3>
+                              <p className={styles.typeCardDesc}>
+                                2863 SK ve koruma kurulu onaylı restorasyon uygulaması ve fenni mesuliyet.
+                              </p>
                             </div>
                           </div>
-                          <h3 className={styles.typeCardTitle}>Tarihi Restorasyon</h3>
-                          <p className={styles.typeCardDesc}>
-                            2863 sayılı kanun ve kurul onaylı restorasyon uygulaması ve fenni mesuliyet.
-                          </p>
+                          <div className={styles.typeRadioCircle}>
+                            {projectType === "exec_restoration" && <Check size={11} strokeWidth={3.5} />}
+                          </div>
                         </div>
 
                         {/* Uygulama: Yeni İnşaat */}
@@ -451,16 +460,18 @@ function WizardContent() {
                           className={`${styles.typeCard} ${projectType === "exec_new" ? styles.typeCardSelected : ""}`} 
                           onClick={() => handleTypeChange("exec_new")}
                         >
-                          <div className={styles.typeCardTop}>
+                          <div className={styles.typeCardMain}>
                             <div className={styles.typeIconWrapper}><Building2 size={20} /></div>
-                            <div className={styles.typeRadioCircle}>
-                              {projectType === "exec_new" && <Check size={11} strokeWidth={3.5} />}
+                            <div className={styles.typeCardInfo}>
+                              <h3 className={styles.typeCardTitle}>Yeni Yapı İnşaatı</h3>
+                              <p className={styles.typeCardDesc}>
+                                Anahtar teslim kaba ve ince yapı inşaat taahhüdü, şantiye şefliği ve iskan.
+                              </p>
                             </div>
                           </div>
-                          <h3 className={styles.typeCardTitle}>Yeni Yapı İnşaatı</h3>
-                          <p className={styles.typeCardDesc}>
-                            Anahtar teslim kaba ve ince yapı inşaat taahhüdü, şantiye şefliği ve iskan teslimi.
-                          </p>
+                          <div className={styles.typeRadioCircle}>
+                            {projectType === "exec_new" && <Check size={11} strokeWidth={3.5} />}
+                          </div>
                         </div>
 
                         {/* Uygulama: Tadilat & Tamirat */}
@@ -468,16 +479,18 @@ function WizardContent() {
                           className={`${styles.typeCard} ${projectType === "exec_renovation" ? styles.typeCardSelected : ""}`} 
                           onClick={() => handleTypeChange("exec_renovation")}
                         >
-                          <div className={styles.typeCardTop}>
+                          <div className={styles.typeCardMain}>
                             <div className={styles.typeIconWrapper}><Wrench size={20} /></div>
-                            <div className={styles.typeRadioCircle}>
-                              {projectType === "exec_renovation" && <Check size={11} strokeWidth={3.5} />}
+                            <div className={styles.typeCardInfo}>
+                              <h3 className={styles.typeCardTitle}>Tadilat & Yenileme</h3>
+                              <p className={styles.typeCardDesc}>
+                                İç mekan yenileme, tesisat, çatı onarımı, ıslak hacimler ve lüks ince işçilik.
+                              </p>
                             </div>
                           </div>
-                          <h3 className={styles.typeCardTitle}>Tadilat & Yenileme</h3>
-                          <p className={styles.typeCardDesc}>
-                            İç mekan yenileme, tesisat, çatı onarımı, ıslak hacimler ve lüks ince işçilik.
-                          </p>
+                          <div className={styles.typeRadioCircle}>
+                            {projectType === "exec_renovation" && <Check size={11} strokeWidth={3.5} />}
+                          </div>
                         </div>
 
                         {/* Uygulama: Statik Güçlendirme İmalatı */}
@@ -485,19 +498,51 @@ function WizardContent() {
                           className={`${styles.typeCard} ${projectType === "exec_strengthening" ? styles.typeCardSelected : ""}`} 
                           onClick={() => handleTypeChange("exec_strengthening")}
                         >
-                          <div className={styles.typeCardTop}>
+                          <div className={styles.typeCardMain}>
                             <div className={styles.typeIconWrapper}><ShieldCheck size={20} /></div>
-                            <div className={styles.typeRadioCircle}>
-                              {projectType === "exec_strengthening" && <Check size={11} strokeWidth={3.5} />}
+                            <div className={styles.typeCardInfo}>
+                              <h3 className={styles.typeCardTitle}>Güçlendirme Şantiye</h3>
+                              <p className={styles.typeCardDesc}>
+                                Karbon lif (CFRP), çelik mantolama, temel takviyesi ve epoksi enjeksiyon.
+                              </p>
                             </div>
                           </div>
-                          <h3 className={styles.typeCardTitle}>Güçlendirme Şantiye</h3>
-                          <p className={styles.typeCardDesc}>
-                            Karbon lif (CFRP), çelik mantolama, temel takviyesi ve epoksi enjeksiyon uygulamaları.
-                          </p>
+                          <div className={styles.typeRadioCircle}>
+                            {projectType === "exec_strengthening" && <Check size={11} strokeWidth={3.5} />}
+                          </div>
                         </div>
                       </>
                     )}
+                  </div>
+
+                  {/* Canlı Kapsam & Güven Rozetleri (Ekranda Boş Alanı Dolduran Mimari Panel) */}
+                  <div className={styles.selectedTypeFeatureBox}>
+                    <div className={styles.selectedFeatureHeader}>
+                      <Sparkles size={14} className={styles.sparkleIconGold} />
+                      <span className={styles.selectedFeatureTitle}>
+                        {projectType === "restoration" ? "2863 SK Restorasyon ve Anıtlar Kurulu Güvencesi" :
+                         projectType === "new_architecture" ? "TMMOB Mimari Proje ve Ruhsat Süreci Standardı" :
+                         projectType === "strengthening" ? "Deprem Tahkiki, Performans Analizi & Güçlendirme" :
+                         projectType === "exec_restoration" ? "Tarihi Eser Şantiye Yönetimi & Fenni Mesuliyet" :
+                         projectType === "exec_new" ? "Anahtar Teslim İnşaat, Şantiye Şefliği & İskan" :
+                         projectType === "exec_renovation" ? "Lüks İnce İşçilik, Komple Tesisat & Çatı Yenileme" :
+                         "CFRP Karbon Elyaf, Çelik Mantolama & Yapısal Takviye"}
+                      </span>
+                    </div>
+                    <div className={styles.featurePillsGrid}>
+                      <div className={styles.featurePill}>
+                        <CheckCircle2 size={13} className={styles.featureCheckGold} />
+                        <span>TMMOB / ÇŞİDB 2026 Asgari Katsayı Hesabı</span>
+                      </div>
+                      <div className={styles.featurePill}>
+                        <CheckCircle2 size={13} className={styles.featureCheckGold} />
+                        <span>Ücretsiz Keşif & 24 Saatte Ön Maliyet Analizi</span>
+                      </div>
+                      <div className={styles.featurePill}>
+                        <CheckCircle2 size={13} className={styles.featureCheckGold} />
+                        <span>Doğrudan Başmimar ve Statik Uzmanı İncelemesi</span>
+                      </div>
+                    </div>
                   </div>
                 </motion.div>
               )}
