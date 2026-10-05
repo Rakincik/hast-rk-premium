@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, useMotionValue, useTransform, AnimatePresence } from "framer-motion";
 import { ArrowLeftRight, MapPin, Sparkles, ArrowRight, ShieldCheck } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import styles from "./BeforeAfterShowcase.module.css";
 import { useLanguage } from "@/context/LanguageContext";
 import { Language } from "@/lib/translations";
@@ -239,9 +240,12 @@ export default function BeforeAfterShowcase() {
           onTouchMove={handleTouchMove}
         >
           {/* After Image (Background) */}
-          <img 
+          <Image 
             src={project.afterImage} 
             alt={project.title[language] || project.title.tr} 
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            style={{ objectFit: "cover" }}
             className={styles.image} 
           />
           <div className={`${styles.label} ${styles.labelAfter}`}>
@@ -253,9 +257,12 @@ export default function BeforeAfterShowcase() {
             className={styles.beforeImageContainer}
             style={{ width: "100%", clipPath: clipPathValue }}
           >
-            <img 
+            <Image 
               src={project.beforeImage} 
               alt={project.title[language] || project.title.tr} 
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              style={{ objectFit: "cover" }}
               className={styles.image} 
             />
             <div className={`${styles.label} ${styles.labelBefore}`}>

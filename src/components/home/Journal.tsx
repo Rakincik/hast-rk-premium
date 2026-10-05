@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import styles from "./Journal.module.css";
 import { ArrowRight, Clock, Calendar } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSiteContent } from "@/context/SiteContentContext";
 
@@ -107,7 +108,14 @@ export default function Journal() {
                 transition={{ duration: 0.6, delay: idx * 0.15 }}
               >
                 <div className={styles.imageWrapper}>
-                  <img src={article.image} alt={article.title} className={styles.image} />
+                  <Image 
+                    src={article.image} 
+                    alt={article.title} 
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    style={{ objectFit: "cover" }}
+                    className={styles.image} 
+                  />
                   <span className={styles.categoryBadge}>{article.category}</span>
                 </div>
 

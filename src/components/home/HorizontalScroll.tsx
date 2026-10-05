@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import styles from "./horizontalScroll.module.css";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function HorizontalScroll() {
@@ -114,7 +115,14 @@ export default function HorizontalScroll() {
         <div ref={trackRef} className={styles.scrollTrack}>
           {steps.map((item) => (
             <div key={item.id} className={styles.card}>
-              <img src={item.image} alt={item.title} className={styles.image} />
+              <Image 
+                src={item.image} 
+                alt={item.title} 
+                fill
+                sizes="(max-width: 768px) 100vw, 33vw"
+                style={{ objectFit: "cover" }}
+                className={styles.image} 
+              />
               
               <div className={styles.cardTop}>
                 <span className={styles.stepBadge}>{item.step}</span>

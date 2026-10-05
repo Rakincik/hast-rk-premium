@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import styles from "./Projects.module.css";
 import { ArrowRight, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
@@ -141,11 +142,13 @@ export default function Projects() {
               onMouseEnter={() => setHoveredProject(project.id)}
             >
               <div className={styles.imageContainer}>
-                <img
+                <Image
                   src={project.image}
                   alt={project.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   className={styles.projectImage}
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  style={{ objectFit: "cover" }}
                 />
                 <div className={styles.overlay} />
               </div>

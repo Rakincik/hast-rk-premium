@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { ArrowLeftRight } from "lucide-react";
+import Image from "next/image";
 import styles from "./beforeAfter.module.css";
 
 interface BeforeAfterSliderProps {
@@ -52,7 +53,14 @@ export default function BeforeAfterSlider({ beforeImage, afterImage }: BeforeAft
       }}
     >
       {/* After Image (Background) */}
-      <img src={afterImage} alt="After" className={styles.image} />
+      <Image 
+        src={afterImage} 
+        alt="After" 
+        fill
+        sizes="(max-width: 768px) 100vw, 50vw"
+        style={{ objectFit: "cover" }}
+        className={styles.image} 
+      />
       <div className={`${styles.label} ${styles.labelAfter}`}>Sonrası</div>
 
       {/* Before Image (Clipped overlay) */}
@@ -60,7 +68,14 @@ export default function BeforeAfterSlider({ beforeImage, afterImage }: BeforeAft
         className={styles.beforeImageContainer} 
         style={{ width: "100%", clipPath: clipPathValue }}
       >
-        <img src={beforeImage} alt="Before" className={styles.image} />
+        <Image 
+          src={beforeImage} 
+          alt="Before" 
+          fill
+          sizes="(max-width: 768px) 100vw, 50vw"
+          style={{ objectFit: "cover" }}
+          className={styles.image} 
+        />
         <div className={`${styles.label} ${styles.labelBefore}`}>Öncesi</div>
       </motion.div>
 

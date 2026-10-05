@@ -6,6 +6,12 @@
   position: relative;
 }
 
+@media (max-width: 768px) {
+  .container {
+    padding: 6rem 1rem 2rem 1rem;
+  }
+}
+
 /* Header */
 .header {
   text-align: center;
@@ -170,6 +176,17 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+@media (max-width: 768px) {
+  .stepBody {
+    padding: 1.25rem;
+    min-height: auto;
+    border-radius: 16px;
+  }
+  .stepTitle {
+    font-size: 1.35rem;
+  }
 }
 
 .stepTitle {
