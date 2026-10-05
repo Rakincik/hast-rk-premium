@@ -59,15 +59,23 @@ export default function Home() {
 
   useEffect(() => {
     if (isMobile) return;
+    
+    let ticking = false;
     const handleMouseMove = (e: MouseEvent) => {
-      const { innerWidth, innerHeight } = window;
-      const x = (e.clientX / innerWidth) * 2 - 1;
-      const y = (e.clientY / innerHeight) * 2 - 1;
-      mouseX.set(x);
-      mouseY.set(y);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const { innerWidth, innerHeight } = window;
+          const x = (e.clientX / innerWidth) * 2 - 1;
+          const y = (e.clientY / innerHeight) * 2 - 1;
+          mouseX.set(x);
+          mouseY.set(y);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [mouseX, mouseY, isMobile]);
 
@@ -141,12 +149,15 @@ export default function Home() {
               <source src={currentSlide.mediaUrl} type="video/mp4" />
             </video>
           ) : (
-            <img
+            <Image
               key={currentSlide?.mediaUrl}
               src={currentSlide?.mediaUrl || "/projects/taksim-360/IMG_2860.JPG"}
               alt="Hero Slide"
               className={styles.heroImage}
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              fill
+              priority
+              sizes="100vw"
+              style={{ objectFit: 'cover' }}
             />
           )}
           <div className={styles.heroOverlay} />

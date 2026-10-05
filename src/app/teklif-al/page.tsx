@@ -229,11 +229,31 @@ function WizardContent() {
     return `https://wa.me/905404278875?text=${text}`;
   };
 
+  // Swipe Handlers
+  const handleDragEnd = (e: any, { offset, velocity }: any) => {
+    const swipeThreshold = 50;
+    if (offset.x < -swipeThreshold && currentStep < 4) {
+      if (currentStep === 1) {
+        const cleanPhone = leadForm.phone.replace(/\D/g, "");
+        if (cleanPhone.length < 10) {
+          setLeadError("Lütfen geçerli bir cep telefonu numarası giriniz (Örn: 05XX XXX XX XX).");
+          return;
+        }
+        setLeadError("");
+      }
+      setCurrentStep((prev) => Math.min(prev + 1, 4));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else if (offset.x > swipeThreshold && currentStep > 1) {
+      setCurrentStep((prev) => Math.max(prev - 1, 1));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   // Sayfa Animasyon Varyantı
   const stepVariants: Variants = {
-    hidden: { opacity: 0, x: 20 },
+    hidden: { opacity: 0, x: 50 },
     visible: { opacity: 1, x: 0, transition: { duration: 0.35, ease: "easeOut" } },
-    exit: { opacity: 0, x: -20, transition: { duration: 0.2, ease: "easeIn" } }
+    exit: { opacity: 0, x: -50, transition: { duration: 0.2, ease: "easeIn" } }
   };
 
   return (
@@ -242,6 +262,17 @@ function WizardContent() {
       <div className={styles.wizardLayout}>
         {/* Left Side: Step Content */}
         <div className={styles.stepBody}>
+          {/* Story Progress Bar */}
+          <div className={styles.storyProgressContainer}>
+            {[1, 2, 3, 4].map((step) => (
+              <div key={step} className={styles.storyProgressBar}>
+                <div 
+                  className={styles.storyProgressFill}
+                  style={{ width: currentStep > step ? "100%" : currentStep === step ? "100%" : "0%" }}
+                />
+              </div>
+            ))}
+          </div>
           <AnimatePresence mode="wait">
             
             {/* ADIM 1: İletişim Bilgileri (Lead Gating) & Hizmet Seçimi */}
@@ -252,6 +283,11 @@ function WizardContent() {
                 initial="hidden" 
                 animate="visible" 
                 exit="exit"
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.2}
+                onDragEnd={handleDragEnd}
+                className={styles.swipeableStep}
               >
                 <div className={styles.botBubbleContainer}>
                   <div className={styles.botAvatar}>
@@ -434,7 +470,11 @@ function WizardContent() {
                 initial="hidden" 
                 animate="visible" 
                 exit="exit"
-                className={styles.formSection}
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.2}
+                onDragEnd={handleDragEnd}
+                className={`${styles.formSection} ${styles.swipeableStep}`}
               >
                 <div className={styles.botBubbleContainer}>
                   <div className={styles.botAvatar}>
@@ -631,6 +671,11 @@ function WizardContent() {
                 initial="hidden" 
                 animate="visible" 
                 exit="exit"
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.2}
+                onDragEnd={handleDragEnd}
+                className={styles.swipeableStep}
               >
                 <div className={styles.botBubbleContainer}>
                   <div className={styles.botAvatar}>
@@ -695,6 +740,11 @@ function WizardContent() {
                 initial="hidden" 
                 animate="visible" 
                 exit="exit"
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.2}
+                onDragEnd={handleDragEnd}
+                className={styles.swipeableStep}
               >
                 <div className={styles.botBubbleContainer}>
                   <div className={styles.botAvatar}>

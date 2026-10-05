@@ -2274,3 +2274,36 @@
   color: #4b5563 !important;
 }
 
+/* Story Progress & Swipe UI */
+.storyProgressContainer {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.storyProgressBar {
+  flex: 1;
+  height: 4px;
+  background: rgba(197, 168, 128, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.storyProgressFill {
+  height: 100%;
+  background: var(--accent-gold);
+  border-radius: 2px;
+  transition: width 0.3s ease-out;
+}
+
+.swipeableStep {
+  width: 100%;
+  touch-action: pan-y; /* Allow vertical scroll, but catch horizontal swipes */
+  cursor: grab;
+}
+
+.swipeableStep:active {
+  cursor: grabbing;
+}
