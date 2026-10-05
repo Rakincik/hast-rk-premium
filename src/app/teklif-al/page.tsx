@@ -278,192 +278,229 @@ function WizardContent() {
               </div>
             ))}
           </div>
-          <AnimatePresence mode="wait">
-            
-            {/* ADIM 1: İletişim Bilgileri (Lead Gating) & Hizmet Seçimi */}
-            {currentStep === 1 && (
-              <motion.div 
-                key="step1" 
-                variants={stepVariants} 
-                initial="hidden" 
-                animate="visible" 
-                exit="exit"
-                drag="x"
-                dragConstraints={{ left: 0, right: 0 }}
-                dragElastic={0.2}
-                onDragEnd={handleDragEnd}
-                className={styles.swipeableStep}
-              >
-                <div className={styles.stepHeaderSleek}>
-                  <div>
-                    <span className={styles.stepTagline}>Ön Fizibilite & Maliyet Robotu</span>
-                    <h2 className={styles.stepMainTitle}>Hizmet Türü ve Proje Kategorisi</h2>
+          <div className={styles.stepScrollArea}>
+            <AnimatePresence mode="wait">
+              
+              {/* ADIM 1: İletişim Bilgileri (Lead Gating) & Hizmet Seçimi */}
+              {currentStep === 1 && (
+                <motion.div 
+                  key="step1" 
+                  variants={stepVariants} 
+                  initial="hidden" 
+                  animate="visible" 
+                  exit="exit" 
+                  drag="x" 
+                  dragConstraints={{ left: 0, right: 0 }} 
+                  dragElastic={0.2} 
+                  onDragEnd={handleDragEnd} 
+                  className={`${styles.swipeableStep} ${styles.stepOneCompact}`}
+                >
+                  <div className={styles.stepHeaderSleek}>
+                    <div className={styles.stepHeaderLeft}>
+                      <span className={styles.stepTagline}>ÖN FİZİBİLİTE & MALİYET ROBOTU</span>
+                      <h2 className={styles.stepMainTitle}>Hizmet Türü ve Proje Kategorisi</h2>
+                    </div>
+                    <div className={styles.livePriceBadge}>
+                      <span className={styles.livePriceLabel}>Canlı Tahmin</span>
+                      <span className={styles.livePriceValue}>
+                        {formatCurrencyTL(quoteResult.packageFees.basic)} - {formatCurrencyTL(quoteResult.packageFees.turnkey)}
+                      </span>
+                    </div>
                   </div>
-                  <div className={styles.livePriceBadge}>
-                    <span className={styles.livePriceLabel}>Canlı Tahmin</span>
-                    <span className={styles.livePriceValue}>
-                      {formatCurrencyTL(quoteResult.packageFees.basic)} - {formatCurrencyTL(quoteResult.packageFees.turnkey)}
+
+                  {/* 1. Kompakt Üst Kontrol Barı: Sol Segmented Tab, Sağ Telefon Girişi */}
+                  <div className={styles.controlsBarCombined}>
+                    <div className={styles.segmentedControl}>
+                      <button 
+                        type="button" 
+                        className={`${styles.segmentBtn} ${domain === "project" ? styles.segmentBtnActive : ""}`} 
+                        onClick={() => handleDomainChange("project")}
+                      >
+                        <PenTool size={15} />
+                        <span>Mimari & Proje</span>
+                        <span className={styles.segmentTag}>TMMOB</span>
+                      </button>
+
+                      <button 
+                        type="button" 
+                        className={`${styles.segmentBtn} ${domain === "execution" ? styles.segmentBtnActive : ""}`} 
+                        onClick={() => handleDomainChange("execution")}
+                      >
+                        <Hammer size={15} />
+                        <span>Uygulama & Şantiye</span>
+                        <span className={styles.segmentTag}>ÇŞİDB 2026</span>
+                      </button>
+                    </div>
+
+                    <div className={styles.phoneGateBar}>
+                      <div className={styles.phoneGateLeft}>
+                        <Phone size={14} className={styles.phoneIconGold} />
+                        <span className={styles.phoneGateTitle}>Cep No:</span>
+                      </div>
+
+                      <div className={styles.phoneInputWrapper}>
+                        <div className={styles.countryCodeBadge}>
+                          <span>🇹🇷</span> +90
+                        </div>
+                        <input 
+                          type="tel" 
+                          inputMode="numeric" 
+                          autoComplete="tel" 
+                          maxLength={14} 
+                          value={leadForm.phone} 
+                          onChange={handlePhoneChange} 
+                          placeholder="05XX XXX XX XX" 
+                          className={styles.phoneGateInput}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {leadError && (
+                    <div className={styles.phoneGateAlert}>
+                      <AlertCircle size={14} />
+                      <span>{leadError}</span>
+                    </div>
+                  )}
+
+                  {/* 2. Alt Kategori Seçim Başlığı & Kart Izgarası */}
+                  <div className={styles.sectionHeaderCompact}>
+                    <h3 className={styles.stepTitleCompact}>
+                      {domain === "project" ? "Projelendirme Kategorisini Seçin:" : "Uygulama / Şantiye Alanını Seçin:"}
+                    </h3>
+                    <span className={styles.stepBadgeCompact}>
+                      {domain === "project" ? "3 Kategori" : "4 Kategori"}
                     </span>
                   </div>
-                </div>
 
-                {/* 1. Kompakt Telefon Barı */}
-                <div className={styles.phoneGateBar}>
-                  <div className={styles.phoneGateLeft}>
-                    <Phone size={16} className={styles.phoneIconGold} />
-                    <span className={styles.phoneGateTitle}>Cep Telefonu</span>
+                  <div className={domain === "execution" ? styles.typeGrid4 : styles.typeGrid}>
+                    {domain === "project" ? (
+                      <>
+                        {/* Proje: Eski Eser (2863 Sayılı Kanuna Tabi) */}
+                        <div 
+                          className={`${styles.typeCard} ${projectType === "restoration" ? styles.typeCardSelected : ""}`} 
+                          onClick={() => handleTypeChange("restoration")}
+                        >
+                          <div className={styles.typeCardTop}>
+                            <div className={styles.typeIconWrapper}><Landmark size={20} /></div>
+                            <div className={styles.typeRadioCircle}>
+                              {projectType === "restoration" && <Check size={11} strokeWidth={3.5} />}
+                            </div>
+                          </div>
+                          <h3 className={styles.typeCardTitle}>Eski Eser (2863 SK)</h3>
+                          <p className={styles.typeCardDesc}>
+                            2863 Sayılı Kanuna tabi tescilli yapılar için Lidar, rölöve, restitüsyon ve kurul onay projeleri.
+                          </p>
+                        </div>
+
+                        {/* Proje: Yeni Mimari */}
+                        <div 
+                          className={`${styles.typeCard} ${projectType === "new_architecture" ? styles.typeCardSelected : ""}`} 
+                          onClick={() => handleTypeChange("new_architecture")}
+                        >
+                          <div className={styles.typeCardTop}>
+                            <div className={styles.typeIconWrapper}><Building2 size={20} /></div>
+                            <div className={styles.typeRadioCircle}>
+                              {projectType === "new_architecture" && <Check size={11} strokeWidth={3.5} />}
+                            </div>
+                          </div>
+                          <h3 className={styles.typeCardTitle}>Yeni Yapı Mimari</h3>
+                          <p className={styles.typeCardDesc}>
+                            Müstakil villa, konut ve ticari yapılar için belediye ruhsat, konsept ve uygulama projeleri.
+                          </p>
+                        </div>
+
+                        {/* Proje: Statik Güçlendirme */}
+                        <div 
+                          className={`${styles.typeCard} ${projectType === "strengthening" ? styles.typeCardSelected : ""}`} 
+                          onClick={() => handleTypeChange("strengthening")}
+                        >
+                          <div className={styles.typeCardTop}>
+                            <div className={styles.typeIconWrapper}><ShieldCheck size={20} /></div>
+                            <div className={styles.typeRadioCircle}>
+                              {projectType === "strengthening" && <Check size={11} strokeWidth={3.5} />}
+                            </div>
+                          </div>
+                          <h3 className={styles.typeCardTitle}>Statik Güçlendirme</h3>
+                          <p className={styles.typeCardDesc}>
+                            Mevcut bina taşıyıcı analizi, deprem performans tahkiki ve onaylı güçlendirme projeleri.
+                          </p>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        {/* Uygulama: Tarihi Restorasyon */}
+                        <div 
+                          className={`${styles.typeCard} ${projectType === "exec_restoration" ? styles.typeCardSelected : ""}`} 
+                          onClick={() => handleTypeChange("exec_restoration")}
+                        >
+                          <div className={styles.typeCardTop}>
+                            <div className={styles.typeIconWrapper}><Landmark size={20} /></div>
+                            <div className={styles.typeRadioCircle}>
+                              {projectType === "exec_restoration" && <Check size={11} strokeWidth={3.5} />}
+                            </div>
+                          </div>
+                          <h3 className={styles.typeCardTitle}>Tarihi Restorasyon</h3>
+                          <p className={styles.typeCardDesc}>
+                            2863 sayılı kanun ve kurul onaylı restorasyon uygulaması ve fenni mesuliyet.
+                          </p>
+                        </div>
+
+                        {/* Uygulama: Yeni İnşaat */}
+                        <div 
+                          className={`${styles.typeCard} ${projectType === "exec_new" ? styles.typeCardSelected : ""}`} 
+                          onClick={() => handleTypeChange("exec_new")}
+                        >
+                          <div className={styles.typeCardTop}>
+                            <div className={styles.typeIconWrapper}><Building2 size={20} /></div>
+                            <div className={styles.typeRadioCircle}>
+                              {projectType === "exec_new" && <Check size={11} strokeWidth={3.5} />}
+                            </div>
+                          </div>
+                          <h3 className={styles.typeCardTitle}>Yeni Yapı İnşaatı</h3>
+                          <p className={styles.typeCardDesc}>
+                            Anahtar teslim kaba ve ince yapı inşaat taahhüdü, şantiye şefliği ve iskan teslimi.
+                          </p>
+                        </div>
+
+                        {/* Uygulama: Tadilat & Tamirat */}
+                        <div 
+                          className={`${styles.typeCard} ${projectType === "exec_renovation" ? styles.typeCardSelected : ""}`} 
+                          onClick={() => handleTypeChange("exec_renovation")}
+                        >
+                          <div className={styles.typeCardTop}>
+                            <div className={styles.typeIconWrapper}><Wrench size={20} /></div>
+                            <div className={styles.typeRadioCircle}>
+                              {projectType === "exec_renovation" && <Check size={11} strokeWidth={3.5} />}
+                            </div>
+                          </div>
+                          <h3 className={styles.typeCardTitle}>Tadilat & Yenileme</h3>
+                          <p className={styles.typeCardDesc}>
+                            İç mekan yenileme, tesisat, çatı onarımı, ıslak hacimler ve lüks ince işçilik.
+                          </p>
+                        </div>
+
+                        {/* Uygulama: Statik Güçlendirme İmalatı */}
+                        <div 
+                          className={`${styles.typeCard} ${projectType === "exec_strengthening" ? styles.typeCardSelected : ""}`} 
+                          onClick={() => handleTypeChange("exec_strengthening")}
+                        >
+                          <div className={styles.typeCardTop}>
+                            <div className={styles.typeIconWrapper}><ShieldCheck size={20} /></div>
+                            <div className={styles.typeRadioCircle}>
+                              {projectType === "exec_strengthening" && <Check size={11} strokeWidth={3.5} />}
+                            </div>
+                          </div>
+                          <h3 className={styles.typeCardTitle}>Güçlendirme Şantiye</h3>
+                          <p className={styles.typeCardDesc}>
+                            Karbon lif (CFRP), çelik mantolama, temel takviyesi ve epoksi enjeksiyon uygulamaları.
+                          </p>
+                        </div>
+                      </>
+                    )}
                   </div>
-
-                  <div className={styles.phoneInputWrapper}>
-                    <div className={styles.countryCodeBadge}>
-                      <span>🇹🇷</span> +90
-                    </div>
-                    <input 
-                      type="tel" 
-                      inputMode="numeric"
-                      autoComplete="tel"
-                      maxLength={14}
-                      value={leadForm.phone}
-                      onChange={handlePhoneChange}
-                      placeholder="05XX XXX XX XX" 
-                      className={styles.phoneGateInput}
-                    />
-                  </div>
-                </div>
-
-                {leadError && (
-                  <div className={styles.phoneGateAlert}>
-                    <AlertCircle size={16} />
-                    <span>{leadError}</span>
-                  </div>
-                )}
-
-                {/* 2. Zarif Segmented Tab Kontrolü (Proje vs Uygulama) */}
-                <div className={styles.segmentedControl}>
-                  <button 
-                    type="button"
-                    className={`${styles.segmentBtn} ${domain === "project" ? styles.segmentBtnActive : ""}`}
-                    onClick={() => handleDomainChange("project")}
-                  >
-                    <PenTool size={18} />
-                    <span>Mimari & Statik Proje Hizmeti</span>
-                    <span className={styles.segmentTag}>TMMOB</span>
-                  </button>
-
-                  <button 
-                    type="button"
-                    className={`${styles.segmentBtn} ${domain === "execution" ? styles.segmentBtnActive : ""}`}
-                    onClick={() => handleDomainChange("execution")}
-                  >
-                    <Hammer size={18} />
-                    <span>Uygulama & Şantiye İmalatı</span>
-                    <span className={styles.segmentTag}>ÇŞİDB 2026</span>
-                  </button>
-                </div>
-
-                {/* 3. Alt Kategori Seçim Başlığı & Kart Izgarası */}
-                <div className={styles.sectionHeaderCompact}>
-                  <h3 className={styles.stepTitleCompact}>
-                    {domain === "project" ? "Projelendirme Kategorisini Seçin:" : "Uygulama / Şantiye Alanını Seçin:"}
-                  </h3>
-                  <span className={styles.stepBadgeCompact}>
-                    {domain === "project" ? "3 Kategori" : "4 Kategori"}
-                  </span>
-                </div>
-
-                <div className={domain === "execution" ? styles.typeGrid4 : styles.typeGrid}>
-                  {domain === "project" ? (
-                    <>
-                      {/* Proje: Eski Eser (2863 Sayılı Kanuna Tabi) */}
-                      <div 
-                        className={`${styles.typeCard} ${projectType === "restoration" ? styles.typeCardSelected : ""}`}
-                        onClick={() => handleTypeChange("restoration")}
-                      >
-                        <div className={styles.typeIconWrapper}><Landmark size={24} /></div>
-                        <h3 className={styles.typeCardTitle}>Eski Eser (2863 Sayılı Kanun)</h3>
-                        <p className={styles.typeCardDesc}>
-                          2863 Sayılı Kültür ve Tabiat Varlıklarını Koruma Kanununa tabi tescilli yapılar için Lidar, rölöve, restitüsyon ve kurul onay projeleri.
-                        </p>
-                      </div>
-
-                      {/* Proje: Yeni Mimari */}
-                      <div 
-                        className={`${styles.typeCard} ${projectType === "new_architecture" ? styles.typeCardSelected : ""}`}
-                        onClick={() => handleTypeChange("new_architecture")}
-                      >
-                        <div className={styles.typeIconWrapper}><Building2 size={24} /></div>
-                        <h3 className={styles.typeCardTitle}>Yeni Yapı Mimari Tasarım</h3>
-                        <p className={styles.typeCardDesc}>
-                          Müstakil villa, konut veya ticari yapılar için belediye ruhsat, konsept ve uygulama projeleri (Koruma Kurulu gerektirmez).
-                        </p>
-                      </div>
-
-                      {/* Proje: Statik Güçlendirme */}
-                      <div 
-                        className={`${styles.typeCard} ${projectType === "strengthening" ? styles.typeCardSelected : ""}`}
-                        onClick={() => handleTypeChange("strengthening")}
-                      >
-                        <div className={styles.typeIconWrapper}><ShieldCheck size={24} /></div>
-                        <h3 className={styles.typeCardTitle}>Statik Güçlendirme Projesi</h3>
-                        <p className={styles.typeCardDesc}>
-                          Mevcut bina taşıyıcı sistemi analizi, deprem performans tahkiki ve onaylı güçlendirme uygulama projeleri.
-                        </p>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      {/* Uygulama: Tarihi Restorasyon */}
-                      <div 
-                        className={`${styles.typeCard} ${projectType === "exec_restoration" ? styles.typeCardSelected : ""}`}
-                        onClick={() => handleTypeChange("exec_restoration")}
-                      >
-                        <div className={styles.typeIconWrapper}><Landmark size={24} /></div>
-                        <h3 className={styles.typeCardTitle}>Tarihi Yapı Restorasyonu</h3>
-                        <p className={styles.typeCardDesc}>
-                          2863 sayılı kanun ve Koruma Kurulu onaylı restorasyon uygulaması, özgün konservasyon ve fenni mesuliyet.
-                        </p>
-                      </div>
-
-                      {/* Uygulama: Yeni İnşaat */}
-                      <div 
-                        className={`${styles.typeCard} ${projectType === "exec_new" ? styles.typeCardSelected : ""}`}
-                        onClick={() => handleTypeChange("exec_new")}
-                      >
-                        <div className={styles.typeIconWrapper}><Building2 size={24} /></div>
-                        <h3 className={styles.typeCardTitle}>Yeni Yapı İnşaat Uygulaması</h3>
-                        <p className={styles.typeCardDesc}>
-                          Arsanız üzerine anahtar teslim kaba ve ince yapı inşaat taahhüdü, şantiye şefliği ve yapı kullanım (İskan) teslimi.
-                        </p>
-                      </div>
-
-                      {/* Uygulama: Tadilat & Tamirat */}
-                      <div 
-                        className={`${styles.typeCard} ${projectType === "exec_renovation" ? styles.typeCardSelected : ""}`}
-                        onClick={() => handleTypeChange("exec_renovation")}
-                      >
-                        <div className={styles.typeIconWrapper}><Wrench size={24} /></div>
-                        <h3 className={styles.typeCardTitle}>Tadilat & Tamirat Uygulaması</h3>
-                        <p className={styles.typeCardDesc}>
-                          Mevcut yapıda iç mekan yenileme, tesisat sıfırlama, çatı onarımı, ıslak hacimler ve lüks ince işçilik.
-                        </p>
-                      </div>
-
-                      {/* Uygulama: Statik Güçlendirme İmalatı */}
-                      <div 
-                        className={`${styles.typeCard} ${projectType === "exec_strengthening" ? styles.typeCardSelected : ""}`}
-                        onClick={() => handleTypeChange("exec_strengthening")}
-                      >
-                        <div className={styles.typeIconWrapper}><ShieldCheck size={24} /></div>
-                        <h3 className={styles.typeCardTitle}>Statik Güçlendirme İmalatı</h3>
-                        <p className={styles.typeCardDesc}>
-                          Karbon lif (CFRP), çelik mantolama, temel takviyesi ve epoksi enjeksiyon şantiye imalatları.
-                        </p>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </motion.div>
-            )}
+                </motion.div>
+              )}
 
             {/* ADIM 2: Yapı Parametreleri */}
             {currentStep === 2 && (
@@ -967,6 +1004,7 @@ function WizardContent() {
               </motion.div>
             )}
           </AnimatePresence>
+          </div>
 
           {/* Wizard Navigation Bar (Geri / İleri) */}
           <div className={styles.wizardNav}>
