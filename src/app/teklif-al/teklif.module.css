@@ -1,22 +1,22 @@
 .container {
-  min-height: 100vh;
-  padding: 7rem 2rem 4rem 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
+  min-height: calc(100vh - 80px); /* Account for navbar */
+  padding: 4rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   position: relative;
 }
 
 @media (max-width: 768px) {
   .container {
-    padding: 6rem 1rem 2rem 1rem;
+    padding: 2rem 0.5rem;
   }
 }
 
-/* Header */
+/* Hide old header */
 .header {
-  text-align: center;
-  max-width: 800px;
-  margin: 0 auto 2.25rem auto;
+  display: none;
 }
 
 .badge {
@@ -65,25 +65,9 @@
   line-height: 1.55;
 }
 
-/* Wizard Stepper Progress Bar */
+/* Hide old stepper, we use the left sidebar for progress context */
 .stepperContainer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: relative;
-  max-width: 750px;
-  margin: 0 auto 2.5rem auto;
-}
-
-.stepperProgressLine {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: #27272a;
-  z-index: 1;
-  transform: translateY(-50%);
+  display: none;
 }
 
 .stepperProgressActive {
@@ -152,57 +136,64 @@
 
 /* Wizard Main Layout (Grid) */
 .wizardLayout {
-  display: grid;
-  grid-template-columns: 1fr 380px;
-  gap: 2.5rem;
-  align-items: start;
+  display: flex;
+  flex-direction: row-reverse; /* Put Summary on LEFT, Steps on RIGHT */
+  width: 100%;
+  max-width: 1100px;
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+  margin: 0 auto;
 }
 
 @media (max-width: 1024px) {
   .wizardLayout {
-    grid-template-columns: 1fr;
+    flex-direction: column-reverse;
   }
 }
 
-/* Left Wizard Step Body */
+/* Left Wizard Step Body (Now Right Content, White Theme) */
 .stepBody {
-  background: rgba(20, 20, 20, 0.7);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 20px;
-  padding: 2.5rem;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-  min-height: 480px;
+  flex: 1;
+  background: #ffffff;
+  padding: 3rem;
+  min-height: 550px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative;
 }
 
 @media (max-width: 768px) {
   .stepBody {
-    padding: 1.25rem;
+    padding: 1.5rem;
     min-height: auto;
-    border-radius: 16px;
-  }
-  .stepTitle {
-    font-size: 1.35rem;
+    border-radius: 20px;
   }
 }
 
 .stepTitle {
-  font-size: 1.6rem;
+  font-size: 1.7rem;
   margin-bottom: 0.5rem;
-  color: var(--text-primary);
+  color: #111827; /* Dark gray/black */
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .stepTitle {
+    font-size: 1.4rem;
+  }
 }
 
 .stepDesc {
-  color: var(--text-secondary);
+  color: #4b5563; /* Medium gray */
   font-size: 0.95rem;
   margin-bottom: 2rem;
   line-height: 1.5;
 }
 
-/* Step 1: Project Type Cards */
+/* Step 1: Project Type Cards (White Theme) */
 .typeGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -211,8 +202,8 @@
 }
 
 .typeCard {
-  background: #141414;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #ffffff;
+  border: 2px solid #e5e7eb;
   border-radius: 14px;
   padding: 1.5rem;
   cursor: pointer;
@@ -227,14 +218,14 @@
 
 .typeCard:hover {
   border-color: rgba(197, 168, 128, 0.5);
-  transform: translateY(-4px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
 }
 
 .typeCardSelected {
   border-color: var(--accent-gold);
   background: rgba(197, 168, 128, 0.05);
-  box-shadow: 0 0 25px rgba(197, 168, 128, 0.15);
+  box-shadow: 0 4px 15px rgba(197, 168, 128, 0.15);
 }
 
 .typeIconWrapper {
@@ -252,8 +243,15 @@
 .typeCardTitle {
   font-size: 1.15rem;
   font-family: var(--font-serif);
+  font-weight: 700;
   margin-bottom: 0.5rem;
-  color: var(--text-primary);
+  color: #111827;
+}
+
+.typeCardDesc {
+  font-size: 0.85rem;
+  color: #4b5563;
+  line-height: 1.4;
 }
 
 .typeCardDesc {
@@ -2220,3 +2218,106 @@
     font-size: 0.95rem;
   }
 }
+
+/* Modal Sidebar overrides */
+.summarySidebar {
+  width: 380px;
+  background: #0a0a0a;
+  padding: 2.5rem;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 1024px) {
+  .summarySidebar {
+    width: 100%;
+    padding: 1.5rem;
+  }
+}
+
+/* Light Theme Overrides for Step Body Content */
+.sliderGroup {
+  background: #f9fafb !important;
+  border: 1px solid #e5e7eb !important;
+}
+.sliderLabel {
+  color: #111827 !important;
+}
+.optionCard {
+  background: #ffffff !important;
+  border: 2px solid #e5e7eb !important;
+}
+.optionTitle {
+  color: #111827 !important;
+}
+.optionDesc {
+  color: #4b5563 !important;
+}
+.optionCardSelected {
+  border-color: var(--accent-gold) !important;
+  background: rgba(197, 168, 128, 0.05) !important;
+}
+.ministryClassCard {
+  background: #f9fafb !important;
+  border: 1px solid #e5e7eb !important;
+}
+.ministryClassName {
+  color: #111827 !important;
+}
+.ministryClassDesc {
+  color: #4b5563 !important;
+}
+.officialPymBanner {
+  background: #f9fafb !important;
+  border: 1px solid #e5e7eb !important;
+}
+.officialPymTitle {
+  color: #111827 !important;
+}
+.serviceItem {
+  background: #ffffff !important;
+  border: 2px solid #e5e7eb !important;
+}
+.serviceTitle {
+  color: #111827 !important;
+}
+.serviceDesc {
+  color: #4b5563 !important;
+}
+.serviceItemSelected {
+  border-color: var(--accent-gold) !important;
+  background: rgba(197, 168, 128, 0.05) !important;
+}
+.resultCard {
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+}
+.packageCard {
+  background: #ffffff !important;
+  border: 2px solid #e5e7eb !important;
+}
+.packageTitle {
+  color: #111827 !important;
+}
+.packageTagline {
+  color: #4b5563 !important;
+}
+.packageFeatureItem {
+  color: #4b5563 !important;
+}
+.packageCardSelected {
+  background: rgba(197, 168, 128, 0.05) !important;
+  border-color: var(--accent-gold) !important;
+}
+.boardInfoCard {
+  background: #f9fafb !important;
+  border: 1px solid #e5e7eb !important;
+}
+.boardName {
+  color: #111827 !important;
+}
+.boardDesc {
+  color: #4b5563 !important;
+}
+
