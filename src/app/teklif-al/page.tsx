@@ -238,60 +238,6 @@ function WizardContent() {
 
   return (
     <div className={styles.container}>
-      {/* Header */}
-      <div className={styles.header}>
-        <div className={styles.badge}>
-          <Landmark size={15} /> ÇŞİDB 2026 Yapı Birim Maliyetleri & TMMOB Normları
-        </div>
-        <h1 className={styles.title}>
-          Akıllı Mimari & Uygulama{" "}
-          <br className={styles.desktopBr} />
-          <span className={styles.titleGold}>Teklif Sihirbazı</span>
-        </h1>
-        <p className={styles.subtitle}>
-          Mimarlar Odası asgari bedel tarifesi ve 2026 Çevre, Şehircilik ve İklim Değişikliği Bakanlığı uygulama birim maliyetleriyle projenizi saniyeler içinde hesaplayın.
-        </p>
-      </div>
-
-      {/* Stepper Progress Bar */}
-      <div className={styles.stepperContainer}>
-        <div className={styles.stepperProgressLine} />
-        <div 
-          className={styles.stepperProgressActive} 
-          style={{ width: `${((currentStep - 1) / 3) * 100}%` }}
-        />
-
-        {[
-          { num: 1, label: "Hizmet & Bilgi" },
-          { num: 2, label: "Yapı Parametreleri" },
-          { num: 3, label: "Hizmet Kapsamı" },
-          { num: 4, label: "Teklif & Rapor" }
-        ].map((step) => {
-          const isActive = currentStep === step.num;
-          const isCompleted = currentStep > step.num;
-          return (
-            <button
-              key={step.num}
-              type="button"
-              className={`${styles.stepItem} ${isActive ? styles.stepItemActive : ""} ${isCompleted ? styles.stepItemCompleted : ""}`}
-              onClick={() => {
-                if (step.num > 1 && currentStep === 1) {
-                  handleNextStep();
-                } else {
-                  setCurrentStep(step.num);
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                }
-              }}
-            >
-              <div className={styles.stepCircle}>
-                {isCompleted ? <Check size={18} /> : step.num}
-              </div>
-              <span className={styles.stepLabel}>{step.label}</span>
-            </button>
-          );
-        })}
-      </div>
-
       {/* Main Wizard Grid */}
       <div className={styles.wizardLayout}>
         {/* Left Side: Step Content */}

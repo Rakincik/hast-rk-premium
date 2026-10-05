@@ -149,7 +149,7 @@
 
 @media (max-width: 1024px) {
   .wizardLayout {
-    flex-direction: column-reverse;
+    flex-direction: column; /* Form on top, Summary on bottom */
   }
 }
 
