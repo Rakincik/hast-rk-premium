@@ -1,12 +1,15 @@
 "use client";
 
+import { useRef } from "react";
 import { motion } from "framer-motion";
 import styles from "./WhyUs.module.css";
 import { Landmark, Scan, Hammer, GraduationCap } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import SwipeDots from "@/components/ui/SwipeDots";
 
 export default function WhyUs() {
   const { t, language } = useLanguage();
+  const trackRef = useRef<HTMLDivElement>(null);
 
   const getBadges = (pillarIdx: number): string[] => {
     switch (pillarIdx) {
@@ -85,7 +88,7 @@ export default function WhyUs() {
           </p>
         </motion.div>
 
-        <div className={styles.grid}>
+        <div ref={trackRef} className={`${styles.grid} mobile-swipe`}>
           {pillars.map((item, idx) => (
             <motion.div 
               key={idx}
@@ -109,6 +112,7 @@ export default function WhyUs() {
             </motion.div>
           ))}
         </div>
+        <SwipeDots trackRef={trackRef} count={pillars.length} />
       </div>
     </section>
   );

@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { motion } from "framer-motion";
 import styles from "./Journal.module.css";
 import { ArrowRight, Clock, Calendar } from "lucide-react";
@@ -7,10 +8,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSiteContent } from "@/context/SiteContentContext";
+import SwipeDots from "@/components/ui/SwipeDots";
 
 export default function Journal() {
   const { t, language } = useLanguage();
   const { content } = useSiteContent();
+  const trackRef = useRef<HTMLDivElement>(null);
 
   const articles = [
     {
@@ -97,9 +100,9 @@ export default function Journal() {
           </Link>
         </div>
 
-        <div className={styles.grid}>
+        <div ref={trackRef} className={`${styles.grid} mobile-swipe`}>
           {activeArticles.map((article, idx) => (
-            <Link key={article.id} href={`/yayinlar/${article.id}`} style={{ textDecoration: "none" }}>
+            <Link key={article.id} href={`/yayinlar/${article.id}`} className={styles.cardLink}>
               <motion.div 
                 className={styles.articleCard}
                 initial={{ opacity: 0, y: 30 }}
@@ -112,7 +115,7 @@ export default function Journal() {
                     src={article.image} 
                     alt={article.title} 
                     fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
+                    sizes="(max-width: 767px) 84vw, (max-width: 1023px) 50vw, 33vw"
                     style={{ objectFit: "cover" }}
                     className={styles.image} 
                   />
@@ -145,6 +148,7 @@ export default function Journal() {
             </Link>
           ))}
         </div>
+        <SwipeDots trackRef={trackRef} count={activeArticles.length} />
       </div>
     </section>
   );

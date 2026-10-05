@@ -1,14 +1,17 @@
 "use client";
 
+import { useRef } from "react";
 import { motion } from "framer-motion";
 import styles from "./Services.module.css";
 import { Hammer, Search, PenTool, ShieldCheck, Building2 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSiteContent } from "@/context/SiteContentContext";
+import SwipeDots from "@/components/ui/SwipeDots";
 
 export default function Services() {
   const { t } = useLanguage();
   const { content } = useSiteContent();
+  const trackRef = useRef<HTMLDivElement>(null);
 
   const getIcon = (name?: string) => {
     switch (name) {
@@ -84,7 +87,7 @@ export default function Services() {
           <p className={styles.subtitle}>{t("services_subtitle", "Geçmişin mirasını, modern teknolojinin gücüyle yeniden var ediyoruz.")}</p>
         </motion.div>
 
-        <div className={styles.grid}>
+        <div ref={trackRef} className={`${styles.grid} mobile-swipe`}>
           {list.map((service, index) => (
             <motion.div
               key={service.id}
@@ -102,6 +105,7 @@ export default function Services() {
             </motion.div>
           ))}
         </div>
+        <SwipeDots trackRef={trackRef} count={list.length} />
       </div>
     </section>
   );

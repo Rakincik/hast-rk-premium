@@ -59,10 +59,12 @@
   transition: all 0.4s ease;
 }
 
-.card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(197, 168, 128, 0.4);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+@media (hover: hover) {
+  .card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(197, 168, 128, 0.4);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+  }
 }
 
 .cardHeader {

@@ -1,12 +1,15 @@
 "use client";
 
+import { useRef } from "react";
 import { motion } from "framer-motion";
 import styles from "./Testimonials.module.css";
 import { Star, ShieldCheck, MapPin } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import SwipeDots from "@/components/ui/SwipeDots";
 
 export default function Testimonials() {
   const { t, language } = useLanguage();
+  const trackRef = useRef<HTMLDivElement>(null);
 
   const testimonials = [
     {
@@ -94,7 +97,7 @@ export default function Testimonials() {
           </p>
         </motion.div>
 
-        <div className={styles.grid}>
+        <div ref={trackRef} className={`${styles.grid} mobile-swipe`}>
           {testimonials.map((item, idx) => (
             <motion.div 
               key={item.id}
@@ -136,6 +139,7 @@ export default function Testimonials() {
             </motion.div>
           ))}
         </div>
+        <SwipeDots trackRef={trackRef} count={testimonials.length} />
       </div>
     </section>
   );
